@@ -22,6 +22,7 @@ import CareerGoals from "@/app/_components/CareerGoals";
 import ProfileInfo from "@/app/_components/ProfileInfo";
 import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy";
 import Introduction from "@/app/_components/Introduction";
+import Interests from "@/app/_components/Interests";
 
 const tabs = ["Active", "Completed", "Upcoming"]
 
@@ -216,6 +217,7 @@ export default function NewbieHome() {
 
                         <div className="flex gap-5">
                             <Introduction />
+                            <Interests />
                         </div>
                     </div>
                 </div>
