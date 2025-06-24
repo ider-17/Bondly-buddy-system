@@ -2,7 +2,7 @@ import { Hand } from "lucide-react";
 
 export default function Introduction() {
     return (
-        <div className="w-1/2 border border-neutral-300 py-5 px-6 bg-slate-50 rounded-xl">
+        <div className="w-full border border-neutral-300 py-5 px-6 bg-slate-50 rounded-xl">
             <div className="flex gap-3 items-center mb-5">
                 <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                     <Hand size={18} color="#3B82F6" />

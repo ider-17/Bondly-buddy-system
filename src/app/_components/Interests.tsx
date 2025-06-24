@@ -2,7 +2,7 @@ import { Shapes } from "lucide-react";
 
 export default function Interests() {
     return (
-        <div className="py-5 h-fit px-6 border border-neutral-300 rounded-xl bg-slate-50">
+        <div className="w-full py-5 h-fit px-6 border border-neutral-300 rounded-xl bg-slate-50">
             <div className="flex gap-3 items-center mb-5">
                 <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
                     <Shapes size={18} color="#8B5CF6" />

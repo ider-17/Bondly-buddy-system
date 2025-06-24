@@ -71,8 +71,8 @@ export default function ActiveChallenges() {
                     </div>
 
                     <div className="flex gap-3">
-                        <button className="rounded-full py-1 px-[10px] bg-gray-100 text-xs font-semibold">{challenge.week}</button>
-                        <button className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">{challenge.difficulty}</button>
+                        <div className="rounded-full py-1 px-[10px] bg-gray-100 text-xs font-semibold">{challenge.week}</div>
+                        <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">{challenge.difficulty}</div>
                     </div>
 
                     <Dialog>

@@ -2,7 +2,7 @@ import { BadgeAlert, BadgeQuestionMark, Brush, CalendarDays, Dices } from "lucid
 
 export default function EventsThisWeek() {
     return (
-        <div className='Events rounded-xl border border-neutral-300 py-5 px-6 space-y-5 bg-slate-50'>
+        <div className='rounded-xl border border-neutral-300 py-5 px-6 space-y-5 bg-slate-50'>
             <div className='flex gap-3 items-center'>
                 <div className='w-8 h-8 bg-indigo-100 rounded-lg flex justify-center items-center'>
                     <CalendarDays size={18} color='#6366F1' />
