@@ -3,7 +3,7 @@
 import SideBarMenu from "@/app/_components/SideBarHome";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bell, LayoutGrid, List, Mountain } from "lucide-react";
+import { Bell, LayoutGrid, List, Mountain, SquarePen } from "lucide-react";
 import RotatingBuddyCard from "@/app/_components/RotatingBuddyCard";
 import EventsThisWeek from "@/app/_components/EventsThisWeak";
 import YourProgress from "@/app/_components/YourProgress";
@@ -16,6 +16,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import ProfileCard from "@/app/_components/ProfileCard";
+import MyInterests from "@/app/_components/MyInterests";
+import CareerGoals from "@/app/_components/CareerGoals";
+import ProfileInfo from "@/app/_components/ProfileInfo";
+import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy";
+import Introduction from "@/app/_components/Introduction";
 
 const tabs = ["Active", "Completed", "Upcoming"]
 
@@ -162,7 +168,10 @@ export default function NewbieHome() {
             return (
                 <div>
                     <header className='h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300'>
-                        <h1 className='text-xl font-semibold'>Advice Center</h1>
+                        <div>
+                            <h1 className='text-xl font-semibold'>Your Challenges</h1>
+                            <p className="text-sm font-medium text-neutral-600">Идэвхтэй, дууссан болон удахгүй болох сорилтуудаа эндээс хянах боломжтой</p>
+                        </div>
                         <div>
                             <Bell size={18} />
                         </div>
@@ -170,6 +179,44 @@ export default function NewbieHome() {
 
                     <div className="p-5 mr-10">
                         <p className="text-gray-600">Advice content is coming soon...</p>
+                    </div>
+                </div>
+            )
+        } else if (selectedSection === "Profile") {
+            return (
+                <div>
+                    <header className='h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300'>
+                        <div>
+                            <h1 className='text-xl font-semibold'>Profile</h1>
+                            <p className="text-sm font-medium text-neutral-600">Өөрийн хувийн мэдээллээ харах, удирдах боломжтой.</p>
+                        </div>
+                        <div className="flex gap-2 py-2 px-3 border border-neutral-300 rounded-lg items-center">
+                            <SquarePen size={20} color="black" />
+                            <p className="text-sm font-medium">Edit</p>
+                        </div>
+                    </header>
+
+                    <div className="p-5 mr-10 space-y-5">
+                        <ProfileCard />
+
+                        <div className="flex gap-5">
+                            <div className="w-1/2 space-y-5">
+                                <MyInterests />
+                                <CareerGoals />
+                            </div>
+
+                            <div className="w-1/2">
+                                <YourProgress />
+                            </div>
+                        </div>
+
+                        <YourPrimaryBuddy />
+
+                        <ProfileInfo />
+
+                        <div className="flex gap-5">
+                            <Introduction />
+                        </div>
                     </div>
                 </div>
             )

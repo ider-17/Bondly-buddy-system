@@ -37,7 +37,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
 
                 <div>
                     <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
-                    <div className='flex gap-2 p-2 bg-white rounded-xl'>
+                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer'>
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
