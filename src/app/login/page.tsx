@@ -64,7 +64,7 @@ export default function Login() {
                 className="border border-neutral-300 py-5 px-6 space-y-6 rounded-xl"
             >
                 <div className="text-center">
-                    <h2 className="text-2xl font-semibold mb-2">Sign in to your account</h2>
+                    <h2 className="text-2xl font-semibold mb-2">Log in to your account</h2>
                     <p className="text-neutral-600 text-sm font-medium">
                         Enter your email and password to access your dashboard
                     </p>
@@ -96,7 +96,7 @@ export default function Login() {
                         <input type="checkbox" />
                         <p className="font-medium">Remember me</p>
                     </div>
-                    <p className="font-medium">Forgot password?</p>
+                    {/* <p className="font-medium">Forgot password?</p> */}
                 </div>
 
                 <button
