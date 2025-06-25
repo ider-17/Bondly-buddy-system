@@ -1,16 +1,16 @@
 'use client'
 
-import { useEffect, useState } from "react"
-import { createClient } from "@supabase/supabase-js"
-
-import SideBarMenu from "@/app/_components/SideBarHome"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bell, LayoutGrid, List, Mountain, SquarePen } from "lucide-react"
-import RotatingBuddyCard from "@/app/_components/RotatingBuddyCard"
-import EventsThisWeek from "@/app/_components/EventsThisWeak"
-import YourProgress from "@/app/_components/YourProgress"
-import ActiveChallenges from "@/app/_components/ActiveChallenges"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import SideBarMenu from "@/app/_components/SideBarHome";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bell, LayoutGrid, List, Mountain, SquarePen } from "lucide-react";
+import RotatingBuddyCard from "@/app/_components/RotatingBuddyCard";
+import EventsThisWeek from "@/app/_components/EventsThisWeak";
+import YourProgress from "@/app/_components/YourProgress";
+import ActiveChallenges from "@/app/_components/ActiveChallenges";
+import { Button } from "@/components/ui/button";
+import { AdviceContent } from "./AdviceContent";
 import {
     Select,
     SelectContent,
@@ -18,18 +18,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import ProfileCard from "@/app/_components/ProfileCard"
-import MyInterests from "@/app/_components/MyInterests"
-import CareerGoals from "@/app/_components/CareerGoals"
-import ProfileInfo from "@/app/_components/ProfileInfo"
-import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy"
-import Introduction from "@/app/_components/Introduction"
-import Interests from "@/app/_components/Interests"
+import ProfileCard from "@/app/_components/ProfileCard";
+import MyInterests from "@/app/_components/MyInterests";
+import CareerGoals from "@/app/_components/CareerGoals";
+import ProfileInfo from "@/app/_components/ProfileInfo";
+import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy";
+import Introduction from "@/app/_components/Introduction";
+import Interests from "@/app/_components/Interests";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 // Supabase client
 const supabase = createClient(
@@ -190,7 +190,7 @@ export default function NewbieHome() {
                     </header>
 
                     <div className="p-5 mr-10">
-                        <p className="text-gray-600">Advice content is coming soon...</p>
+                        <AdviceContent />
                     </div>
                 </div>
             )
