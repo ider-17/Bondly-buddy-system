@@ -11,9 +11,9 @@ export default function LatestAdvice() {
                     <h6 className='text-lg font-semibold'>Latest Advice</h6>
                 </div>
 
-                <div className="border border-neutral-300 py-2 px-3 flex gap-2 rounded-lg bg-white">
+                <div className="border border-neutral-300 py-2 px-3 flex gap-2 rounded-lg bg-white text-black select-none cursor-pointer hover:bg-sky-100 active:bg-black active:text-white">
                     <p>View all</p>
-                    <ArrowRight size={22} color="black" />
+                    <ArrowRight size={22} />
                 </div>
             </div>
 

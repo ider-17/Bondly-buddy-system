@@ -141,7 +141,7 @@ export default function Onboarding() {
                                     onClick={() => toggleInterest(interest)}
                                     className={`border rounded-full py-2 px-[10px] text-xs font-semibolds w-full cursor-pointer select-none
                                         ${selectedInterests.includes(interest)
-                                            ? "bg-blue-100 border-blue-400"
+                                            ? "bg-black text-white border-white"
                                             : "border-neutral-300"
                                         }`}
                                 >

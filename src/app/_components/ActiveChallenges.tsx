@@ -101,7 +101,7 @@ export default function ActiveChallenges() {
                     <Dialog>
                         <DialogTrigger asChild>
                             <button
-                                className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer"
+                                className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
                                 onClick={() => {
                                     setSelectedChallenge(challenge)
                                     setNote(challenge.note ?? '')
@@ -130,14 +130,14 @@ export default function ActiveChallenges() {
                                     <DialogClose asChild>
                                         <button
                                             type="button"
-                                            className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer"
+                                            className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
                                         >
                                             Cancel
                                         </button>
                                     </DialogClose>
                                     <button
                                         type="submit"
-                                        className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md"
+                                        className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
                                     >
                                         Request Approval
                                     </button>
