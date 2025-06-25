@@ -10,7 +10,9 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const router = useRouter()
 
-    const handleLogin = async () => {
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -57,7 +59,10 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="border border-neutral-300 py-5 px-6 space-y-6 rounded-xl">
+            <form
+                onSubmit={handleLogin}
+                className="border border-neutral-300 py-5 px-6 space-y-6 rounded-xl"
+            >
                 <div className="text-center">
                     <h2 className="text-2xl font-semibold mb-2">Sign in to your account</h2>
                     <p className="text-neutral-600 text-sm font-medium">
@@ -95,12 +100,12 @@ export default function Login() {
                 </div>
 
                 <button
-                    onClick={handleLogin}
+                    type="submit"
                     className="py-2 px-4 rounded-lg bg-black text-center text-white w-full"
                 >
                     Sign in
                 </button>
-            </div>
+            </form>
         </div>
     )
 }

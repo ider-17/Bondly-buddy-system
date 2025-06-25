@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { FilePlus2, Mountain } from 'lucide-react'
 import { submitChallenge } from '@/lib/actions/submitChallenge'
+import { toast } from "sonner"
 
 interface Challenge {
     id: string
@@ -33,7 +34,7 @@ export default function ActiveChallenges() {
         const { data, error } = await supabase
             .from('challenges')
             .select('*')
-            .eq('status', 'active')
+            .eq('status', 'Active')
             .order('created_at', { ascending: true })
 
         if (error) {
@@ -53,14 +54,15 @@ export default function ActiveChallenges() {
 
         try {
             await submitChallenge({ challengeId: selectedChallenge.id, note })
-            alert('Approval request sent!')
+            toast.success("Approval request sent!") 
             setNote('')
             setSelectedChallenge(null)
-            fetchChallenges() // Шинээр авах
+            fetchChallenges()
         } catch (error) {
-            alert('Failed to submit: ' + (error as Error).message)
+            toast.error("Failed to submit: " + (error as Error).message)
         }
     }
+
 
     return (
         <div className="Events rounded-xl border border-neutral-300 py-5 px-6 space-y-7">
@@ -86,14 +88,14 @@ export default function ActiveChallenges() {
                     <div className="flex gap-3">
                         <div className="rounded-full py-1 px-[10px] bg-gray-100 text-xs font-semibold">{challenge.week}</div>
                         <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">{challenge.difficulty}</div>
-                        {challenge.status && (
+                        {/* {challenge.status && (
                             <div
                                 className={`rounded-full py-1 px-[10px] text-xs font-semibold ${challenge.status === 'pending' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-600'
                                     }`}
                             >
                                 {challenge.status.toUpperCase()}
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     <Dialog>
