@@ -88,7 +88,7 @@ export default function ApprovalRequests() {
 
                         <button
                             onClick={() => handleApprove(challenge.id)}
-                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center bg-green-100"
+                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center bg-green-100 cursor-pointer"
                         >
                             <p className="text-sm font-medium">Approve</p>
                             <CircleCheckBig size={22} color="black" />
