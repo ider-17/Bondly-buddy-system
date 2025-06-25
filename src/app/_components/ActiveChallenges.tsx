@@ -54,7 +54,7 @@ export default function ActiveChallenges() {
 
         try {
             await submitChallenge({ challengeId: selectedChallenge.id, note })
-            toast.success("Approval request sent!") 
+            toast.success("Approval request sent!")
             setNote('')
             setSelectedChallenge(null)
             fetchChallenges()
@@ -66,15 +66,7 @@ export default function ActiveChallenges() {
 
     return (
         <div className="Events rounded-xl border border-neutral-300 py-5 px-6 space-y-7">
-            <div className="flex justify-between items-center">
-                <div className="flex gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-                        <Mountain size={18} color="#22C55E" />
-                    </div>
-                    <h6 className="text-lg font-semibold">Active Challenges</h6>
-                </div>
-            </div>
-
+            
             {challenges.length === 0 && <p>No active challenges found.</p>}
 
             {challenges.map((challenge) => (
