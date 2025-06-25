@@ -1,7 +1,7 @@
 'use client'
 
 import SideBarMenu from "@/app/_components/SideBarHome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bell, LayoutGrid, List, Mountain, SquarePen } from "lucide-react";
 import EventsThisWeek from "@/app/_components/EventsThisWeak";
@@ -24,12 +24,41 @@ import LatestAdvice from "@/app/_components/LatestAdvice";
 import InternProgress from "@/app/_components/InternProgress";
 import InternYouGuidingInfo from "@/app/_components/InternYouGuidingInfo";
 import CareerGoals from "@/app/_components/CareerGoals";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabase"; // realtime listener ашиглах
 
 const tabs = ["Active", "Completed", "Upcoming"]
 
 export default function NewbieHome() {
     const [selectedSection, setSelectedSection] = useState('Home');
-    const [activeTab, setActiveTab] = useState("Active")
+    const [activeTab, setActiveTab] = useState("Active");
+
+    // ✅ Listen to Realtime updates (challenge status -> pending)
+    useEffect(() => {
+        const channel = supabase
+            .channel('challenge-updates')
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'challenges',
+                },
+                (payload) => {
+                    if (payload.new.status === 'pending') {
+                        toast("📝 New Approval Request", {
+                            description: `Challenge "${payload.new.title}" has been submitted for approval.`,
+                        });
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
+
     const renderHeader = () => {
         if (selectedSection === "Home") {
             return (
@@ -121,7 +150,7 @@ export default function NewbieHome() {
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
                                         className={`w-full py-2 rounded-xl text-sm font-medium transition-all duration-200
-                        ${activeTab === tab ? "bg-white shadow text-black" : "text-gray-600"}`}
+                                            ${activeTab === tab ? "bg-white shadow text-black" : "text-gray-600"}`}
                                     >
                                         {tab}
                                     </button>

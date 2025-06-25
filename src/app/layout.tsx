@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        <Toaster richColors /> {/* ✅ toast-ийг идэвхжүүлнэ */}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   )
