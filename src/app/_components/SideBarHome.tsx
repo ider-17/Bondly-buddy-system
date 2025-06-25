@@ -9,22 +9,101 @@ import {
     Mountain,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs' // ✅ If using Next.js with Supabase
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useEffect, useState } from 'react'
 
 type SideBarMenuProps = {
     onSelectSection: (section: string) => void;
     selectedSection: string;
 }
 
+interface UserProfile {
+    email: string
+    name?: string
+}
+
 export default function SideBarMenu({ onSelectSection, selectedSection }: SideBarMenuProps) {
-    const supabase = createClientComponentClient()
+    const [profile, setProfile] = useState<UserProfile | null>(null)
+    const supabase = createClientComponentClient() // ✅ Move this before useEffect
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                const {
+                    data: { user },
+                    error: userError,
+                } = await supabase.auth.getUser()
+
+                if (userError || !user) {
+                    console.log('No user found:', userError?.message)
+                    return
+                }
+
+                console.log('User found:', user.id) // Debug log
+                console.log('User email from auth:', user.email) // Debug log
+
+                // Try different approaches to get user data
+
+                // Option 1: If your table is called "profiles" instead of "users"
+                let { data, error } = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", user.id)
+                    .single()
+
+                // Option 2: If that fails, try "users" table
+                if (error) {
+                    console.log('Trying users table...')
+                    const result = await supabase
+                        .from("users")
+                        .select("*")
+                        .eq("id", user.id)
+                        .single()
+
+                    data = result.data
+                    error = result.error
+                }
+
+                if (error) {
+                    console.error('Error fetching user profile:', error.message)
+                    console.log('Error details:', error)
+
+                    // Fallback: use auth user data
+                    setProfile({
+                        email: user.email || "No email",
+                        name: user.user_metadata?.name || user.user_metadata?.full_name || "Unknown",
+                    })
+                    return
+                }
+
+                if (data) {
+                    console.log('Profile data:', data) // Debug log
+                    setProfile({
+                        email: data.email || user.email || "No email",
+                        name: data.name || data.full_name || data.display_name || user.user_metadata?.name || "Unknown",
+                    })
+                } else {
+                    console.log('No profile data found, using auth data')
+                    // Fallback to auth user data
+                    setProfile({
+                        email: user.email || "No email",
+                        name: user.user_metadata?.name || user.user_metadata?.full_name || "Unknown",
+                    })
+                }
+            } catch (error) {
+                console.error('Unexpected error:', error)
+            }
+        }
+
+        fetchUserProfile()
+    }, [supabase]) // Add supabase as dependency
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut()
         if (error) {
             console.error('Logout error:', error.message)
         } else {
-            window.location.href = '/login' // ✅ redirect after logout
+            window.location.href = '/login'
         }
     }
 
@@ -55,8 +134,12 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h6 className='text-black text-sm font-medium select-none'>Togtuun</h6>
-                            <p className='text-xs text-[#737373] font-normal'>togtuun@apple.com</p>
+                            <h6 className='text-black text-sm font-medium select-none'>
+                                {profile?.name || 'Loading...'}
+                            </h6>
+                            <p className='text-xs text-[#737373] font-normal'>
+                                {profile?.email || 'Loading...'}
+                            </p>
                         </div>
                     </div>
                 </div>

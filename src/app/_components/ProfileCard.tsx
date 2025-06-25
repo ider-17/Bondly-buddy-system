@@ -1,17 +1,62 @@
-import { CalendarDays, Mail, Phone } from "lucide-react";
+'use client'
+
+import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
+import { CalendarDays, Mail, Phone } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+interface UserProfile {
+    email: string
+    phone_number?: string
+    joined_at?: string
+    name?: string
+    role?: string
+    avatar_url?: string
+}
+
 export default function ProfileCard() {
+    const [profile, setProfile] = useState<UserProfile | null>(null)
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            const {
+                data: { user },
+                error: userError,
+            } = await supabase.auth.getUser()
+
+            if (userError || !user) return
+
+            const { data, error } = await supabase
+                .from("users")
+                .select("*")
+                .eq("id", user.id)
+                .single()
+
+            if (!error && data) {
+                setProfile({
+                    email: data.email,
+                    phone_number: data.phone_number,
+                    joined_at: data.created_at?.split("T")[0] || "2025-06-12",
+                    name: data.name || "Unknown",
+                    role: data.role || "Member",
+                    avatar_url: data.avatar_url || "https://github.com/shadcn.png"
+                })
+            }
+        }
+
+        fetchUserProfile()
+    }, [])
+
     return (
         <div className="w-full py-5 px-6 border border-neutral-300 rounded-xl bg-slate-50 space-y-5">
             <div className="flex gap-3 items-center">
-                <Avatar className="w-24 h-24" >
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                <Avatar className="w-24 h-24">
+                    <AvatarImage src={profile?.avatar_url} />
+                    <AvatarFallback>{profile?.name?.[0] || "U"}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <h2 className="text-2xl font-semibold">Togtuun</h2>
-                    <p className="text-neutral-600 text-base font-medium">Junior Designer</p>
+                    <h2 className="text-2xl font-semibold">{profile?.name || "Loading..."}</h2>
+                    <p className="text-neutral-600 text-base font-medium">{profile?.role}</p>
                 </div>
             </div>
 
@@ -20,7 +65,7 @@ export default function ProfileCard() {
                     <Mail size={24} color="black" />
                     <div>
                         <p className="text-neutral-600 text-sm font-medium">Mail</p>
-                        <p className="text-sm font-medium">Togtuun@apple.com</p>
+                        <p className="text-sm font-medium">{profile?.email}</p>
                     </div>
                 </div>
 
@@ -28,7 +73,7 @@ export default function ProfileCard() {
                     <CalendarDays size={24} color="black" />
                     <div>
                         <p className="text-neutral-600 text-sm font-medium">Started</p>
-                        <p className="text-neutral-600 text-sm font-medium">2025 • 06 • 12</p>
+                        <p className="text-neutral-600 text-sm font-medium">{profile?.joined_at}</p>
                     </div>
                 </div>
 
@@ -36,7 +81,7 @@ export default function ProfileCard() {
                     <Phone size={24} color="black" />
                     <div>
                         <p className="text-neutral-600 text-sm font-medium">Phone number</p>
-                        <p className="text-neutral-600 text-sm font-medium">+976 99101234</p>
+                        <p className="text-neutral-600 text-sm font-medium">{profile?.phone_number}</p>
                     </div>
                 </div>
             </div>
