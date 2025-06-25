@@ -36,13 +36,13 @@ export default function InternYouGuiding() {
                 </div>
 
                 <div className='w-full flex gap-3'>
-                    <div className='w-1/2 rounded-lg py-2 px-6 flex gap-2 items-center justify-center bg-blue-500'>
+                    <div className='w-1/2 rounded-lg py-2 px-6 flex gap-2 items-center justify-center bg-blue-500 cursor-pointer hover:bg-blue-600 active:bg-blue-700 select-none'>
                         <Mail color='white' />
                         <p className='text-white'>Contact me</p>
                     </div>
-                    <div className='w-1/2 border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 items-center justify-center'>
+                    <div className='w-1/2 border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 items-center justify-center cursor-pointer hover:bg-sky-100 active:bg-black active:text-white select-none'>
                         <p>See more </p>
-                        <ArrowRight size={20} color='black' />
+                        <ArrowRight size={20} color='black'/>
                     </div>
                 </div>
             </div>

@@ -103,18 +103,18 @@ export default function ApprovalRequests() {
                     <div className="flex gap-3">
                         <button
                             onClick={() => handleDecline(challenge.id)}
-                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center"
+                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center select-none bg-transparent text-black hover:bg-orange-100 active:bg-orange-500 active:text-white"
                         >
                             <p className="text-sm font-medium">Decline</p>
-                            <CircleMinus size={22} color="black" />
+                            <CircleMinus size={22} />
                         </button>
 
                         <button
                             onClick={() => handleApprove(challenge.id)}
-                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center bg-green-100"
+                            className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center bg-green-100 hover:bg-green-200 active:bg-green-500 active:text-white select-none cursor-pointer text-black"
                         >
                             <p className="text-sm font-medium">Approve</p>
-                            <CircleCheckBig size={22} color="black" />
+                            <CircleCheckBig size={22} />
                         </button>
                     </div>
                 </div>

@@ -49,13 +49,13 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
 
                 <div>
                     <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
-                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer'>
+                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200'>
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h6 className='text-black text-sm font-medium'>Togtuun</h6>
+                            <h6 className='text-black text-sm font-medium select-none'>Togtuun</h6>
                             <p className='text-xs text-[#737373] font-normal'>togtuun@apple.com</p>
                         </div>
                     </div>
@@ -67,7 +67,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                         {menuItems.map((item) => (
                             <div
                                 key={item.label}
-                                className={`w-full p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer ${selectedSection === item.label ? 'bg-slate-200' : 'bg-white'
+                                className={`w-full p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer hover:bg-slate-100 select-none ${selectedSection === item.label ? 'bg-slate-200' : 'bg-white'
                                     }`}
                                 onClick={() => onSelectSection(item.label)}
                             >
