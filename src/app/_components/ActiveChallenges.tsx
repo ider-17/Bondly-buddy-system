@@ -92,22 +92,20 @@ export default function ActiveChallenges({
     }
 
     return (
-        <div className="Events rounded-xl border border-neutral-300 py-5 px-6 space-y-7">
+        <div className="Events rounded-xl border bg-slate-50 py-5 px-6 space-y-7">
             <div className="p-5 mr-10 space-y-3">
                 {loading ? (
                     <p className="text-sm text-gray-400">Loading challenges...</p>
                 ) : displayChallenges.length > 0 ? (
                     displayChallenges.map((challenge) => (
-                        <div key={challenge.id} className="py-[10px] space-y-4 border-t border-neutral-300">
-                            <div className="bg-white border border-neutral-200 rounded-lg shadow-sm p-4">
+                        <div key={challenge.id} className="py-[10px] ">
+                            <div>
                                 <div className="flex gap-2 items-center mb-2">
-                                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <div className="w-8 h-8 flex items-center justify-center">
                                         <Mountain size={18} color="#22C55E" />
                                     </div>
                                     <h3 className="text-base font-semibold">{challenge.title}</h3>
                                 </div>
-
-                                <p className="text-sm text-gray-500 mb-3">{challenge.status}</p>
 
                                 <div className="flex gap-3 mb-4">
                                     <div className="rounded-full py-1 px-[10px] bg-gray-100 text-xs font-semibold">
@@ -117,6 +115,7 @@ export default function ActiveChallenges({
                                         {challenge.difficulty}
                                     </div>
                                 </div>
+
 
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -168,6 +167,9 @@ export default function ActiveChallenges({
                                     </DialogContent>
                                 </Dialog>
                             </div>
+
+                            <hr className='mt-5'></hr>
+
                         </div>
                     ))
                 ) : (
