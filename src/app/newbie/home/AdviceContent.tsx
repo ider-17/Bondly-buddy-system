@@ -1,5 +1,5 @@
 "use client"
- 
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
+
 const categorizedSteps = {
     career: [
         {
@@ -120,22 +122,22 @@ const categorizedSteps = {
         },
     ],
 } as const
- 
+
 type Category = keyof typeof categorizedSteps | "all"
- 
+
 export function AdviceContent() {
     const [selectedCategory, setSelectedCategory] = useState<Category>("all")
- 
+
     const selectedAdviceList = selectedCategory === "all"
         ? Object.entries(categorizedSteps).flatMap(([category, advices]) =>
             advices.map((advice) => ({ ...advice, category }))
         )
         : categorizedSteps[selectedCategory].map((advice) => ({ ...advice, category: selectedCategory }))
- 
+
     return (
         <div className="space-y-6">
- 
-            <div className="flex gap-4 flex-wrap">
+
+            <div className="flex gap-3 flex-wrap">
                 <Button
                     variant={selectedCategory === "all" ? "default" : "outline"}
                     onClick={() => setSelectedCategory("all")}
@@ -156,32 +158,28 @@ export function AdviceContent() {
                     </Button>
                 ))}
             </div>
- 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-20">
+
+            <div className="flex flex-wrap gap-5">
                 {selectedAdviceList.map((step, index) => (
-                    <Card key={index} className="w-[516px] h-[270px] bg-slate-50">
-                        <CardHeader>
-                            <CardTitle className="text-[18px]">{step.title}</CardTitle>
-                            <div className="flex gap-5 pt-3">
-                                <CardDescription className="capitalize text-black font-semibold border rounded-full bg-gray-100">{step.category}</CardDescription>
-                                <CardDescription className="text-black font-semibold border rounded bg-gray-100">5 min read</CardDescription>
+
+                    <div key={index} className="max-w-[45%] py-5 px-6 space-y-3 bg-slate-50 border border-neutral-300 rounded-xl">
+                        <div>
+                            <h6 className="text-lg font-semibold">{step.title}</h6>
+                            <div className="flex gap-3 mt-2">
+                                <button className="py-1 px-[10px] bg-gray-100 rounded-full">Career</button>
+                                <button className="py-1 px-[10px] bg-gray-100 rounded-full">5 min read</button>
                             </div>
- 
-                        </CardHeader>
-                        <CardContent>
-                            <CardDescription className="text-[14px]">{step.content}</CardDescription>
-                        </CardContent>
-                        <CardFooter className="flex justify-end">
-                            <Button variant="outline" className="flex items-center gap-2">
-                                View More
-                                <img
-                                    src="/arrow.png"
-                                    alt="Arrow icon"
-                                    className="w-4 h-4 rotate-270"
-                                />
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                        </div>
+
+                        <p>{step.content}</p>
+
+                        <div className="w-full">
+                            <div className="w-fit justify-self-end flex gap-2 py-2 px-3 rounded-lg bg-white border border-neutral-300">
+                                <p>View more</p>
+                                <ArrowRight size={18} color="black" />
+                            </div>
+                        </div>
+                    </div>
                 ))}
             </div>
         </div>
