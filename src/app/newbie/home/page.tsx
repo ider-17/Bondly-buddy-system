@@ -23,6 +23,11 @@ import ProfileInfo from "@/app/_components/ProfileInfo";
 import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy";
 import Introduction from "@/app/_components/Introduction";
 import Interests from "@/app/_components/Interests";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 const tabs = ["Active", "Completed", "Upcoming"]
 
@@ -47,7 +52,10 @@ export default function NewbieHome() {
                             </div>
                         </div>
                         <div>
-                            <Bell size={18} />
+                            <Popover>
+                                <PopoverTrigger><Bell className="cursor-pointer" size={18} /></PopoverTrigger>
+                                <PopoverContent>Place content for the popover here.</PopoverContent>
+                            </Popover>
                         </div>
                     </header>
 
@@ -70,9 +78,6 @@ export default function NewbieHome() {
                         <div>
                             <h1 className='text-xl font-semibold'>Your Challenges</h1>
                             <p className="text-sm font-medium text-neutral-600">Идэвхтэй, дууссан болон удахгүй болох сорилтуудаа эндээс хянах боломжтой</p>
-                        </div>
-                        <div>
-                            <Bell size={18} />
                         </div>
                     </header>
 
@@ -170,11 +175,8 @@ export default function NewbieHome() {
                 <div>
                     <header className='h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300'>
                         <div>
-                            <h1 className='text-xl font-semibold'>Your Challenges</h1>
-                            <p className="text-sm font-medium text-neutral-600">Идэвхтэй, дууссан болон удахгүй болох сорилтуудаа эндээс хянах боломжтой</p>
-                        </div>
-                        <div>
-                            <Bell size={18} />
+                            <h1 className='text-xl font-semibold'>Your Advices</h1>
+                            <p className="text-sm font-medium text-neutral-600">Туршлага дээр суурилсан зөвлөмжүүдийг уншаарай</p>
                         </div>
                     </header>
 

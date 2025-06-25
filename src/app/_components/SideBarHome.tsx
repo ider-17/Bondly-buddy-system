@@ -9,6 +9,7 @@ import {
     Mountain,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs' // ✅ If using Next.js with Supabase
 
 type SideBarMenuProps = {
     onSelectSection: (section: string) => void;
@@ -16,6 +17,17 @@ type SideBarMenuProps = {
 }
 
 export default function SideBarMenu({ onSelectSection, selectedSection }: SideBarMenuProps) {
+    const supabase = createClientComponentClient()
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.error('Logout error:', error.message)
+        } else {
+            window.location.href = '/login' // ✅ redirect after logout
+        }
+    }
+
     const menuItems = [
         { icon: <House size={16} />, label: 'Home' },
         { icon: <Mountain size={16} />, label: 'Challenges' },
@@ -70,7 +82,10 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                 </div>
             </div>
 
-            <div className='w-full bg-white p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer'>
+            <div
+                onClick={handleLogout}
+                className='w-full bg-white p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer hover:bg-slate-100 transition'
+            >
                 <div className='flex gap-2 items-center'>
                     <LogOut size={16} />
                     <p>Log out</p>
