@@ -174,7 +174,7 @@ export function AdviceContent() {
                         <p>{step.content}</p>
 
                         <div className="w-full">
-                            <div className="w-fit justify-self-end flex gap-2 py-2 px-3 rounded-lg bg-white border border-neutral-300">
+                            <div className="w-fit justify-self-end flex gap-2 py-2 px-3 rounded-lg bg-white border border-neutral-300 items-center">
                                 <p>View more</p>
                                 <ArrowRight size={18} color="black" />
                             </div>
