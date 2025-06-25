@@ -26,6 +26,7 @@ import InternYouGuidingInfo from "@/app/_components/InternYouGuidingInfo";
 import CareerGoals from "@/app/_components/CareerGoals";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase"; // realtime listener ашиглах
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const tabs = ["Active", "Completed", "Upcoming"]
 
@@ -77,7 +78,10 @@ export default function NewbieHome() {
                             </div>
                         </div>
                         <div>
-                            <Bell size={18} />
+                            <Popover>
+                                <PopoverTrigger><Bell className="cursor-pointer" size={18} /></PopoverTrigger>
+                                <PopoverContent>Notifications</PopoverContent>
+                            </Popover>
                         </div>
                     </header>
 
