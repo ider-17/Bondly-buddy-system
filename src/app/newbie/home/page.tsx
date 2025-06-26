@@ -10,7 +10,6 @@ import EventsThisWeek from "@/app/_components/EventsThisWeak";
 import YourProgress from "@/app/_components/YourProgress";
 import ActiveChallenges from "@/app/_components/ActiveChallenges";
 import { Button } from "@/components/ui/button";
-import { AdviceContent } from "./AdviceContent";
 import {
     Select,
     SelectContent,
@@ -30,6 +29,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { AdviceContent } from "@/app/_components/AdviceContent";
 
 // Supabase client
 const supabase = createClient(

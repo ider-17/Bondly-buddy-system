@@ -2,14 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 
 const categorizedSteps = {
@@ -133,6 +125,8 @@ export function AdviceContent() {
             advices.map((advice) => ({ ...advice, category }))
         )
         : categorizedSteps[selectedCategory].map((advice) => ({ ...advice, category: selectedCategory }))
+
+
 
     return (
         <div className="space-y-6">

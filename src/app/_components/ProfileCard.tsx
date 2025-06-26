@@ -38,7 +38,7 @@ export default function ProfileCard() {
                     phone_number: data.phone_number,
                     joined_at: data.created_at?.split("T")[0] || "2025-06-12",
                     name: data.name || "Unknown",
-                    role: data.role || "Member",
+                    role: data.role || "Newbie",
                     avatar_url: data.avatar_url || "https://github.com/shadcn.png"
                 })
             }
@@ -46,6 +46,8 @@ export default function ProfileCard() {
 
         fetchUserProfile()
     }, [])
+
+    console.log(profile, "profileas")
 
     return (
         <div className="w-full py-5 px-6 border border-neutral-300 rounded-xl bg-slate-50 space-y-5">

@@ -9,8 +9,8 @@ import {
     Mountain,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState } from 'react'
+import { supabase } from "@/lib/supabase"
 
 type SideBarMenuProps = {
     onSelectSection: (section: string) => void;
@@ -20,83 +20,38 @@ type SideBarMenuProps = {
 interface UserProfile {
     email: string
     name?: string
+    avatar_url?: string
 }
 
 export default function SideBarMenu({ onSelectSection, selectedSection }: SideBarMenuProps) {
     const [profile, setProfile] = useState<UserProfile | null>(null)
-    const supabase = createClientComponentClient() // ✅ Move this before useEffect
 
     useEffect(() => {
         async function fetchUserProfile() {
-            try {
-                const {
-                    data: { user },
-                    error: userError,
-                } = await supabase.auth.getUser()
+            const {
+                data: { user },
+                error: userError,
+            } = await supabase.auth.getUser()
 
-                if (userError || !user) {
-                    console.log('No user found:', userError?.message)
-                    return
-                }
+            if (userError || !user) return
 
-                console.log('User found:', user.id) // Debug log
-                console.log('User email from auth:', user.email) // Debug log
+            const { data, error } = await supabase
+                .from("users")
+                .select("*")
+                .eq("id", user.id)
+                .single()
 
-                // Try different approaches to get user data
-
-                // Option 1: If your table is called "profiles" instead of "users"
-                let { data, error } = await supabase
-                    .from("profiles")
-                    .select("*")
-                    .eq("id", user.id)
-                    .single()
-
-                // Option 2: If that fails, try "users" table
-                if (error) {
-                    console.log('Trying users table...')
-                    const result = await supabase
-                        .from("users")
-                        .select("*")
-                        .eq("id", user.id)
-                        .single()
-
-                    data = result.data
-                    error = result.error
-                }
-
-                if (error) {
-                    console.error('Error fetching user profile:', error.message)
-                    console.log('Error details:', error)
-
-                    // Fallback: use auth user data
-                    setProfile({
-                        email: user.email || "No email",
-                        name: user.user_metadata?.name || user.user_metadata?.full_name || "Unknown",
-                    })
-                    return
-                }
-
-                if (data) {
-                    console.log('Profile data:', data) // Debug log
-                    setProfile({
-                        email: data.email || user.email || "No email",
-                        name: data.name || data.full_name || data.display_name || user.user_metadata?.name || "Unknown",
-                    })
-                } else {
-                    console.log('No profile data found, using auth data')
-                    // Fallback to auth user data
-                    setProfile({
-                        email: user.email || "No email",
-                        name: user.user_metadata?.name || user.user_metadata?.full_name || "Unknown",
-                    })
-                }
-            } catch (error) {
-                console.error('Unexpected error:', error)
+            if (!error && data) {
+                setProfile({
+                    email: data.email,
+                    name: data.name || "Unknown",
+                    avatar_url: data.avatar_url || "https://github.com/shadcn.png"
+                })
             }
         }
 
         fetchUserProfile()
-    }, [supabase]) // Add supabase as dependency
+    }, [])
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut()
@@ -128,7 +83,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
 
                 <div>
                     <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
-                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200'>
+                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200 items-center'>
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
