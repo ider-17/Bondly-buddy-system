@@ -81,9 +81,9 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                     </div>
                 </div>
 
-                <div>
+                <div >
                     <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
-                    <div onClick={() => onSelectSection("Profile")} className='flex gap-2 p-2 bg-white rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200 items-center'>
+                    <div onClick={() => onSelectSection("Profile")} className={`flex gap-2 p-2 rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200 items-center ${selectedSection === "Profile" ? "bg-slate-200" : "bg-white"}`}>
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
