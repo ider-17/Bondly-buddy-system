@@ -9,16 +9,28 @@ export default function YourProgress() {
     const [approvedChallengesLength, setApprovedChallengesLength] = useState<number>(0);
 
     const fetchApprovedPercentage = async () => {
-        // Зөвшөөрөгдсөн challenge-ийн тоог авах
+        const {
+            data: { session },
+            error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError || !session) {
+            alert("User session not found");
+            return;
+        }
+
+        const userId = session.user.id;
+
         const { count: approvedCount, error: approvedError } = await supabase
             .from('challenges')
             .select('*', { count: 'exact', head: true })
-            .eq('status', 'approved');
+            .eq('status', 'approved')
+            .eq('user_id', userId)
 
-        // Нийт challenge-ийн тоог авах
         const { count: totalCount, error: totalError } = await supabase
             .from('challenges')
-            .select('*', { count: 'exact', head: true });
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
 
         // Алдаа шалгах
         if (approvedError || totalError) {
