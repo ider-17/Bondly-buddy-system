@@ -1,7 +1,44 @@
+"use client"
+
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, CalendarDays, Mountain, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function YourProgress() {
+    const [approvedChallengesLength, setApprovedChallengesLength] = useState<number>(0);
+
+    const fetchApprovedPercentage = async () => {
+        // Зөвшөөрөгдсөн challenge-ийн тоог авах
+        const { count: approvedCount, error: approvedError } = await supabase
+            .from('challenges')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'approved');
+
+        // Нийт challenge-ийн тоог авах
+        const { count: totalCount, error: totalError } = await supabase
+            .from('challenges')
+            .select('*', { count: 'exact', head: true });
+
+        // Алдаа шалгах
+        if (approvedError || totalError) {
+            console.error('Error fetching data:', approvedError || totalError);
+            return;
+        }
+
+        // null-ыг шалгах
+        if (approvedCount !== null && totalCount !== null && totalCount > 0) {
+            const percentage = (approvedCount / totalCount) * 100;
+            setApprovedChallengesLength(parseFloat(percentage.toFixed(1))); // бутархай 1 оронтой
+        } else {
+            setApprovedChallengesLength(0); // fallback
+        }
+    };
+
+    useEffect(() => {
+        fetchApprovedPercentage();
+    }, []);
+
     return (
         <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
             <div>
@@ -15,9 +52,9 @@ export default function YourProgress() {
                 <div>
                     <div className='flex justify-between mb-5'>
                         <p className='text-sm font-medium'>Onboarding Progress</p>
-                        <p>5%</p>
+                        <p>{approvedChallengesLength}%</p>
                     </div>
-                    <Progress value={5} />
+                    <Progress value={approvedChallengesLength} />
                 </div>
             </div>
 

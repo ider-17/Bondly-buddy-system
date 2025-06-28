@@ -31,10 +31,23 @@ export default function ActiveChallenges() {
 
     // Supabase-аас идэвхтэй challenge-үүдийг авна
     async function fetchChallenges() {
+        const {
+            data: { session },
+            error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError || !session) {
+            alert("User session not found");
+            return;
+        }
+
+        const userId = session.user.id;
+
         const { data, error } = await supabase
             .from('challenges')
             .select('*')
-            .eq('status', 'Active')
+            .eq('status', 'active')
+            .eq('user_id', userId)
             .order('created_at', { ascending: true })
 
         if (error) {
