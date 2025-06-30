@@ -20,7 +20,6 @@ import ProfileInfo from "@/app/_components/ProfileInfo";
 import Introduction from "@/app/_components/Introduction";
 import InternYouGuiding from "@/app/_components/InternYou'reGuiding";
 import ApprovalRequests from "@/app/_components/ApprovalRequests";
-import LatestAdvice from "@/app/_components/LatestAdvice";
 import InternProgress from "@/app/_components/InternProgress";
 import InternYouGuidingInfo from "@/app/_components/InternYouGuidingInfo";
 import CareerGoals from "@/app/_components/CareerGoals";
@@ -31,8 +30,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { X } from "lucide-react";
 import YourProgress from "@/app/_components/YourProgress";
+import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
+
 
 const tabs = ["Active", "Completed", "Upcoming"];
 
@@ -347,12 +347,11 @@ export default function NewbieHome() {
     } else if (selectedSection === "Зөвлөмжүүд") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+          <header className="h-fit header py-3 px-20 flex justify-between bg-white items-center border-b border-neutral-300">
             <div>
-              <h1 className="text-xl font-semibold">Your Challenges</h1>
+              <h1 className="text-base font-medium">Зөвлөмж</h1>
               <p className="text-sm font-medium text-neutral-600">
-                Идэвхтэй, дууссан болон удахгүй болох сорилтуудаа эндээс хянах
-                боломжтой
+                Туршлага дээр суурилсан богино зөвлөмжүүд
               </p>
             </div>
             <div>
@@ -360,8 +359,8 @@ export default function NewbieHome() {
             </div>
           </header>
 
-          <div className="p-5 mr-10">
-            <p className="text-gray-600">Advice content is coming soon...</p>
+          <div className="py-3 px-20 bg-slate-100 min-h-screen">
+            <BuddyAdvice />
           </div>
         </div>
       );
