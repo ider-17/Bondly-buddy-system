@@ -1,7 +1,7 @@
 "use client"
 
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, CalendarDays, Mountain, Trophy } from "lucide-react";
+import { BookOpen, CalendarCheck, CalendarDays, Lightbulb, Mountain, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -60,36 +60,39 @@ export default function YourProgress() {
             </div>
 
             <div className='w-full flex gap-5 justify-between'>
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2 items-center'>
-                    <div className='w-8 h-8 bg-indigo-100 rounded-lg flex justify-center items-center'>
-                        <CalendarDays size={18} color='#6366F1' />
+                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
+                    <div className='w-8 h-8 bg-blue-100 rounded-lg flex justify-center items-center'>
+                        <CalendarCheck size={18} color='#2563EB' />
                     </div>
 
-                    <div className='flex flex-col items-center text-center'>
-                        <p>2</p>
-                        <p>Days Active</p>
-                    </div>
-                </div>
-
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2 items-center'>
-                    <div className='w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center'>
-                        <Mountain size={18} color='#22C55E' />
-                    </div>
-
-                    <div className='flex flex-col items-center text-center'>
-                        <p>1</p>
-                        <p>Challenges Done</p>
+                    <div className='flex flex-col justify-center'>
+                        <p className="text-base font-bold">2</p>
+                        <p className="text-sm font-medium">Идэвхтэй
+                            өдрүүд</p>
                     </div>
                 </div>
 
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2 items-center'>
+                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
+                    <div className='w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center'>
+                        <Mountain size={18} color='#D97706' />
+                    </div>
+
+                    <div className='flex flex-col justify-center'>
+                        <p className="text-base font-bold">0</p>
+                        <p className="text-sm font-medium">Биелүүлсэн
+                            сорилтууд</p>
+                    </div>
+                </div>
+
+                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
                     <div className='w-8 h-8 bg-violet-100 rounded-lg flex justify-center items-center'>
-                        <BookOpen size={18} color='#6D28D9' />
+                        <Lightbulb size={18} color='#7C3AED' />
                     </div>
 
-                    <div className='flex flex-col items-center text-center'>
-                        <p>2</p>
-                        <p>Tips Read</p>
+                    <div className='flex flex-col justify-center'>
+                        <p className="text-base font-bold">2</p>
+                        <p className="text-sm font-medium">Уншсан
+                            зөвлөмжүүд</p>
                     </div>
                 </div>
             </div>
