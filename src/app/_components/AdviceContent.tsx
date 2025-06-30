@@ -138,7 +138,7 @@ export function AdviceContent() {
 
     return (
         <div className="space-y-10 space-x-10">
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-3 overflow-scroll py-2">
                 {(["all", ...Object.keys(categorizedSteps)] as Category[]).map((category) => (
                     <Button
                         key={category}
@@ -150,7 +150,7 @@ export function AdviceContent() {
                 ))}
             </div>
 
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5">
                 {selectedAdviceList.map((step) => (
                     <div
                         key={step.id}
@@ -162,10 +162,10 @@ export function AdviceContent() {
                             </div>
 
                             <div>
-                                <p className="text-wrap">
+                                <p className="text-wrap text-sm font-medium">
                                     {step.content}
                                 </p>
-                                <button className="py-1 px-[10px] bg-gray-100 rounded-full text-sm mt-2">
+                                <button className="py-1 px-[10px] bg-gray-100 rounded-full text-xs font-medium mt-2">
                                     {categoryLabels[step.category] || step.category}
                                 </button>
                             </div>

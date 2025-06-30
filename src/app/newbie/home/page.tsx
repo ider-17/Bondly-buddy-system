@@ -525,16 +525,16 @@ export default function NewbieHome() {
     } else if (selectedSection === "Зөвлөмжүүд") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-white items-center border-b border-neutral-300">
+          <header className="h-fit header py-3 px-20 flex justify-between bg-white items-center border-b border-neutral-300">
             <div>
-              <h1 className="text-xl font-semibold">Зөвлөмж</h1>
+              <h1 className="text-base font-medium">Зөвлөмж</h1>
               <p className="text-sm font-medium text-neutral-600">
-                Туршлага дээр суурилсан зөвлөмжүүдийг уншаарай
+                Туршлага дээр суурилсан богино зөвлөмжүүд
               </p>
             </div>
           </header>
 
-          <div className="py-3 px-20 bg-slate-100">
+          <div className="py-3 px-20 bg-slate-100 min-h-screen">
             <AdviceContent />
           </div>
         </div>
@@ -544,7 +544,7 @@ export default function NewbieHome() {
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
             <div>
-              <h1 className="text-xl font-semibold">Profile</h1>
+              <h1 className="text-base font-medium">Profile</h1>
               <p className="text-sm font-medium text-neutral-600">
                 Өөрийн хувийн мэдээллээ харах, удирдах боломжтой.
               </p>
