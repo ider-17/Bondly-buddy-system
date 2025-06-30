@@ -63,7 +63,7 @@ export default function ProfileCard() {
             </div>
 
             <div className="flex gap-5">
-                <div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
+                <           div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
                     <Mail size={24} color="black" />
                     <div>
                         <p className="text-neutral-600 text-sm font-medium">Mail</p>
