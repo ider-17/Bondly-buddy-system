@@ -67,7 +67,7 @@ export default function YourProgress() {
 
                     <div className='flex flex-col justify-center'>
                         <p className="text-base font-bold">2</p>
-                        <p className="text-sm font-medium">Идэвхтэй
+                        <p className="text-sm font-medium">Идэвхтэй <br/>
                             өдрүүд</p>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ export default function YourProgress() {
 
                     <div className='flex flex-col justify-center'>
                         <p className="text-base font-bold">0</p>
-                        <p className="text-sm font-medium">Биелүүлсэн
+                        <p className="text-sm font-medium">Биелүүлсэн <br/>
                             сорилтууд</p>
                     </div>
                 </div>
@@ -91,7 +91,7 @@ export default function YourProgress() {
 
                     <div className='flex flex-col justify-center'>
                         <p className="text-base font-bold">2</p>
-                        <p className="text-sm font-medium">Уншсан
+                        <p className="text-sm font-medium">Уншсан <br/>
                             зөвлөмжүүд</p>
                     </div>
                 </div>
