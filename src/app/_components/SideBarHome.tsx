@@ -21,32 +21,47 @@ interface UserProfile {
     email: string
     name?: string
     avatar_url?: string
+    role: 'newbie' | 'buddy'
 }
 
 export default function SideBarMenu({ onSelectSection, selectedSection }: SideBarMenuProps) {
     const [profile, setProfile] = useState<UserProfile | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchUserProfile() {
-            const {
-                data: { user },
-                error: userError,
-            } = await supabase.auth.getUser()
+            try {
+                const {
+                    data: { user },
+                    error: userError,
+                } = await supabase.auth.getUser()
 
-            if (userError || !user) return
+                if (userError || !user) {
+                    console.error('User error:', userError)
+                    setLoading(false)
+                    return
+                }
 
-            const { data, error } = await supabase
-                .from("users")
-                .select("*")
-                .eq("id", user.id)
-                .single()
+                const { data, error } = await supabase
+                    .from("users")
+                    .select("*")
+                    .eq("id", user.id)
+                    .single()
 
-            if (!error && data) {
-                setProfile({
-                    email: data.email,
-                    name: data.name || "Unknown",
-                    avatar_url: data.avatar_url || "https://github.com/shadcn.png"
-                })
+                if (!error && data) {
+                    setProfile({
+                        email: data.email,
+                        name: data.name || "Unknown",
+                        avatar_url: data.avatar_url || "https://github.com/shadcn.png",
+                        role: data.role
+                    })
+                } else {
+                    console.error('Profile fetch error:', error)
+                }
+            } catch (err) {
+                console.error('Unexpected error:', err)
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -62,12 +77,29 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
         }
     }
 
-    const menuItems = [
+    const baseMenuItems = [
         { icon: <House size={16} />, label: 'Нүүр' },
         { icon: <Mountain size={16} />, label: 'Сорилтууд' },
         { icon: <Lightbulb size={16} />, label: 'Зөвлөмжүүд' },
+    ]
+
+    const newbieOnlyItems = [
         { icon: <Handshake size={16} />, label: 'Таны үндсэн хамтрагч' },
     ]
+
+    const menuItems = profile?.role === 'newbie' 
+        ? [...baseMenuItems, ...newbieOnlyItems]
+        : baseMenuItems
+
+    if (loading) {
+        return (
+            <div className='fixed top-0 left-0 min-w-[312px] h-screen py-3 px-5 bg-white flex flex-col justify-center items-center border-r border-gray-200 z-10'>
+                <div className="text-center">
+                    <p className="text-gray-500">Loading...</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className='fixed top-0 left-0 min-w-[312px] h-screen py-3 px-5 bg-white flex flex-col justify-between border-r border-gray-200 z-10'>
@@ -108,7 +140,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                         <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
                         <div onClick={() => onSelectSection("Profile")} className={`flex gap-4 py-3 px-5 rounded-lg cursor-pointer hover:bg-slate-50 active:bg-slate-50 items-center ${selectedSection === "Profile" ? "bg-slate-50" : "bg-white"}`}>
                             <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" />
+                                <AvatarImage src={profile?.avatar_url || "https://github.com/shadcn.png"} />
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <div>

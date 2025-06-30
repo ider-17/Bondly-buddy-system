@@ -22,28 +22,26 @@ export default function YourProgress() {
         const userId = session.user.id;
 
         const { count: approvedCount, error: approvedError } = await supabase
-            .from('challenges')
+            .from('submissions')
             .select('*', { count: 'exact', head: true })
             .eq('status', 'approved')
-            .eq('user_id', userId)
+            .eq('user_id', userId);
 
         const { count: totalCount, error: totalError } = await supabase
             .from('challenges')
             .select('*', { count: 'exact', head: true })
-            .eq('user_id', userId)
+            .eq('user_id', userId);
 
-        // Алдаа шалгах
         if (approvedError || totalError) {
             console.error('Error fetching data:', approvedError || totalError);
             return;
         }
 
-        // null-ыг шалгах
         if (approvedCount !== null && totalCount !== null && totalCount > 0) {
             const percentage = (approvedCount / totalCount) * 100;
-            setApprovedChallengesLength(parseFloat(percentage.toFixed(1))); // бутархай 1 оронтой
+            setApprovedChallengesLength(parseFloat(percentage.toFixed(1)));
         } else {
-            setApprovedChallengesLength(0); // fallback
+            setApprovedChallengesLength(0);
         }
     };
 
