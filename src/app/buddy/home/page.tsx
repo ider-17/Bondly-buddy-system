@@ -25,20 +25,97 @@ import InternProgress from "@/app/_components/InternProgress";
 import InternYouGuidingInfo from "@/app/_components/InternYouGuidingInfo";
 import CareerGoals from "@/app/_components/CareerGoals";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase"; // realtime listener ашиглах
+import { supabase } from "@/lib/supabase";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { X } from "lucide-react";
 
 const tabs = ["Active", "Completed", "Upcoming"];
+
+type Notification = {
+  id: string;
+  message: string;
+  created_at: string;
+};
 
 export default function NewbieHome() {
   const [selectedSection, setSelectedSection] = useState("Home");
   const [activeTab, setActiveTab] = useState("Active");
 
-  // ✅ Listen to Realtime updates (challenge status -> pending)
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Fetch current logged-in user ID
+  useEffect(() => {
+    async function fetchUser() {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error getting user:", error.message);
+        return;
+      }
+      if (user) {
+        setUserId(user.id);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  // Fetch notifications + subscribe realtime for notifications for this user
+  useEffect(() => {
+    if (!userId) return;
+
+    async function fetchNotifications() {
+      setLoadingNotifications(true);
+      const { data, error } = await supabase
+        .from("notification")
+        .select("id, message, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("Error fetching notifications:", error.message);
+        setLoadingNotifications(false);
+        return;
+      }
+
+      setNotifications(data ?? []);
+      setLoadingNotifications(false);
+    }
+
+    fetchNotifications();
+
+    const channel = supabase
+      .channel("notification-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notification",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const newNotif = payload.new as Notification;
+          setNotifications((prev) => [newNotif, ...prev].slice(0, 20));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
+
+  // Your existing challenge status update toast listener
   useEffect(() => {
     const channel = supabase
       .channel("challenge-updates")
@@ -85,11 +162,60 @@ export default function NewbieHome() {
             </div>
             <div>
               <Popover>
-                <PopoverTrigger>
+                <PopoverTrigger className="relative">
                   <Bell className="cursor-pointer" size={18} />
+                  {notifications.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-[10px] px-[6px] font-bold">
+                      {notifications.length}
+                    </span>
+                  )}
                 </PopoverTrigger>
-                <PopoverContent>Notifications</PopoverContent>
+
+                <PopoverContent className="max-h-60 w-80 overflow-auto">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-bold">Notifications</h4>
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={async () => {
+                          if (!userId) return;
+                          const { error } = await supabase
+                            .from("notification")
+                            .delete()
+                            .eq("user_id", userId);
+                          if (error) {
+                            console.error("Failed to clear notifications:", error.message);
+                            return;
+                          }
+                          setNotifications([]);
+                        }}
+                        className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+
+                  {loadingNotifications && <p>Loading...</p>}
+                  {!loadingNotifications && notifications.length === 0 && (
+                    <p className="text-gray-500">No new notifications</p>
+                  )}
+                  <ul>
+                    {notifications.map((notif) => (
+                      <li
+                        key={notif.id}
+                        className="mb-2 border-b border-gray-200 pb-1 text-sm"
+                      >
+                        {notif.message}
+                        <br />
+                        <time className="text-xs text-gray-400">
+                          {new Date(notif.created_at).toLocaleString()}
+                        </time>
+                      </li>
+                    ))}
+                  </ul>
+                </PopoverContent>
               </Popover>
+
             </div>
           </header>
 
@@ -106,6 +232,7 @@ export default function NewbieHome() {
           </div>
         </div>
       );
+
     } else if (selectedSection === "Challenges") {
       return (
         <div>
