@@ -310,8 +310,8 @@ export default function NewbieHome() {
             <div className="w-1/2 space-y-5">
 
               <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-                <div className="space-y-5">
-                  <h6 className='text-lg font-medium'>Таны прогресс</h6>
+                <div>
+                  <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
 
                   <hr />
 
