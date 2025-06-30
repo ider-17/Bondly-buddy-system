@@ -309,9 +309,12 @@ export default function NewbieHome() {
             </div>
             <div className="w-1/2 space-y-5">
 
-              <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
-                <div>
+              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+                <div className="space-y-5">
                   <h6 className='text-lg font-medium'>Таны прогресс</h6>
+
+                  <hr />
+
                   <YourProgress />
                 </div>
               </div>
