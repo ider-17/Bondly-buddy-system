@@ -67,7 +67,7 @@ interface Submission {
 }
 
 export default function NewbieHome() {
-  const [selectedSection, setSelectedSection] = useState("Home");
+  const [selectedSection, setSelectedSection] = useState("Нүүр");
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
   const [loading, setLoading] = useState(false);
@@ -269,19 +269,19 @@ export default function NewbieHome() {
   const statusCounts = getStatusCounts();
 
   const renderHeader = () => {
-    if (selectedSection === "Home") {
+    if (selectedSection === "Нүүр") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+          <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
             <div className="flex gap-3 items-center">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                <h6 className="text-base font-medium">Welcome Togtuun</h6>
-                <p className="text-[#525252] font-medium text-sm">
-                  UX/UI Designer • Design
+                <h6 className="text-base font-medium">Сайн уу👋 Тогтуун</h6>
+                <p className="text-neutral-500 font-medium text-sm">
+                  UX/UI Designer
                 </p>
               </div>
             </div>
@@ -295,19 +295,33 @@ export default function NewbieHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-5 mr-10">
+          <div className="flex gap-5 py-10 px-20 bg-slate-100">
             <div className="w-1/2 space-y-5">
               <RotatingBuddyCard />
-              <EventsThisWeek />
+
+              <div className="rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
+                <div className="flex items-center">
+                  <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
+                </div>
+                <ActiveChallenges />
+              </div>
+
             </div>
             <div className="w-1/2 space-y-5">
-              <YourProgress />
-              <ActiveChallenges />
+
+              <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
+                <div>
+                  <h6 className='text-lg font-medium'>Таны прогресс</h6>
+                  <YourProgress />
+                </div>
+              </div>
+
+              <EventsThisWeek />
             </div>
           </div>
         </div>
       );
-    } else if (selectedSection === "Challenges") {
+    } else if (selectedSection === "Сорилтууд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
@@ -505,7 +519,7 @@ export default function NewbieHome() {
           </div>
         </div>
       );
-    } else if (selectedSection === "Advice") {
+    } else if (selectedSection === "Зөвлөмжүүд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-white items-center border-b border-neutral-300">
@@ -571,7 +585,7 @@ export default function NewbieHome() {
         selectedSection={selectedSection}
         onSelectSection={(section) => setSelectedSection(section)}
       />
-      <div className="w-full pl-[264px] flex flex-col h-screen overflow-auto">
+      <div className="w-full pl-[312px] flex flex-col h-screen overflow-auto">
         {renderHeader()}
       </div>
     </div>
