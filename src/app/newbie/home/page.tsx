@@ -4,12 +4,20 @@ import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import SideBarMenu from "@/app/_components/SideBarHome";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Mountain, SquarePen, Upload } from "lucide-react";
+import { Bell, Mountain, SquarePen, FilePlus2 } from "lucide-react";
 import RotatingBuddyCard from "@/app/_components/RotatingBuddyCard";
 import EventsThisWeek from "@/app/_components/EventsThisWeak";
 import YourProgress from "@/app/_components/YourProgress";
 import ActiveChallenges from "@/app/_components/ActiveChallenges";
-import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -30,20 +38,115 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AdviceContent } from "@/app/_components/AdviceContent";
+import { submitChallenge } from "@/lib/actions/submitChallenge";
+import { toast } from "sonner";
 
-// Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface Challenge {
+  id: string;
+  title: string;
+  week: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  note: string | null;
+  status: string | null;
+  user_id: string;
+  created_at: string;
+}
+
+interface Submission {
+  id: string;
+  challenge_id: string;
+  user_id: string;
+  note: string;
+  status: string;
+  submitted_at: string;
+}
+
 export default function NewbieHome() {
   const [selectedSection, setSelectedSection] = useState("Home");
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
-  const [challenges, setChallenges] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
+    null
+  );
+  const [note, setNote] = useState("");
+
+  // Fetch both challenges and submissions for the current user
+  async function fetchData() {
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      toast.error("User session not found");
+      return;
+    }
+
+    const userId = session.user.id;
+
+    // Fetch all challenges for the user
+    const { data: challengesData, error: challengesError } = await supabase
+      .from("challenges")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (challengesError) {
+      toast.error("Failed to fetch challenges: " + challengesError.message);
+      return;
+    }
+
+    // Fetch all submissions for the user
+    const { data: submissionsData, error: submissionsError } = await supabase
+      .from("submissions")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (submissionsError) {
+      toast.error("Failed to fetch submissions: " + submissionsError.message);
+      return;
+    }
+
+    setChallenges(challengesData ?? []);
+    setSubmissions(submissionsData ?? []);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Helper function to determine if a challenge is active
+  const isActiveChallenge = (challengeId: string) => {
+    return !submissions.find((sub) => sub.challenge_id === challengeId);
+  };
+
+  // Get only active challenges (no submissions)
+  const activeChallenges = challenges.filter((challenge) =>
+    isActiveChallenge(challenge.id)
+  );
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedChallenge) return;
+
+    try {
+      await submitChallenge({ challengeId: selectedChallenge.id, note });
+      toast.success("Approval request sent!");
+      setNote("");
+      setSelectedChallenge(null);
+      fetchData(); // Refresh data
+    } catch (error) {
+      toast.error("Failed to submit: " + (error as Error).message);
+    }
+  }
 
   useEffect(() => {
     const fetchChallengesAndSubmissions = async () => {
@@ -63,7 +166,6 @@ export default function NewbieHome() {
 
       const userId = session.user.id;
 
-      // Fetch challenges for the current user
       const { data: challengesData, error: challengesError } = await supabase
         .from("challenges")
         .select("*")
@@ -76,7 +178,6 @@ export default function NewbieHome() {
         setChallenges(challengesData || []);
       }
 
-      // Fetch submissions for the current user
       const { data: submissionsData, error: submissionsError } = await supabase
         .from("submissions")
         .select("*")
@@ -94,25 +195,22 @@ export default function NewbieHome() {
     fetchChallengesAndSubmissions();
   }, []);
 
-  // Helper function to get challenge status
   const getChallengeStatus = (challengeId: string) => {
     const submission = submissions.find(
       (sub) => sub.challenge_id === challengeId
     );
     if (!submission) {
-      return "active"; // No submission means it's still active
+      return "active"; 
     }
     return submission.status === "approved" ? "completed" : "pending";
   };
 
-  // Enhanced filtering logic with week filter
   const getFilteredChallenges = () => {
     const challengesWithStatus = challenges.map((challenge) => ({
       ...challenge,
       derivedStatus: getChallengeStatus(challenge.id),
     }));
 
-    // First filter by status
     let filteredByStatus;
     switch (activeTab.toLowerCase()) {
       case "active":
@@ -144,14 +242,12 @@ export default function NewbieHome() {
 
   const filteredChallenges = getFilteredChallenges();
 
-  // Count challenges by status (considering week filter)
   const getStatusCounts = () => {
     const challengesWithStatus = challenges.map((challenge) => ({
       ...challenge,
       derivedStatus: getChallengeStatus(challenge.id),
     }));
 
-    // Filter by week first if specific week is selected
     const weekFilteredChallenges =
       selectedWeek === "all"
         ? challengesWithStatus
@@ -225,7 +321,6 @@ export default function NewbieHome() {
           </header>
 
           <div className="w-full flex gap-5 p-5 pb-0 pr-15">
-            {/* Overview cards with dynamic counts - clickable for filtering */}
             {[
               {
                 name: "Идэвхтэй",
@@ -281,9 +376,6 @@ export default function NewbieHome() {
                 <SelectItem value="3-р долоо хоног">3-р долоо хоног</SelectItem>
                 <SelectItem value="4-р долоо хоног">4-р долоо хоног</SelectItem>
                 <SelectItem value="5-р долоо хоног">5-р долоо хоног</SelectItem>
-                <SelectItem value="6-р долоо хоног">6-р долоо хоног</SelectItem>
-                <SelectItem value="7-р долоо хоног">7-р долоо хоног</SelectItem>
-                <SelectItem value="8-р долоо хоног">8-р долоо хоног</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -318,9 +410,16 @@ export default function NewbieHome() {
                           {challenge.title}
                         </h3>
                         <div className="flex gap-2 mb-3">
-                          <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium">
-                            {challenge.week || "1-р долоо хоног"}
-                          </span>
+                           {challenge.derivedStatus === "pending" && (
+                            <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
+                              Хүлээгдэж байгаа
+                            </span>
+                          )}
+                          {challenge.derivedStatus === "completed" && (
+                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                              Биелэгдсэн
+                            </span>
+                          )}
                           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                             {challenge.difficulty === "Easy"
                               ? "Хялбар"
@@ -330,32 +429,73 @@ export default function NewbieHome() {
                               ? "Хэцүү"
                               : "Хялбар"}
                           </span>
-                          {/* Show status badge only for pending and completed */}
-                          {challenge.derivedStatus === "pending" && (
-                            <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
-                              Хүлээгдэж байгаа
-                            </span>
-                          )}
-                          {challenge.derivedStatus === "completed" && (
-                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                              Биелэгдсэн
-                            </span>
+                          {challenge.derivedStatus == "active" && (
+                            <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium">
+                            {challenge.week || "1-р долоо хоног"}
+                          </span>
                           )}
                         </div>
-                        {challenge.note && (
+                        {/* {challenge.note && (
                           <p className="text-gray-700 text-sm mb-3">
                             {challenge.note}
                           </p>
-                        )}
+                        )} */}
                         {challenge.derivedStatus === "active" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="rounded-lg border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Тэмдэглэл бичих
-                          </Button>
+                          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
+                onClick={() => {
+                  setSelectedChallenge(challenge);
+                  setNote(challenge.note ?? "");
+                }}
+              >
+                Тэмдэглэл бичих
+                <FilePlus2 size={20} />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[445px]">
+              <DialogHeader>
+                <DialogTitle className="my-3 text-xl">
+                  Тэмдэглэл бичих
+                </DialogTitle>
+                <hr className="py-3"></hr>
+                <DialogDescription className="text-[16px] text-black">
+                  Сорилтын тэмдэглэл
+                </DialogDescription>
+              </DialogHeader>
+
+              <form onSubmit={handleSubmit}>
+                <textarea
+                  name="note"
+                  placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
+                  className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  required
+                />
+
+                <hr className="py-3"></hr>
+
+                <div className="flex gap-[10px] justify-between">
+                  <DialogClose asChild>
+                    <button
+                      type="button"
+                      className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
+                    >
+                      Cancel
+                    </button>
+                  </DialogClose>
+                  <button
+                    type="submit"
+                    className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
+                  >
+                    Submit for Approval
+                  </button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
                         )}
                       </div>
                     </div>
