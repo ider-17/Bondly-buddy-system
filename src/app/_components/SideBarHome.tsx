@@ -200,9 +200,9 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
 
             <div
                 onClick={handleLogout}
-                className='w-full bg-white py-3 px-5 rounded-lg flex gap-4 items-center cursor-pointer hover:bg-slate-50 transition'
+                className='w-full bg-white py-3 px-5 rounded-lg flex gap-4 items-center cursor-pointer hover:bg-slate-200 transition active:bg-slate-300 select-none'
             >
-                <div className='flex gap-4 items-center'>
+                <div className='flex gap-4 items-center hover:bg-slate-200'>
                     <LogOut size={16} />
                     <p>Гарах</p>
                 </div>
