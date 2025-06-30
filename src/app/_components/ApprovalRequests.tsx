@@ -112,12 +112,9 @@ export default function ApprovalRequests() {
   }
 
   return (
-    <div className="bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-4">
-      <div className="flex gap-3 mb-7">
-        <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-          <SquareCheckBig size={20} color="#22C55E" />
-        </div>
-        <h6 className="text-lg font-semibold">Approval Requests</h6>
+    <div className="bg-white py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-4">
+      <div className="flex gap-3 ">
+        <h6 className="text-lg font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
       </div>
 
       <hr />

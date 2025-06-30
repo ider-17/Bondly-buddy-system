@@ -3,17 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function InternYouGuiding() {
     return (
-        <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
+        <div className='bg-white py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
             <div className='flex gap-3 items-center'>
-                <div className='w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center'>
-                    <Handshake size={20} color='#F97316' />
-                </div>
-                <h6 className='font-semibold text-lg'>Intern You’re Guiding</h6>
+                <h6 className='font-semibold text-lg'>Таны чиглүүлж буй шинэ ажилтан</h6>
             </div>
 
-            <div className='bg-orange-50 rounded-lg p-3'>
-                <h6 className='text-orange-700'>Follow your intern’s journey - track progress, give feedback, and help them grow.</h6>
-            </div>
+            <hr className="mt-5 mb-5"></hr>
 
             <div>
                 <div className='flex justify-between items-center mb-4'>
@@ -28,40 +23,31 @@ export default function InternYouGuiding() {
                         </div>
                     </div>
 
-                    <div className='rounded-xl py-1 px-[10px] bg-green-100 text-green-500 text-xs font-medium flex items-center gap-[6px]'><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="4" cy="4" r="4" fill="#22C55E" />
+                    <div className='rounded-xl py-1 px-[10px] bg-green-400 text-xs font-medium flex items-center gap-[6px]'><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="4" cy="4" r="4" fill="#ffffff" />
                     </svg>
-                        <p>Online</p>
+                        <p className="text-white">Идэвхтэй</p>
                     </div>
                 </div>
 
                 <div className='w-full flex gap-3'>
                     <div className='w-1/2 rounded-lg py-2 px-6 flex gap-2 items-center justify-center bg-blue-500 cursor-pointer hover:bg-blue-600 active:bg-blue-700 select-none'>
                         <Mail color='white' />
-                        <p className='text-white'>Contact me</p>
+                        <p className='text-white'>Надтай холбогдох</p>
                     </div>
                     <div className='w-1/2 border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 items-center justify-center cursor-pointer hover:bg-sky-100 active:bg-black active:text-white select-none'>
-                        <p>See more </p>
-                        <ArrowRight size={20} color='black'/>
+                        <p>Цааш үзэх </p>
+                        <ArrowRight size={20} color='black' />
                     </div>
                 </div>
             </div>
 
-            <hr />
-
             <div>
                 <div className='flex justify-between items-center mb-3'>
-                    <p className='text-sm font-medium text-neutral-600'>This week’s micro-goal:</p>
-
-                    <div className='rounded-full py-1 px-[10px] bg-orange-100 text-orange-500 text-xs font-medium flex items-center gap-[6px]'>
-                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="4" cy="4" r="4" fill="#F97316" />
-                        </svg>
-                        <p>In Progress</p>
-                    </div>
+                    <p className='text-sm font-medium text-neutral-600'>Энэ долоо хоногийн зорилго:</p>
                 </div>
 
-                <p>Intern-тэйгээ 1:1 уулзалт товлоорой 🙌 ️</p>
+                <p>Шинэ ажилтантайгаа 1:1 уулзалт товлоорой 🙌</p>
             </div>
         </div>
     )
