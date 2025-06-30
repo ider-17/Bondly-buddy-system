@@ -9,6 +9,7 @@ import {
     Mountain,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from 'react'
 import { supabase } from "@/lib/supabase"
 
@@ -93,9 +94,50 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
 
     if (loading) {
         return (
-            <div className='fixed top-0 left-0 min-w-[312px] h-screen py-3 px-5 bg-white flex flex-col justify-center items-center border-r border-gray-200 z-10'>
-                <div className="text-center">
-                    <p className="text-gray-500">Loading...</p>
+            <div className='fixed top-0 left-0 min-w-[312px] h-screen py-3 px-5 bg-white flex flex-col justify-between border-r border-gray-200 z-10'>
+                <div>
+                    {/* Logo section skeleton */}
+                    <div className='flex gap-4 bg-white rounded-xl py-3 px-5'>
+                        <Skeleton className='w-8 h-8 rounded-full' />
+                        <div className='space-y-2'>
+                            <Skeleton className='h-4 w-16' />
+                            <Skeleton className='h-3 w-40' />
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div className='mt-3 space-y-3'>
+                        <div>
+                            <Skeleton className='h-3 w-16 mt-[10px] mb-[10px]' />
+                            <div className='w-full space-y-2'>
+                                {/* Menu items skeleton */}
+                                {[1, 2, 3, 4].map((item) => (
+                                    <div key={item} className='w-full py-3 px-5 rounded-lg flex gap-4 items-center'>
+                                        <Skeleton className='w-4 h-4' />
+                                        <Skeleton className='h-4 w-24' />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <Skeleton className='h-3 w-12 mt-[10px] mb-[10px]' />
+                            <div className='flex gap-4 py-3 px-5 rounded-lg items-center'>
+                                <Skeleton className='w-10 h-10 rounded-full' />
+                                <div className='space-y-2'>
+                                    <Skeleton className='h-4 w-20' />
+                                    <Skeleton className='h-3 w-32' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Logout skeleton */}
+                <div className='w-full bg-white py-3 px-5 rounded-lg flex gap-4 items-center'>
+                    <Skeleton className='w-4 h-4' />
+                    <Skeleton className='h-4 w-12' />
                 </div>
             </div>
         )
