@@ -416,7 +416,7 @@ export default function NewbieHome() {
         selectedSection={selectedSection}
         onSelectSection={(section) => setSelectedSection(section)}
       />
-      <div className="w-full pl-[264px] flex flex-col h-screen overflow-auto">
+      <div className="w-full pl-[312px] flex flex-col h-screen overflow-auto">
         {renderHeader()}
       </div>
     </div>
