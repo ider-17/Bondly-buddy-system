@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CircleCheckBig, CircleMinus, SquareCheckBig } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge"
 
 interface SubmissionWithChallenge {
   id: string;
@@ -64,8 +65,7 @@ export default function ApprovalRequests() {
       newOnes.forEach((item) => {
         if (item.challenges) {
           toast.success(
-            `New approval request: "${item.challenges.title}" from ${
-              item.users?.name || item.users?.email
+            `New approval request: "${item.challenges.title}" from ${item.users?.name || item.users?.email
             }`
           );
           setSeenIds((prev) => new Set([...prev, item.id]));
@@ -129,32 +129,28 @@ export default function ApprovalRequests() {
           className="py-[10px] space-y-4 border-b border-neutral-200"
         >
           <div className="flex gap-3">
-            <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-              <SquareCheckBig size={20} color="#22C55E" />
-            </div>
-            <div>
-              <p className="font-medium">{submission.challenges?.title}</p>
-              <p className="text-xs text-gray-500 mb-2">
-                Submitted by:{" "}
-                {submission.users?.name || submission.users?.email}
-              </p>
+            <div className="w-full">
+              <Badge className="bg-slate-100 p-2 rounded-2xl text-black font-bold">Сорилтын нэр</Badge>
+              <p className="p-1">{submission.challenges?.title}</p>
+
+              <div className="flex gap-3 mt-2">
+                <div className="rounded-full py-1 px-[10px] bg-white border text-xs font-semibold">
+                  {submission.challenges?.week}
+                </div>
+                <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">
+                  {submission.challenges?.difficulty === "Easy" && "Хялбар"}
+                </div>
+              </div>
+
+              <hr className="mt-5 mb-5"></hr>
+
+              <Badge className="bg-slate-100 p-2 rounded-2xl text-black font-bold">Сорилтын тайлбар</Badge>
+
               {submission.note && (
-                <p className="text-sm text-gray-700 mt-1 whitespace-pre-line">
+                <p className="text-sm p-1 text-gray-700 mt-1 whitespace-pre-line">
                   {submission.note}
                 </p>
               )}
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="rounded-full py-1 px-[10px] bg-gray-100 text-xs font-semibold">
-              {submission.challenges?.week}
-            </div>
-            <div className="rounded-full py-1 px-[10px] bg-blue-200 text-blue-700 text-xs font-semibold">
-              {new Date(submission.submitted_at).toLocaleDateString()}
-            </div>
-            <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">
-              {submission.challenges?.difficulty}
             </div>
           </div>
 
