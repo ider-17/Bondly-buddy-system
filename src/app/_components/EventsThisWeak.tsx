@@ -6,23 +6,23 @@ const events = [
         time: "Monday at 12:30 PM",
     },
     {
-        title: "New Joiners’ Icebreaker Game",
+        title: "Шинэ гишүүдийн танилцах тоглоом",
         time: "Monday at 3:30 PM",
     },
     {
-        title: "Ask Me Anything with HR",
+        title: "HR-тай чөлөөт асуулт & хариулт",
         time: "Wednesday at 4:00 PM",
     },
     {
-        title: "Intro to Product Workshop",
+        title: "Бүтээгдэхүүний танилцуулах сургалт",
         time: "Thursday at 5:30 PM",
     },
     {
-        title: "Code Review Session",
+        title: "Код review уулзалт",
         time: "Friday at 2:30 PM",
     },
     {
-        title: "Design Review Session",
+        title: "Дизайн review уулзалт",
         time: "Monday at 12:30 PM",
     },
 ];
