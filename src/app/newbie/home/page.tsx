@@ -40,6 +40,7 @@ import {
 import { AdviceContent } from "@/app/_components/AdviceContent";
 import { submitChallenge } from "@/lib/actions/submitChallenge";
 import { toast } from "sonner";
+import PrimaryBuddy from "@/app/_components/PrimaryBuddy";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -579,8 +580,24 @@ export default function NewbieHome() {
           </div>
         </div>
       );
+    } else if (selectedSection === "Таны үндсэн хамтрагч") {
+      return (
+        <div>
+          <header className="h-fit header py-3 px-20 flex justify-between bg-white items-center border-b border-neutral-300">
+            <div>
+              <h1 className="text-base font-medium">Таны үндсэн хамтрагч</h1>
+              <p className="text-xs font-medium text-neutral-600">
+                Таны onboarding үйл явцын туршид тогтмол дэмжин тусалж хамт байх таны зөвлөх ментор
+              </p>
+            </div>
+          </header>
+             <div className="py-10 px-20 bg-slate-100 min-h-screen">
+              <PrimaryBuddy />
+            </div>
+        </div>
+      )
     }
-  };
+  }
 
   return (
     <div className="w-full h-screen bg-white flex">
