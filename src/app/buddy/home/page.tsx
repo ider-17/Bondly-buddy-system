@@ -145,18 +145,18 @@ export default function NewbieHome() {
   const renderHeader = () => {
     if (selectedSection === "Нүүр") {
       return (
-        <div className="bg-slate-50">
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-white items-center border-b border-neutral-300">
+        <div className="bg-slate-100">
+          <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
             <div className="flex gap-3 items-center">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                <h6 className="text-base font-medium">Welcome Togtuun</h6>
+                <h6 className="text-base font-medium">Сайн уу👋 Тайванбат</h6>
                 <div className="flex">
                   <p className="text-[#525252] font-medium text-sm">
-                    UX/UI Designer • Design
+                    UX/UI Senior Designer
                   </p>
                 </div>
               </div>
@@ -220,15 +220,15 @@ export default function NewbieHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-15 ml-10 mr-15">
+          <div className="flex gap-5 p-10 ml-10 mr-10">
             <div className="w-1/2 space-y-5">
               <InternYouGuiding />
               <ApprovalRequests />
             </div>
             <div className="w-1/2 space-y-5">
-              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-                <div className="space-y-5">
-                  <h6 className='text-lg font-bold'>Шинэ ажилтны прогресс</h6>
+              <div className='rounded-xl border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+                <div className="space-y-3">
+                  <h6 className='text-xl font-medium'>Шинэ ажилтны прогресс</h6>
 
                   <hr />
 
@@ -244,53 +244,48 @@ export default function NewbieHome() {
     } else if (selectedSection === "Сорилтууд") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
-            <div>
+          <header className="h-fit header p-5 pr-20 flex justify-between bg-white items-center border-b border-neutral-300">
+            <div className="mx-20">
               <h1 className="text-xl font-semibold">Your Challenges</h1>
               <p className="text-sm font-medium text-neutral-600">
                 Идэвхтэй, дууссан болон удахгүй болох сорилтуудаа эндээс хянах
                 боломжтой
               </p>
             </div>
-            <div>
-              <Bell size={18} />
-            </div>
           </header>
 
-          <div className="w-full flex gap-5 p-5 pb-0 pr-15">
-            <div className="w-1/3 bg-slate-50 border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-                <Mountain size={18} color="#22C55E" />
+          <div className="max-w-screen-2xl p-15 mx-auto px-2 flex gap-5">
+            <div className="w-1/3 bg-white border border-neutral-300 rounded-xl py-5 flex flex-col gap-2">
+              <div className="w-8 h-8 ml-5 bg-amber-100 rounded-lg flex justify-center items-center">
+                <Mountain size={18} color="#d97708" />
               </div>
-
-              <div className="flex flex-col items-center text-center">
-                <p className="text-blue-700 text-lg font-bold">8</p>
-                <p>Active</p>
-              </div>
-            </div>
-
-            <div className="w-1/3 bg-slate-50 border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-                <Mountain size={18} color="#22C55E" />
-              </div>
-
-              <div className="flex flex-col items-center text-center">
-                <p className="text-green-700 text-lg font-bold">1</p>
-                <p>Completed</p>
+              <div className="flex flex-col ml-5">
+                <p className=" text-lg font-bold">8</p>
+                <p>Идэвхтэй</p>
               </div>
             </div>
 
-            <div className="w-1/3 bg-slate-50 border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-                <Mountain size={18} color="#22C55E" />
+            <div className="w-1/3 bg-white border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 ">
+              <div className="w-8 h-8 ml-5 bg-amber-100 rounded-lg flex justify-center items-center">
+                <Mountain size={18} color="#d97708" />
               </div>
+              <div className="flex flex-col ml-5">
+                <p className=" text-lg font-bold">1</p>
+                <p>Хүлээгдэж байгаа</p>
+              </div>
+            </div>
 
-              <div className="flex flex-col items-center text-center">
-                <p className="text-violet-700 text-lg font-bold">12</p>
-                <p>Upcoming</p>
+            <div className="w-1/3 bg-white border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 ">
+              <div className="w-8 h-8 bg-amber-100 ml-5 rounded-lg flex justify-center items-center">
+                <Mountain size={18} color="#d97708" />
+              </div>
+              <div className="flex flex-col ml-5">
+                <p className=" text-lg font-bold">12</p>
+                <p>Биелэгдсэн</p>
               </div>
             </div>
           </div>
+
 
           <div className="flex justify-between items-center gap-4 mt-5 p-5 pr-15">
             <div className="flex-1">

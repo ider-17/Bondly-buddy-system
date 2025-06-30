@@ -3,9 +3,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function InternYouGuiding() {
     return (
-        <div className='bg-white py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
+        <div className='bg-white py-5 px-6 rounded-xl border border-slate-200 space-y-5'>
             <div className='flex gap-3 items-center'>
-                <h6 className='font-semibold text-lg'>Таны чиглүүлж буй шинэ ажилтан</h6>
+                <h6 className='font-medium text-xl'>Таны чиглүүлж буй шинэ ажилтан</h6>
             </div>
 
             <hr className="mt-5 mb-5"></hr>
