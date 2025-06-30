@@ -1,7 +1,7 @@
 "use client"
 
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, CalendarCheck, CalendarDays, Lightbulb, Mountain, Trophy } from "lucide-react";
+import { CalendarCheck, Lightbulb, Mountain } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
