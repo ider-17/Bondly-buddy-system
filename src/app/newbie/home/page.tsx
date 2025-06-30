@@ -73,55 +73,211 @@ export default function NewbieHome() {
   const [loading, setLoading] = useState(false);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
-    null
-  );
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [note, setNote] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Fetch both challenges and submissions for the current user
-  async function fetchData() {
-    const {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
-
-    if (sessionError || !session) {
-      toast.error("User session not found");
-      return;
-    }
-
-    const userId = session.user.id;
-
-    // Fetch all challenges for the user
-    const { data: challengesData, error: challengesError } = await supabase
-      .from("challenges")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-
-    if (challengesError) {
-      toast.error("Failed to fetch challenges: " + challengesError.message);
-      return;
-    }
-
-    // Fetch all submissions for the user
-    const { data: submissionsData, error: submissionsError } = await supabase
-      .from("submissions")
-      .select("*")
-      .eq("user_id", userId);
-
-    if (submissionsError) {
-      toast.error("Failed to fetch submissions: " + submissionsError.message);
-      return;
-    }
-
-    setChallenges(challengesData ?? []);
-    setSubmissions(submissionsData ?? []);
-  }
-
+  // Initialize user session and set up real-time subscriptions
   useEffect(() => {
-    fetchData();
+    const initializeAuth = async () => {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        toast.error("User session not found");
+        return;
+      }
+
+      const currentUserId = session.user.id;
+      setUserId(currentUserId);
+
+      // Initial data fetch
+      await fetchInitialData(currentUserId);
+
+      // Set up real-time subscriptions
+      setupRealtimeSubscriptions(currentUserId);
+    };
+
+    initializeAuth();
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      supabase.removeAllChannels();
+    };
   }, []);
+
+  // Fetch initial data
+  const fetchInitialData = async (currentUserId: string) => {
+    setLoading(true);
+
+    try {
+      // Fetch challenges
+      const { data: challengesData, error: challengesError } = await supabase
+        .from("challenges")
+        .select("*")
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false });
+
+      if (challengesError) {
+        toast.error("Failed to fetch challenges: " + challengesError.message);
+      } else {
+        setChallenges(challengesData || []);
+      }
+
+      // Fetch submissions
+      const { data: submissionsData, error: submissionsError } = await supabase
+        .from("submissions")
+        .select("*")
+        .eq("user_id", currentUserId);
+
+      if (submissionsError) {
+        toast.error("Failed to fetch submissions: " + submissionsError.message);
+      } else {
+        setSubmissions(submissionsData || []);
+      }
+    } catch (error) {
+      console.error("Error fetching initial data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Set up real-time subscriptions
+  const setupRealtimeSubscriptions = (currentUserId: string) => {
+    // Subscribe to challenges table changes
+    const challengesChannel = supabase
+      .channel('challenges-changes')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'challenges',
+          filter: `user_id=eq.${currentUserId}`
+        }, 
+        (payload) => {
+          console.log('Challenge change received:', payload);
+          handleChallengeChange(payload);
+        }
+      )
+      .subscribe();
+
+    // Subscribe to submissions table changes
+    const submissionsChannel = supabase
+      .channel('submissions-changes')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'submissions',
+          filter: `user_id=eq.${currentUserId}`
+        }, 
+        (payload) => {
+          console.log('Submission change received:', payload);
+          handleSubmissionChange(payload);
+        }
+      )
+      .subscribe();
+
+    // Optional: Listen for connection status
+    challengesChannel.on('system', {}, (status) => {
+      console.log('Challenges channel status:', status);
+    });
+
+    submissionsChannel.on('system', {}, (status) => {
+      console.log('Submissions channel status:', status);
+    });
+  };
+
+  // Handle real-time challenge changes
+  const handleChallengeChange = (payload: any) => {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+
+    switch (eventType) {
+      case 'INSERT':
+        setChallenges(prev => [newRecord, ...prev]);
+        toast.success("New challenge added!");
+        break;
+      
+      case 'UPDATE':
+        setChallenges(prev => 
+          prev.map(challenge => 
+            challenge.id === newRecord.id ? newRecord : challenge
+          )
+        );
+        toast.info("Challenge updated!");
+        break;
+      
+      case 'DELETE':
+        setChallenges(prev => 
+          prev.filter(challenge => challenge.id !== oldRecord.id)
+        );
+        toast.info("Challenge removed!");
+        break;
+    }
+  };
+
+  // Handle real-time submission changes
+  const handleSubmissionChange = (payload: any) => {
+    const { eventType, new: newRecord, old: oldRecord } = payload;
+
+    switch (eventType) {
+      case 'INSERT':
+        setSubmissions(prev => [...prev, newRecord]);
+        toast.success("Submission created!");
+        break;
+      
+      case 'UPDATE':
+        setSubmissions(prev => 
+          prev.map(submission => 
+            submission.id === newRecord.id ? newRecord : submission
+          )
+        );
+        if (newRecord.status === 'approved') {
+          toast.success("Challenge approved! 🎉");
+        } else if (newRecord.status === 'rejected') {
+          toast.error("Challenge was rejected. Please try again.");
+        }
+        break;
+      
+      case 'DELETE':
+        setSubmissions(prev => 
+          prev.filter(submission => submission.id !== oldRecord.id)
+        );
+        toast.info("Submission removed!");
+        break;
+    }
+  };
+
+  // Enhanced submit function with optimistic updates
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedChallenge || !userId) return;
+
+    // Optimistic update - immediately show pending status
+    const optimisticSubmission: Submission = {
+      id: `temp-${Date.now()}`,
+      challenge_id: selectedChallenge.id,
+      user_id: userId,
+      note,
+      status: 'pending',
+      submitted_at: new Date().toISOString(),
+    };
+
+    setSubmissions(prev => [...prev, optimisticSubmission]);
+    toast.info("Submitting...");
+
+    try {
+      await submitChallenge({ challengeId: selectedChallenge.id, note });
+      // The real-time subscription will handle the actual update
+      setNote("");
+      setSelectedChallenge(null);
+    } catch (error) {
+      // Revert optimistic update on error
+      setSubmissions(prev => 
+        prev.filter(sub => sub.id !== optimisticSubmission.id)
+      );
+      toast.error("Failed to submit: " + (error as Error).message);
+    }
+  }
 
   // Helper function to determine if a challenge is active
   const isActiveChallenge = (challengeId: string) => {
@@ -132,68 +288,6 @@ export default function NewbieHome() {
   const activeChallenges = challenges.filter((challenge) =>
     isActiveChallenge(challenge.id)
   );
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!selectedChallenge) return;
-
-    try {
-      await submitChallenge({ challengeId: selectedChallenge.id, note });
-      toast.success("Approval request sent!");
-      setNote("");
-      setSelectedChallenge(null);
-      fetchData(); // Refresh data
-    } catch (error) {
-      toast.error("Failed to submit: " + (error as Error).message);
-    }
-  }
-
-  useEffect(() => {
-    const fetchChallengesAndSubmissions = async () => {
-      setLoading(true);
-
-      // Get current user session
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-
-      if (sessionError || !session) {
-        console.error("User session not found");
-        setLoading(false);
-        return;
-      }
-
-      const userId = session.user.id;
-
-      const { data: challengesData, error: challengesError } = await supabase
-        .from("challenges")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-
-      if (challengesError) {
-        console.error("Failed to fetch challenges:", challengesError);
-      } else {
-        setChallenges(challengesData || []);
-      }
-
-      const { data: submissionsData, error: submissionsError } = await supabase
-        .from("submissions")
-        .select("*")
-        .eq("user_id", userId);
-
-      if (submissionsError) {
-        console.error("Failed to fetch submissions:", submissionsError);
-      } else {
-        setSubmissions(submissionsData || []);
-      }
-
-      setLoading(false);
-    };
-
-    fetchChallengesAndSubmissions();
-  }, []);
 
   const getChallengeStatus = (challengeId: string) => {
     const submission = submissions.find(
