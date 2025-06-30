@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Lightbulb } from 'lucide-react';
 
 const categorizedSteps = {
     career: [
@@ -116,20 +117,27 @@ type Category = keyof typeof categorizedSteps | "all"
 
 export function AdviceContent() {
     const [selectedCategory, setSelectedCategory] = useState<Category>("all")
+    const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+    const selectedAdviceList =
+        selectedCategory === "all"
+            ? Object.entries(categorizedSteps).flatMap(([category, advices]) =>
+                advices.map((advice, idx) => ({ ...advice, category, id: `${category}-${idx}` }))
+            )
+            : categorizedSteps[selectedCategory].map((advice, idx) => ({
+                ...advice,
+                category: selectedCategory,
+                id: `${selectedCategory}-${idx}`,
+            }));
 
-    const selectedAdviceList = selectedCategory === "all"
-        ? Object.entries(categorizedSteps).flatMap(([category, advices]) =>
-            advices.map((advice) => ({ ...advice, category }))
-        )
-        : categorizedSteps[selectedCategory].map((advice) => ({
-            ...advice,
-            category: selectedCategory,
-        }))
-
-
+    const toggleChecked = (id: string) => {
+        setCheckedItems((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-10 space-x-10">
             <div className="flex gap-3 flex-wrap">
                 {(["all", ...Object.keys(categorizedSteps)] as Category[]).map((category) => (
                     <Button
@@ -143,28 +151,53 @@ export function AdviceContent() {
             </div>
 
             <div className="flex flex-col gap-6">
-                {selectedAdviceList.map((step, index) => (
+                {selectedAdviceList.map((step) => (
                     <div
-                        key={index}
-                        className="w-full py-5 px-6 space-y-3 border border-neutral-300 rounded-xl bg-slate-50"
+                        key={step.id}
+                        className="w-full py-5 px-6 space-y-3 border border-neutral-300 rounded-xl flex items-center justify-between gap-4 bg-white"
                     >
-                        <div className="flex gap-3">
-                            <button className="py-1 px-[10px] bg-gray-100 rounded-full text-sm">
-                                {/* {categoryLabels[step.category] || step.category} */}
-                            </button>
-                            <button className="py-1 px-[10px] bg-gray-100 rounded-full text-sm">
-                                5 мин
-                            </button>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded-lg">
+                                <Lightbulb size={18} color="#EA580C" />
+                            </div>
+
+                            <div>
+                                <p className="text-wrap">
+                                    {step.content}
+                                </p>
+                                <button className="py-1 px-[10px] bg-gray-100 rounded-full text-sm mt-2">
+                                    {categoryLabels[step.category] || step.category}
+                                </button>
+                            </div>
                         </div>
 
-                        <span className="inline-flex items-start gap-2 text-base leading-relaxed">
-                            <img src="/lightbulb.png" alt="lightbulb" className="w-5 h-5 mt-1" />
-                            {step.content}
-                        </span>
+                        <div className="inline-block relative">
+                            <input
+                                type="checkbox"
+                                id={step.id}
+                                checked={!!checkedItems[step.id]}
+                                onChange={() => toggleChecked(step.id)}
+                                className="peer absolute opacity-0 w-5 h-5 text-white"
+                            />
+                            <label
+                                htmlFor={step.id}
+                                className="flex items-center justify-center w-5 h-5 rounded border border-gray-300 cursor-pointer
+               peer-checked:bg-green-500 peer-checked:border-green-500 relative"
+                            >
+                                <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M11.8047 0.528758C12.0651 0.789108 12.0651 1.21122 11.8047 1.47157L4.4714 8.8049C4.21105 9.06525 3.78894 9.06525 3.5286 8.8049L0.195262 5.47157C-0.0650874 5.21122 -0.0650874 4.78911 0.195262 4.52876C0.455612 4.26841 0.877722 4.26841 1.13807 4.52876L4 7.39069L10.8619 0.528758C11.1223 0.268409 11.5444 0.268409 11.8047 0.528758Z" fill="white" />
+                                </svg>
+
+                            </label>
+                        </div>
+
+
+
+
+
                     </div>
                 ))}
             </div>
         </div>
-
-    )
+    );
 }
