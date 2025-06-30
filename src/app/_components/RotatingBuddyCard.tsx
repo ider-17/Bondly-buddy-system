@@ -1,13 +1,13 @@
-import { ArrowRight, Handshake, Mail } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function RotatingBuddyCard() {
     return (
         <div className='bg-white py-5 px-6 rounded-lg border border-gray-200 space-y-5'>
-            <h6 className='font-medium text-lg'>Your buddy for 2 weeks</h6>
+            <h6 className='font-medium text-lg'>Таны 2 долоо хоногийн хамтрагч</h6>
 
             <div>
-                <div className='flex justify-between items-center mb-4'>
+                <div className='flex justify-between items-center mb-5'>
                     <div className='flex gap-3 items-center'>
                         <Avatar className='w-10 h-10'>
                             <AvatarImage src="https://github.com/shadcn.png" />
@@ -33,7 +33,6 @@ export default function RotatingBuddyCard() {
                     </div>
                     <div className='w-1/2 border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 items-center justify-center cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white select-none'>
                         <p>Цааш үзэх</p>
-                        <ArrowRight size={20} />
                     </div>
                 </div>
             </div>
@@ -41,7 +40,7 @@ export default function RotatingBuddyCard() {
             <div>
                 <p className='text-sm font-normal text-neutral-500 mb-2'>Энэ долоо хоногийн зорилго:</p>
 
-                <p className="text-sm font-medium">Манай бүтээгдэхүүн хөгжүүлэлтийн төлөвлөгөө ба хэрэглэгчийн <br /> санал хүсэлт авах үйл явцтай танилцаарай ☺ ️</p>
+                <p className="text-sm font-medium">Манай бүтээгдэхүүн хөгжүүлэлтийн төлөвлөгөө ба хэрэглэгчийн санал хүсэлт авах үйл явцтай танилцаарай ☺ ️ ️</p>
             </div>
         </div>
     )

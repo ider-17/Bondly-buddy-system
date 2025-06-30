@@ -1,7 +1,7 @@
 "use client"
 
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, CalendarCheck, CalendarDays, Lightbulb, Mountain, Trophy } from "lucide-react";
+import { CalendarCheck, Lightbulb, Mountain } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -51,7 +51,7 @@ export default function YourProgress() {
 
     return (
         <>
-            <div>
+            <div className="mt-5">
                 <div className='flex justify-between mb-3'>
                     <p className='text-sm font-medium'>Onboarding Progress</p>
                     <p>{approvedChallengesLength}%</p>
@@ -59,8 +59,8 @@ export default function YourProgress() {
                 <Progress value={approvedChallengesLength} />
             </div>
 
-            <div className='w-full flex gap-5 justify-between'>
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
+            <div className='w-full flex mt-5'>
+                <div className='w-1/3 bg-white rounded-xl flex flex-col gap-2'>
                     <div className='w-8 h-8 bg-blue-100 rounded-lg flex justify-center items-center'>
                         <CalendarCheck size={18} color='#2563EB' />
                     </div>
@@ -72,7 +72,7 @@ export default function YourProgress() {
                     </div>
                 </div>
 
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
+                <div className='w-1/3 bg-white rounded-xl flex flex-col gap-2'>
                     <div className='w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center'>
                         <Mountain size={18} color='#D97706' />
                     </div>
@@ -84,7 +84,7 @@ export default function YourProgress() {
                     </div>
                 </div>
 
-                <div className='w-1/3 bg-white rounded-xl py-5 flex flex-col gap-2'>
+                <div className='w-1/3 bg-white rounded-xl flex flex-col gap-2'>
                     <div className='w-8 h-8 bg-violet-100 rounded-lg flex justify-center items-center'>
                         <Lightbulb size={18} color='#7C3AED' />
                     </div>
