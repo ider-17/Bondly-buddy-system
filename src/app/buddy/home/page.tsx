@@ -32,6 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { X } from "lucide-react";
+import YourProgress from "@/app/_components/YourProgress";
 
 const tabs = ["Active", "Completed", "Upcoming"];
 
@@ -42,7 +43,7 @@ type Notification = {
 };
 
 export default function NewbieHome() {
-  const [selectedSection, setSelectedSection] = useState("Home");
+  const [selectedSection, setSelectedSection] = useState("Нүүр");
   const [activeTab, setActiveTab] = useState("Active");
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -142,10 +143,10 @@ export default function NewbieHome() {
   }, []);
 
   const renderHeader = () => {
-    if (selectedSection === "Home") {
+    if (selectedSection === "Нүүр") {
       return (
-        <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+        <div className="bg-slate-50">
+          <header className="h-fit header p-5 pr-20 flex justify-between bg-white items-center border-b border-neutral-300">
             <div className="flex gap-3 items-center">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
@@ -222,18 +223,25 @@ export default function NewbieHome() {
           <div className="flex gap-5 p-5 mr-10">
             <div className="w-1/2 space-y-5">
               <InternYouGuiding />
-              <EventsThisWeek />
+              <ApprovalRequests />
             </div>
             <div className="w-1/2 space-y-5">
-              <InternProgress />
-              <ApprovalRequests />
-              <LatestAdvice />
+              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+                <div className="space-y-5">
+                  <h6 className='text-lg font-medium'>Шинэ ажилтны прогресс</h6>
+
+                  <hr />
+
+                  <YourProgress />
+                </div>
+              </div>
+              <EventsThisWeek />
             </div>
           </div>
         </div>
       );
 
-    } else if (selectedSection === "Challenges") {
+    } else if (selectedSection === "Сорилтууд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
@@ -341,7 +349,7 @@ export default function NewbieHome() {
           </div>
         </div>
       );
-    } else if (selectedSection === "Advice") {
+    } else if (selectedSection === "Зөвлөмжүүд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
