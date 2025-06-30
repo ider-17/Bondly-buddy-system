@@ -112,9 +112,9 @@ export default function ApprovalRequests() {
   }
 
   return (
-    <div className="bg-white py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-4">
+    <div className="bg-white py-5 px-6 rounded-xl border border-slate-200 space-y-4">
       <div className="flex gap-3 ">
-        <h6 className="text-lg font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
+        <h6 className="text-xl font-medium">Зөвшөөрөх хүсэлтүүд</h6>
       </div>
 
       <hr />
