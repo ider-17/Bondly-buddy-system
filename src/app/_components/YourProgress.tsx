@@ -54,7 +54,7 @@ export default function YourProgress() {
     return (
         <>
             <div>
-                <div className='flex justify-between mb-5'>
+                <div className='flex justify-between mb-3'>
                     <p className='text-sm font-medium'>Onboarding Progress</p>
                     <p>{approvedChallengesLength}%</p>
                 </div>
