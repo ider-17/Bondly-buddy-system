@@ -165,11 +165,10 @@ export default function NewbieHome() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`w-full py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                            ${
-                                              activeTab === tab
-                                                ? "bg-white shadow text-black"
-                                                : "text-gray-600"
-                                            }`}
+                                            ${activeTab === tab
+                        ? "bg-white shadow text-black"
+                        : "text-gray-600"
+                      }`}
                   >
                     {tab}
                   </button>
@@ -290,7 +289,7 @@ export default function NewbieHome() {
         selectedSection={selectedSection}
         onSelectSection={(section) => setSelectedSection(section)}
       />
-      <div className="w-full pl-[264px] flex flex-col h-screen overflow-auto">
+      <div className="w-full pl-[312px] flex flex-col h-screen overflow-auto">
         {renderHeader()}
       </div>
     </div>

@@ -1,10 +1,10 @@
 'use client'
 
 import {
-    BookOpen,
-    ChevronRight,
+    Handshake,
     HeartHandshake,
     House,
+    Lightbulb,
     LogOut,
     Mountain,
 } from 'lucide-react'
@@ -63,72 +63,75 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
     }
 
     const menuItems = [
-        { icon: <House size={16} />, label: 'Home' },
-        { icon: <Mountain size={16} />, label: 'Challenges' },
-        { icon: <BookOpen size={16} />, label: 'Advice' },
+        { icon: <House size={16} />, label: 'Нүүр' },
+        { icon: <Mountain size={16} />, label: 'Сорилтууд' },
+        { icon: <Lightbulb size={16} />, label: 'Зөвлөмжүүд' },
+        { icon: <Handshake size={16} />, label: 'Таны үндсэн хамтрагч' },
     ]
 
     return (
-        <div className='fixed top-0 left-0 min-w-[264px] h-screen py-6 px-3 bg-slate-50 flex flex-col justify-between border-r border-neutral-300 z-10'>
-            <div className='space-y-3'>
-                <div className='flex gap-2 bg-white rounded-xl p-2'>
+        <div className='fixed top-0 left-0 min-w-[312px] h-screen py-3 px-5 bg-white flex flex-col justify-between border-r border-gray-200 z-10'>
+            <div>
+                <div className='flex gap-4 bg-white rounded-xl py-3 px-5'>
                     <div className='w-8 h-8 p-2 rounded-full bg-black flex items-center justify-center'>
                         <HeartHandshake color='white' />
                     </div>
                     <div>
-                        <h6 className='text-sm font-semibold'>Bondly</h6>
-                        <p className='text-[#737373] text-xs font-normal'>Company</p>
+                        <h6 className='text-sm'>Bondly</h6>
+                        <p className='text-[#737373] text-sm font-normal'>New hire support platform</p>
                     </div>
                 </div>
 
-                <div >
-                    <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
-                    <div onClick={() => onSelectSection("Profile")} className={`flex gap-2 p-2 rounded-xl cursor-pointer hover:bg-slate-100 active:bg-slate-200 items-center ${selectedSection === "Profile" ? "bg-slate-200" : "bg-white"}`}>
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <h6 className='text-black text-sm font-medium select-none'>
-                                {profile?.name || 'Loading...'}
-                            </h6>
-                            <p className='text-xs text-[#737373] font-normal'>
-                                {profile?.email || 'Loading...'}
-                            </p>
+                <hr />
+
+                <div className='mt-3 space-y-3'>
+                    <div>
+                        <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Platform</h6>
+                        <div className='w-full'>
+                            {menuItems.map((item) => (
+                                <div
+                                    key={item.label}
+                                    className={`w-full py-3 px-5 rounded-lg flex gap-4 items-center cursor-pointer hover:bg-slate-50 select-none ${selectedSection === item.label ? 'bg-slate-50' : 'bg-white'
+                                        }`}
+                                    onClick={() => onSelectSection(item.label)}
+                                >
+                                    <div className={`flex gap-4 items-center ${selectedSection === item.label ? 'text-[#FB923C]' : 'text-black'} `}>
+                                        {item.icon}
+                                        <p className='text-black text-sm'>{item.label}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </div>
 
-                <div>
-                    <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Platform</h6>
-                    <div className='w-full'>
-                        {menuItems.map((item) => (
-                            <div
-                                key={item.label}
-                                className={`w-full p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer hover:bg-slate-100 select-none ${selectedSection === item.label ? 'bg-slate-200' : 'bg-white'
-                                    }`}
-                                onClick={() => onSelectSection(item.label)}
-                            >
-                                <div className='flex gap-2 items-center'>
-                                    {item.icon}
-                                    <p>{item.label}</p>
-                                </div>
-                                <ChevronRight size={16} />
+                    <div>
+                        <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
+                        <div onClick={() => onSelectSection("Profile")} className={`flex gap-4 py-3 px-5 rounded-lg cursor-pointer hover:bg-slate-50 active:bg-slate-50 items-center ${selectedSection === "Profile" ? "bg-slate-50" : "bg-white"}`}>
+                            <Avatar>
+                                <AvatarImage src="https://github.com/shadcn.png" />
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <h6 className='text-black text-sm font-medium select-none'>
+                                    {profile?.name || 'Loading...'}
+                                </h6>
+                                <p className='text-xs text-[#737373] font-normal'>
+                                    {profile?.email || 'Loading...'}
+                                </p>
                             </div>
-                        ))}
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div
                 onClick={handleLogout}
-                className='w-full bg-white p-2 rounded-md flex gap-2 justify-between items-center cursor-pointer hover:bg-slate-100 transition'
+                className='w-full bg-white py-3 px-5 rounded-lg flex gap-4 items-center cursor-pointer hover:bg-slate-50 transition'
             >
-                <div className='flex gap-2 items-center'>
+                <div className='flex gap-4 items-center'>
                     <LogOut size={16} />
-                    <p>Log out</p>
+                    <p>Гарах</p>
                 </div>
-                <ChevronRight size={16} />
             </div>
         </div>
     )

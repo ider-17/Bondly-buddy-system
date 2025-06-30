@@ -182,7 +182,7 @@ export default function Login() {
 
                 <button
                     type="submit"
-                    className="py-2 px-4 rounded-lg bg-black text-center text-white w-full"
+                    className="py-2 px-4 rounded-lg bg-black text-center text-white w-full cursor-pointer select-none"
                 >
                     Sign in
                 </button>

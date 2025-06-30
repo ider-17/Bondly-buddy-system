@@ -52,22 +52,13 @@ export default function YourProgress() {
     }, []);
 
     return (
-        <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
+        <>
             <div>
-                <div className='flex gap-3'>
-                    <div className='w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center'>
-                        <Trophy size={20} color='#F59E0B' />
-                    </div>
-                    <h6 className='text-lg font-semibold'>Your Progress</h6>
+                <div className='flex justify-between mb-5'>
+                    <p className='text-sm font-medium'>Onboarding Progress</p>
+                    <p>{approvedChallengesLength}%</p>
                 </div>
-
-                <div>
-                    <div className='flex justify-between mb-5'>
-                        <p className='text-sm font-medium'>Onboarding Progress</p>
-                        <p>{approvedChallengesLength}%</p>
-                    </div>
-                    <Progress value={approvedChallengesLength} />
-                </div>
+                <Progress value={approvedChallengesLength} />
             </div>
 
             <div className='w-full flex gap-5 justify-between'>
@@ -104,6 +95,6 @@ export default function YourProgress() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

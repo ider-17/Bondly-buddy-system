@@ -67,7 +67,7 @@ interface Submission {
 }
 
 export default function NewbieHome() {
-  const [selectedSection, setSelectedSection] = useState("Home");
+  const [selectedSection, setSelectedSection] = useState("Нүүр");
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
   const [loading, setLoading] = useState(false);
@@ -200,7 +200,7 @@ export default function NewbieHome() {
       (sub) => sub.challenge_id === challengeId
     );
     if (!submission) {
-      return "active"; 
+      return "active";
     }
     return submission.status === "approved" ? "completed" : "pending";
   };
@@ -269,19 +269,19 @@ export default function NewbieHome() {
   const statusCounts = getStatusCounts();
 
   const renderHeader = () => {
-    if (selectedSection === "Home") {
+    if (selectedSection === "Нүүр") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+          <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
             <div className="flex gap-3 items-center">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                <h6 className="text-base font-medium">Welcome Togtuun</h6>
-                <p className="text-[#525252] font-medium text-sm">
-                  UX/UI Designer • Design
+                <h6 className="text-base font-medium">Сайн уу👋 Тогтуун</h6>
+                <p className="text-neutral-500 font-medium text-sm">
+                  UX/UI Designer
                 </p>
               </div>
             </div>
@@ -295,19 +295,33 @@ export default function NewbieHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-5 mr-10">
+          <div className="flex gap-5 py-10 px-20 bg-slate-100">
             <div className="w-1/2 space-y-5">
               <RotatingBuddyCard />
-              <EventsThisWeek />
+
+              <div className="rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
+                <div className="flex items-center">
+                  <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
+                </div>
+                <ActiveChallenges />
+              </div>
+
             </div>
             <div className="w-1/2 space-y-5">
-              <YourProgress />
-              <ActiveChallenges />
+
+              <div className='bg-slate-50 py-5 px-6 rounded-xl border border-[#D4D4D4] space-y-5'>
+                <div>
+                  <h6 className='text-lg font-medium'>Таны прогресс</h6>
+                  <YourProgress />
+                </div>
+              </div>
+
+              <EventsThisWeek />
             </div>
           </div>
         </div>
       );
-    } else if (selectedSection === "Challenges") {
+    } else if (selectedSection === "Сорилтууд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
@@ -344,11 +358,10 @@ export default function NewbieHome() {
               <div
                 key={idx}
                 onClick={() => setActiveTab(status.key)}
-                className={`w-1/3 bg-slate-50 border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 items-center cursor-pointer hover:bg-slate-100 transition-colors ${
-                  activeTab === status.key
-                    ? "ring-2 ring-blue-500 bg-blue-50"
-                    : ""
-                }`}
+                className={`w-1/3 bg-slate-50 border border-neutral-300 rounded-xl py-5 flex flex-col gap-2 items-center cursor-pointer hover:bg-slate-100 transition-colors ${activeTab === status.key
+                  ? "ring-2 ring-blue-500 bg-blue-50"
+                  : ""
+                  }`}
               >
                 <div className="w-8 h-8 bg-orange-100 rounded-lg flex justify-center items-center">
                   <Mountain size={18} color="#F97316" />
@@ -392,8 +405,8 @@ export default function NewbieHome() {
                   {activeTab === "Active"
                     ? "Идэвхтэй"
                     : activeTab === "Pending"
-                    ? "Хүлээгдэж байгаа"
-                    : "Биелэгдсэн"}{" "}
+                      ? "Хүлээгдэж байгаа"
+                      : "Биелэгдсэн"}{" "}
                   сорилт олдсонгүй.
                 </p>
               </div>
@@ -410,7 +423,7 @@ export default function NewbieHome() {
                           {challenge.title}
                         </h3>
                         <div className="flex gap-2 mb-3">
-                           {challenge.derivedStatus === "pending" && (
+                          {challenge.derivedStatus === "pending" && (
                             <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
                               Хүлээгдэж байгаа
                             </span>
@@ -424,15 +437,15 @@ export default function NewbieHome() {
                             {challenge.difficulty === "Easy"
                               ? "Хялбар"
                               : challenge.difficulty === "Medium"
-                              ? "Дунд"
-                              : challenge.difficulty === "Hard"
-                              ? "Хэцүү"
-                              : "Хялбар"}
+                                ? "Дунд"
+                                : challenge.difficulty === "Hard"
+                                  ? "Хэцүү"
+                                  : "Хялбар"}
                           </span>
                           {challenge.derivedStatus == "active" && (
                             <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium">
-                            {challenge.week || "1-р долоо хоног"}
-                          </span>
+                              {challenge.week || "1-р долоо хоног"}
+                            </span>
                           )}
                         </div>
                         {/* {challenge.note && (
@@ -442,60 +455,60 @@ export default function NewbieHome() {
                         )} */}
                         {challenge.derivedStatus === "active" && (
                           <Dialog>
-            <DialogTrigger asChild>
-              <button
-                className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
-                onClick={() => {
-                  setSelectedChallenge(challenge);
-                  setNote(challenge.note ?? "");
-                }}
-              >
-                Тэмдэглэл бичих
-                <FilePlus2 size={20} />
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[445px]">
-              <DialogHeader>
-                <DialogTitle className="my-3 text-xl">
-                  Тэмдэглэл бичих
-                </DialogTitle>
-                <hr className="py-3"></hr>
-                <DialogDescription className="text-[16px] text-black">
-                  Сорилтын тэмдэглэл
-                </DialogDescription>
-              </DialogHeader>
+                            <DialogTrigger asChild>
+                              <button
+                                className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
+                                onClick={() => {
+                                  setSelectedChallenge(challenge);
+                                  setNote(challenge.note ?? "");
+                                }}
+                              >
+                                Тэмдэглэл бичих
+                                <FilePlus2 size={20} />
+                              </button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[445px]">
+                              <DialogHeader>
+                                <DialogTitle className="my-3 text-xl">
+                                  Тэмдэглэл бичих
+                                </DialogTitle>
+                                <hr className="py-3"></hr>
+                                <DialogDescription className="text-[16px] text-black">
+                                  Сорилтын тэмдэглэл
+                                </DialogDescription>
+                              </DialogHeader>
 
-              <form onSubmit={handleSubmit}>
-                <textarea
-                  name="note"
-                  placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                  className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  required
-                />
+                              <form onSubmit={handleSubmit}>
+                                <textarea
+                                  name="note"
+                                  placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
+                                  className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                                  value={note}
+                                  onChange={(e) => setNote(e.target.value)}
+                                  required
+                                />
 
-                <hr className="py-3"></hr>
+                                <hr className="py-3"></hr>
 
-                <div className="flex gap-[10px] justify-between">
-                  <DialogClose asChild>
-                    <button
-                      type="button"
-                      className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
-                    >
-                      Cancel
-                    </button>
-                  </DialogClose>
-                  <button
-                    type="submit"
-                    className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
-                  >
-                    Submit for Approval
-                  </button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+                                <div className="flex gap-[10px] justify-between">
+                                  <DialogClose asChild>
+                                    <button
+                                      type="button"
+                                      className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </DialogClose>
+                                  <button
+                                    type="submit"
+                                    className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
+                                  >
+                                    Submit for Approval
+                                  </button>
+                                </div>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
                         )}
                       </div>
                     </div>
@@ -506,7 +519,7 @@ export default function NewbieHome() {
           </div>
         </div>
       );
-    } else if (selectedSection === "Advice") {
+    } else if (selectedSection === "Зөвлөмжүүд") {
       return (
         <div>
           <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
@@ -572,7 +585,7 @@ export default function NewbieHome() {
         selectedSection={selectedSection}
         onSelectSection={(section) => setSelectedSection(section)}
       />
-      <div className="w-full pl-[264px] flex flex-col h-screen overflow-auto">
+      <div className="w-full pl-[312px] flex flex-col h-screen overflow-auto">
         {renderHeader()}
       </div>
     </div>
