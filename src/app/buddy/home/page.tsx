@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/popover";
 import YourProgress from "@/app/_components/YourProgress";
 import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
+import BuddyProfile from "@/app/_components/BuddyProfile";
 
 
 const tabs = ["Active", "Completed", "Upcoming"];
@@ -366,46 +367,84 @@ export default function NewbieHome() {
       );
     } else if (selectedSection === "Profile") {
       return (
+        // <div>
+        //   <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+        //     <div>
+        //       <h1 className="text-xl font-semibold">Profile</h1>
+        //       <p className="text-sm font-medium text-neutral-600">
+        //         Өөрийн хувийн мэдээллээ харах, удирдах боломжтой.
+        //       </p>
+        //     </div>
+        //     <div className="flex gap-2 py-2 px-3 border border-neutral-300 rounded-lg items-center">
+        //       <SquarePen size={20} color="black" />
+        //       <p className="text-sm font-medium">Edit</p>
+        //     </div>
+        //   </header>
+
+        //   <div className="p-5 mr-10 space-y-5">
+        //     <ProfileCard />
+
+        //     <div className="flex gap-5">
+        //       <div className="w-1/2 space-y-5">
+        //         <MyInterests />
+        //       </div>
+
+        //       <div className="w-1/2">
+        //         <InternProgress />
+        //       </div>
+        //     </div>
+
+        //     <InternYouGuidingInfo />
+
+        //     <ProfileInfo />
+
+        //     <div className="flex gap-5">
+        //       <div className="w-1/2 space-y-5">
+        //         <MyInterests />
+        //         <Introduction />
+        //       </div>
+        //       <div className="w-1/2">
+        //         <CareerGoals />
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+          <header className="h-fit header p-5 px-20 flex bg-white items-center border-b border-gray-200">
             <div>
-              <h1 className="text-xl font-semibold">Profile</h1>
-              <p className="text-sm font-medium text-neutral-600">
-                Өөрийн хувийн мэдээллээ харах, удирдах боломжтой.
+              <h6 className="text-base font-medium">Профайл</h6>
+              <p className="text-xs font-medium text-neutral-500">
+                Өөрийн хувийн мэдээллээ харах, хянах боломжтой
               </p>
-            </div>
-            <div className="flex gap-2 py-2 px-3 border border-neutral-300 rounded-lg items-center">
-              <SquarePen size={20} color="black" />
-              <p className="text-sm font-medium">Edit</p>
             </div>
           </header>
 
-          <div className="p-5 mr-10 space-y-5">
-            <ProfileCard />
+          {/* <div className="p-5 mr-10 space-y-5">
+                    <ProfileCard />
+        
+                    <div className="flex gap-5">
+                      <div className="w-1/2 space-y-5">
+                        <MyInterests />
+                        <CareerGoals />
+                      </div>
+        
+                      <div className="w-1/2">
+                        <YourProgress />
+                      </div>
+                    </div>
+        
+                    <YourPrimaryBuddy />
+                    <ProfileInfo />
+        
+                    <div className="flex gap-5">
+                      <Introduction />
+                      <Interests />
+                    </div>
+                  </div> */}
 
-            <div className="flex gap-5">
-              <div className="w-1/2 space-y-5">
-                <MyInterests />
-              </div>
-
-              <div className="w-1/2">
-                <InternProgress />
-              </div>
-            </div>
-
-            <InternYouGuidingInfo />
-
-            <ProfileInfo />
-
-            <div className="flex gap-5">
-              <div className="w-1/2 space-y-5">
-                <MyInterests />
-                <Introduction />
-              </div>
-              <div className="w-1/2">
-                <CareerGoals />
-              </div>
-            </div>
+          <div className="bg-slate-100 py-10 px-20 min-h-screen space-y-5">
+            <BuddyProfile />
+            <MyInterests />
           </div>
         </div>
       );

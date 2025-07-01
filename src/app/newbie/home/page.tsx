@@ -26,12 +26,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProfileCard from "@/app/_components/ProfileCard";
-import MyInterests from "@/app/_components/MyInterests";
-import CareerGoals from "@/app/_components/CareerGoals";
-import ProfileInfo from "@/app/_components/ProfileInfo";
-import YourPrimaryBuddy from "@/app/_components/YourPrimaryBuddy";
-import Introduction from "@/app/_components/Introduction";
-import Interests from "@/app/_components/Interests";
 import {
   Popover,
   PopoverContent,
@@ -40,6 +34,9 @@ import {
 import { AdviceContent } from "@/app/_components/AdviceContent";
 import { submitChallenge } from "@/lib/actions/submitChallenge";
 import { toast } from "sonner";
+import MoreInformation from "@/app/_components/MoreInformation";
+import MyInterests from "@/app/_components/MyInterests";
+import CareerGoals from "@/app/_components/CareerGoals";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -81,7 +78,7 @@ export default function NewbieHome() {
   useEffect(() => {
     const initializeAuth = async () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+
       if (sessionError || !session) {
         toast.error("User session not found");
         return;
@@ -146,13 +143,13 @@ export default function NewbieHome() {
     // Subscribe to challenges table changes
     const challengesChannel = supabase
       .channel('challenges-changes')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
+      .on('postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
           table: 'challenges',
           filter: `user_id=eq.${currentUserId}`
-        }, 
+        },
         (payload) => {
           console.log('Challenge change received:', payload);
           handleChallengeChange(payload);
@@ -163,13 +160,13 @@ export default function NewbieHome() {
     // Subscribe to submissions table changes
     const submissionsChannel = supabase
       .channel('submissions-changes')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
+      .on('postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
           table: 'submissions',
           filter: `user_id=eq.${currentUserId}`
-        }, 
+        },
         (payload) => {
           console.log('Submission change received:', payload);
           handleSubmissionChange(payload);
@@ -196,18 +193,18 @@ export default function NewbieHome() {
         setChallenges(prev => [newRecord, ...prev]);
         toast.success("New challenge added!");
         break;
-      
+
       case 'UPDATE':
-        setChallenges(prev => 
-          prev.map(challenge => 
+        setChallenges(prev =>
+          prev.map(challenge =>
             challenge.id === newRecord.id ? newRecord : challenge
           )
         );
         toast.info("Challenge updated!");
         break;
-      
+
       case 'DELETE':
-        setChallenges(prev => 
+        setChallenges(prev =>
           prev.filter(challenge => challenge.id !== oldRecord.id)
         );
         toast.info("Challenge removed!");
@@ -224,10 +221,10 @@ export default function NewbieHome() {
         setSubmissions(prev => [...prev, newRecord]);
         toast.success("Submission created!");
         break;
-      
+
       case 'UPDATE':
-        setSubmissions(prev => 
-          prev.map(submission => 
+        setSubmissions(prev =>
+          prev.map(submission =>
             submission.id === newRecord.id ? newRecord : submission
           )
         );
@@ -237,9 +234,9 @@ export default function NewbieHome() {
           toast.error("Challenge was rejected. Please try again.");
         }
         break;
-      
+
       case 'DELETE':
-        setSubmissions(prev => 
+        setSubmissions(prev =>
           prev.filter(submission => submission.id !== oldRecord.id)
         );
         toast.info("Submission removed!");
@@ -272,7 +269,7 @@ export default function NewbieHome() {
       setSelectedChallenge(null);
     } catch (error) {
       // Revert optimistic update on error
-      setSubmissions(prev => 
+      setSubmissions(prev =>
         prev.filter(sub => sub.id !== optimisticSubmission.id)
       );
       toast.error("Failed to submit: " + (error as Error).message);
@@ -641,20 +638,16 @@ export default function NewbieHome() {
     } else if (selectedSection === "Profile") {
       return (
         <div>
-          <header className="h-fit header p-5 pr-20 flex justify-between bg-slate-50 items-center border-b border-neutral-300">
+          <header className="h-fit header p-5 px-20 flex bg-white items-center border-b border-gray-200">
             <div>
-              <h1 className="text-base font-medium">Profile</h1>
-              <p className="text-sm font-medium text-neutral-600">
-                Өөрийн хувийн мэдээллээ харах, удирдах боломжтой.
+              <h6 className="text-base font-medium">Профайл</h6>
+              <p className="text-xs font-medium text-neutral-500">
+                Өөрийн хувийн мэдээллээ харах, хянах боломжтой
               </p>
-            </div>
-            <div className="flex gap-2 py-2 px-3 border border-neutral-300 rounded-lg items-center">
-              <SquarePen size={20} color="black" />
-              <p className="text-sm font-medium">Edit</p>
             </div>
           </header>
 
-          <div className="p-5 mr-10 space-y-5">
+          {/* <div className="p-5 mr-10 space-y-5">
             <ProfileCard />
 
             <div className="flex gap-5">
@@ -674,6 +667,28 @@ export default function NewbieHome() {
             <div className="flex gap-5">
               <Introduction />
               <Interests />
+            </div>
+          </div> */}
+
+          <div className="bg-slate-100 py-10 px-20 min-h-screen flex gap-5">
+            <div className="w-1/2 space-y-5">
+              <ProfileCard />
+              <MoreInformation />
+              <MyInterests />
+            </div>
+
+            <div className="w-1/2 space-y-5">
+              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+                <div>
+                  <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
+
+                  <hr />
+
+                  <YourProgress />
+                </div>
+              </div>
+
+              <CareerGoals />
             </div>
           </div>
         </div>
