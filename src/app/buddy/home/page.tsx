@@ -646,7 +646,7 @@ export default function BuddyHome() {
                   {filteredChallenges.map((challenge) => (
                     <div
                       key={challenge.id}
-                      className="rounded-lg py-5 bg-white"
+                      className="rounded-lg py-2 bg-white"
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1 space-y-5">
@@ -680,64 +680,6 @@ export default function BuddyHome() {
                                     : "Хялбар"}
                             </span>
                           </div>
-
-                          {challenge.derivedStatus === "active" && (
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <button
-                                  className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
-                                  onClick={() => {
-                                    setSelectedChallenge(challenge);
-                                    setNote(challenge.note ?? "");
-                                  }}
-                                >
-                                  Тэмдэглэл бичих
-                                  <FilePlus2 size={20} />
-                                </button>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-[445px]">
-                                <DialogHeader>
-                                  <DialogTitle className="my-3 text-xl">
-                                    Тэмдэглэл бичих
-                                  </DialogTitle>
-                                  <hr className="py-3"></hr>
-                                  <DialogDescription className="text-[16px] text-black">
-                                    Сорилтын тэмдэглэл
-                                  </DialogDescription>
-                                </DialogHeader>
-
-                                <form onSubmit={handleSubmit}>
-                                  <textarea
-                                    name="note"
-                                    placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                                    className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
-                                    value={note}
-                                    onChange={(e) => setNote(e.target.value)}
-                                    required
-                                  />
-
-                                  <hr className="py-3"></hr>
-
-                                  <div className="flex gap-[10px] justify-between">
-                                    <DialogClose asChild>
-                                      <button
-                                        type="button"
-                                        className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
-                                      >
-                                        Cancel
-                                      </button>
-                                    </DialogClose>
-                                    <button
-                                      type="submit"
-                                      className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
-                                    >
-                                      Submit for Approval
-                                    </button>
-                                  </div>
-                                </form>
-                              </DialogContent>
-                            </Dialog>
-                          )}
 
                           <hr className="mt-10" />
                         </div>
