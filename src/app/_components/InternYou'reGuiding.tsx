@@ -12,69 +12,170 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 
 
-
-interface UserProfile {
+interface NewbieProfile {
+  id: string
   email: string
   phone_number?: string
   joined_at?: string
   name?: string
   role?: string
-  avatar_url?: string
+  profile_pic?: string
+  rank?: string
 }
 
 export default function InternYouGuiding() {
-
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [newbie, setNewbie] = useState<NewbieProfile | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchUserProfile() {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser()
+    async function fetchNewbieProfile() {
+      try {
+        setLoading(true)
 
-      if (userError || !user) return
+        // Fetch a random newbie user (you can modify this logic as needed)
+        const { data, error } = await supabase
+          .from("users")
+          .select("id, email, phone_number, created_at, name, role, profile_pic, rank")
+          .eq("role", "newbie")
+          .limit(1)
+          .single()
 
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single()
-
-      if (!error && data) {
-        setProfile({
-          email: data.email,
-          phone_number: data.phone_number,
-          joined_at: data.created_at?.split("T")[0] || "2025-06-12",
-          name: data.name || "Unknown",
-          role: data.role || "Newbie",
-          avatar_url: data.avatar_url || "https://github.com/shadcn.png"
-        })
+        if (!error && data) {
+          setNewbie({
+            id: data.id,
+            email: data.email,
+            phone_number: data.phone_number,
+            joined_at: data.created_at?.split("T")[0] || "2025-06-12",
+            name: data.name || "Unknown",
+            role: data.role || "Newbie",
+            profile_pic: data.profile_pic || null,
+            rank: data.rank || "newbie"
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching newbie profile:", error)
+      } finally {
+        setLoading(false)
       }
     }
 
-    fetchUserProfile()
+    fetchNewbieProfile()
+
+    // Set up real-time subscription for newbie changes
+    const newbieSubscription = supabase
+      .channel("intern_guiding_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "users",
+          filter: "rank=eq.newbie",
+        },
+        (payload) => {
+          fetchNewbieProfile()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(newbieSubscription)
+    }
   }, [])
+
+  // Generate avatar fallback from name
+  const getAvatarFallback = () => {
+    if (newbie?.name) {
+      return newbie.name.charAt(0).toUpperCase()
+    }
+    return "N"
+  }
+
+  // Format role display
+  const getRoleDisplay = () => {
+    if (!newbie?.rank) return "Newbie"
+    
+    // Capitalize first letter and handle role formatting
+    const roleMap: { [key: string]: string } = {
+      'newbie': 'Newbie',
+      'buddy': 'Buddy'
+    }
+    
+    return roleMap[newbie.rank] || newbie.rank
+  }
+
+  // Get display name
+  const getDisplayName = () => {
+    if (!newbie?.name) return "Unknown"
+    return newbie.name
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200">
+        <h6 className="font-semibold py-5 px-6 space-y-5 text-xl">Таны Newbie</h6>
+        <hr />
+        <div className="py-5 px-6">
+          <div className="mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-15 h-15 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="space-y-2">
+                  <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-3 w-16 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+              <div className="flex gap-5 w-fit">
+                <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!newbie) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200">
+        <h6 className="font-semibold py-5 px-6 space-y-5 text-xl">Таны Newbie</h6>
+        <hr />
+        <div className="py-5 px-6 text-center">
+          <p className="text-gray-500">Одоогоор newbie байхгүй байна.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 ">
-
       <h6 className="font-semibold py-5 px-6 space-y-5 text-xl">Таны Newbie</h6>
-
+      
       <hr></hr>
-
 
       <div className="py-5 px-6">
         <div className="mb-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-15 h-15">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                {newbie?.profile_pic ? (
+                  <AvatarImage 
+                    src={newbie.profile_pic} 
+                    alt={`${newbie.name || 'User'}'s avatar`}
+                    onError={(e) => {
+                      console.error("Failed to load avatar image:", newbie.profile_pic)
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                ) : null}
+                <AvatarFallback className="bg-green-100 text-green-600 font-semibold">
+                  {getAvatarFallback()}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <h6 className="text-base font-medium">Идэр</h6>
-                <p className="text-[#525252] text-sm font-medium">Junior Developer</p>
+                <h6 className="text-base font-medium">{getDisplayName()}</h6>
+                <p className="text-[#525252] text-sm font-medium">{getRoleDisplay()}</p>
               </div>
             </div>
 
@@ -166,7 +267,6 @@ export default function InternYouGuiding() {
             </div>
           </div>
         </div>
-
 
         <div>
           <div className="flex justify-between items-center mb-1">
