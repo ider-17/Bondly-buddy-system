@@ -1,3 +1,4 @@
+import BuddyInterests from "@/app/_components/BuddyInterest";
 import BuddyProfile from "@/app/_components/BuddyProfile";
 import MyInterests from "@/app/_components/MyInterests";
 
@@ -15,7 +16,7 @@ export default function YourPrimaryBuddy() {
 
       <div className="bg-slate-100 py-10 px-20 min-h-screen space-y-5">
         <BuddyProfile />
-        <MyInterests />
+        <BuddyInterests />
 
         <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-5">
           <h5 className="text-lg font-semibold">Танилцуулга</h5>

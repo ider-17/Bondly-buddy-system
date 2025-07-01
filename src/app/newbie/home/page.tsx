@@ -385,7 +385,7 @@ const renderHeader = () => {
       return <Advice />;
     case "Profile":
       return <Profile />;
-    case "Таны үндсэн хамтрагч":
+    case "Primary Buddy":
       return <YourPrimaryBuddy />;
     default:
       return <Home />;
