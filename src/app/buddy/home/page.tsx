@@ -420,22 +420,35 @@ export default function BuddyHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-10 ml-10 mr-10 min-h-screen">
-            <div className="w-1/2 space-y-5">
-              <InternYouGuiding />
-              <ApprovalRequests />
+
+          <div className="flex flex-col gap-8 px-20 py-10 w-full">
+            <div className="w-full">
+              <div className="rounded-xl border border-gray-200 py-5 px-6 bg-white">
+                <YourProgress />
+              </div>
             </div>
-            <div className="w-1/2 space-y-5">
-              <div className='rounded-xl border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-                <div className="space-y-3">
-                  <h6 className='text-xl font-medium'>Шинэ ажилтны прогресс</h6>
-                  <hr />
-                  <YourProgress />
+
+            <InternYouGuiding />
+
+            <div className="flex flex-col lg:flex-row gap-6 w-full justify-between items-stretch">
+              <div className="w-full lg:w-1/2">
+                <div className="h-[550px] overflow-y-auto rounded-xl border border-gray-200 py-5 px-6 bg-white">
+                  <ApprovalRequests />
                 </div>
               </div>
-              <EventsThisWeek />
+
+
+              <div className="w-full lg:w-1/2">
+                <div className="h-full rounded-xl border border-gray-200 py-5 px-6 bg-white">
+                  <EventsThisWeek />
+                </div>
+              </div>
             </div>
+
           </div>
+
+
+
         </div>
       );
 

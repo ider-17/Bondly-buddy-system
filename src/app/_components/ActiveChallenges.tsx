@@ -124,7 +124,7 @@ export default function ActiveChallenges() {
             {activeChallenges.map((challenge) => (
                 <div
                     key={challenge.id}
-                    className="py-[10px] space-y-4"
+                    className="space-y-4"
                 >
                     <p className="text-sm font-medium">{challenge.title}</p>
                     <div className="flex gap-3">
@@ -189,6 +189,7 @@ export default function ActiveChallenges() {
                             </form>
                         </DialogContent>
                     </Dialog>
+                    <hr className="mt-5"></hr>
                 </div>
             ))}
         </>

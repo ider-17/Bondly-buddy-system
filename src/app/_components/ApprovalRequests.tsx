@@ -112,9 +112,9 @@ export default function ApprovalRequests() {
   }
 
   return (
-    <div className="bg-white py-5 px-6 rounded-xl border border-slate-200 space-y-4">
+    <div className="bg-white  rounded-xl space-y-4">
       <div className="flex gap-3 ">
-        <h6 className="text-xl font-medium">Зөвшөөрөх хүсэлтүүд</h6>
+        <h6 className="text-xl font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
       </div>
 
       <hr />
@@ -130,8 +130,7 @@ export default function ApprovalRequests() {
         >
           <div className="flex gap-3">
             <div className="w-full">
-              <Badge className="bg-slate-100 p-2 rounded-2xl text-black font-bold">Сорилтын нэр</Badge>
-              <p className="p-1">{submission.challenges?.title}</p>
+              <p className=" font-semibold">{submission.challenges?.title}</p>
 
               <div className="flex gap-3 mt-2">
                 <div className="rounded-full py-1 px-[10px] bg-white border text-xs font-semibold">
@@ -141,10 +140,6 @@ export default function ApprovalRequests() {
                   {submission.challenges?.difficulty === "Easy" && "Хялбар"}
                 </div>
               </div>
-
-              <hr className="mt-5 mb-5"></hr>
-
-              <Badge className="bg-slate-100 p-2 rounded-2xl text-black font-bold">Сорилтын тайлбар</Badge>
 
               {submission.note && (
                 <p className="text-sm p-1 text-gray-700 mt-1 whitespace-pre-line">
@@ -160,15 +155,13 @@ export default function ApprovalRequests() {
               className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center select-none bg-transparent text-black hover:bg-orange-100 active:bg-orange-500 active:text-white"
             >
               <p className="text-sm font-medium">Decline</p>
-              <CircleMinus size={22} />
             </button>
 
             <button
               onClick={() => handleApprove(submission.id)}
-              className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center bg-green-100 hover:bg-green-200 active:bg-green-500 active:text-white select-none cursor-pointer text-black"
+              className="w-1/2 border border-green-500 py-2 px-3 rounded-lg flex gap-2 items-center justify-center hover:bg-green-200 active:bg-green-500 active:text-white select-none cursor-pointer text-black"
             >
               <p className="text-sm font-medium">Approve</p>
-              <CircleCheckBig size={22} />
             </button>
           </div>
         </div>

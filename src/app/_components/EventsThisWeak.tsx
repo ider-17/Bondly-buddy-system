@@ -68,9 +68,9 @@ export default function EventsThisWeek() {
     }
 
     return (
-        <div className='rounded-xl border border-neutral-200 py-5 px-6 space-y-5 bg-white'>
+        <div className='rounded-xl space-y-4 bg-white'>
             <div className='flex gap-3 items-center'>
-                <h6 className='text-xl font-medium'>Энэ долоо хоногийн эвентүүд</h6>
+                <h6 className='text-xl font-semibold'>Энэ долоо хоногийн эвентүүд</h6>
             </div>
 
             {events.map((event, index) => (

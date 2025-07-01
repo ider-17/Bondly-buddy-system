@@ -1,7 +1,7 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp } from "lucide-react";
+import { CircleAlert, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -142,15 +142,15 @@ export default function YourProgress() {
 
   return (
     <>
-      <div className="mt-5">
-        <div className="flex mb-3 gap-3 items-center">
-          <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-            <TrendingUp size={18} color="green" />
+      <div>
+        <div className="flex mb-3 gap-2 items-center">
+          <div className="w-10 h-10 bg-green-100 rounded-lg flex justify-center items-center">
+            <TrendingUp size={30} color="green" />
           </div>
-          <p className="text-sm font-medium">{approvedChallengesLength}%</p>
+          <p className="text-xl font-semibold">{approvedChallengesLength}%</p>
         </div>
         <Progress value={approvedChallengesLength} className="h-2 mt-5" />
-        <p className="text-l font-medium mt-5">Сорилтууд</p>
+        <p className="text-l flex gap-3 mt-5"> <CircleAlert /> Таны onboarding прогресс</p>
       </div>
 
       {/* <div className='w-full flex gap-5 justify-between'>
