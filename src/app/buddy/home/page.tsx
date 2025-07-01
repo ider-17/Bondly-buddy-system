@@ -424,7 +424,7 @@ export default function BuddyHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-10 ml-10 mr-10">
+          <div className="flex gap-5 p-10 ml-10 mr-10 min-h-screen">
             <div className="w-1/2 space-y-5">
               <InternYouGuiding />
               <ApprovalRequests />
