@@ -120,7 +120,7 @@ export default function ApprovalRequests() {
       <hr />
 
       {requests.length === 0 && (
-        <p className="text-sm text-gray-500">No pending submissions.</p>
+        <p className="text-sm text-gray-500">Одоогоор хүсэлт ирээгүй байна.</p>
       )}
 
       {requests.map((submission) => (

@@ -1,4 +1,6 @@
-import { BadgeAlert, BadgeQuestionMark, Brush, CalendarDays, Dices } from "lucide-react";
+import { CalendarDays } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
 const events = [
     {
@@ -27,7 +29,44 @@ const events = [
     },
 ];
 
+function EventsSkeleton() {
+    return (
+        <div className='rounded-xl border border-neutral-200 py-5 px-6 space-y-5 bg-white'>
+            <div className='flex gap-3 items-center'>
+                <Skeleton className="h-7 w-64" />
+            </div>
+
+            {[...Array(6)].map((_, index) => (
+                <div key={index} className='w-full'>
+                    <hr />
+                    <div className='flex gap-4 py-[10px]'>
+                        <div className="space-y-2 flex-1">
+                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="h-3 w-32" />
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 export default function EventsThisWeek() {
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Simulate loading state
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return <EventsSkeleton />;
+    }
+
     return (
         <div className='w-1/2 h-fit rounded-xl border border-neutral-200 py-5 px-6 space-y-5 bg-white'>
             <div className='flex gap-3 items-center'>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { CalendarCheck, CalendarDays, Lightbulb, Mail, Mountain, Phone } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export interface UserProfile {
     email: string
@@ -17,15 +18,20 @@ export interface UserProfile {
 
 export default function ProfileCard() {
     const [profile, setProfile] = useState<UserProfile | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchUserProfile() {
+            setLoading(true)
             const {
                 data: { user },
                 error: userError,
             } = await supabase.auth.getUser()
 
-            if (userError || !user) return
+            if (userError || !user) {
+                setLoading(false)
+                return
+            }
 
             const { data, error } = await supabase
                 .from("users")
@@ -43,12 +49,60 @@ export default function ProfileCard() {
                     avatar_url: data.avatar_url || "https://github.com/shadcn.png"
                 })
             }
+            setLoading(false)
         }
 
         fetchUserProfile()
     }, [])
 
     console.log(profile, "profileas")
+
+    if (loading) {
+        return (
+            <div className="w-full py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
+                {/* Profile Header Skeleton */}
+                <div className="flex gap-3 items-center">
+                    <Skeleton className="w-16 h-16 rounded-full" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-32" />
+                        <Skeleton className="h-4 w-20" />
+                    </div>
+                </div>
+
+                <hr />
+
+                {/* Title Skeleton */}
+                <Skeleton className="h-4 w-48" />
+
+                {/* Stats Cards Skeleton */}
+                <div className="flex gap-3 mb-5">
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-5 w-4" />
+                            <Skeleton className="h-4 w-16" />
+                        </div>
+                    </div>
+
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-5 w-4" />
+                            <Skeleton className="h-4 w-20" />
+                        </div>
+                    </div>
+
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-5 w-4" />
+                            <Skeleton className="h-4 w-18" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="w-full py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
@@ -66,7 +120,7 @@ export default function ProfileCard() {
             <hr />
 
             {/* <div className="flex gap-5">
-                <           div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
+                <div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
                     <Mail size={24} color="black" />
                     <div>
                         <p className="text-neutral-600 text-sm font-medium">Mail</p>
