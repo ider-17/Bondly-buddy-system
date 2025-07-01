@@ -21,7 +21,7 @@ type SideBarMenuProps = {
 interface UserProfile {
     email: string
     name?: string
-    avatar_url?: string
+    profile_pic?: string  // Changed from avatar_url to profile_pic
     role: 'newbie' | 'buddy'
 }
 
@@ -53,7 +53,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                     setProfile({
                         email: data.email,
                         name: data.name || "Unknown",
-                        avatar_url: data.avatar_url || "https://github.com/shadcn.png",
+                        profile_pic: data.profile_pic || null,  // Changed from avatar_url to profile_pic
                         role: data.role
                     })
                 } else {
@@ -76,6 +76,17 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
         } else {
             window.location.href = '/login'
         }
+    }
+
+    // Generate avatar fallback from name or email (similar to ProfileCard)
+    const getAvatarFallback = () => {
+        if (profile?.name) {
+            return profile.name.charAt(0).toUpperCase()
+        }
+        if (profile?.email) {
+            return profile.email.charAt(0).toUpperCase()
+        }
+        return "U"
     }
 
     const baseMenuItems = [
@@ -182,8 +193,20 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
                         <h6 className='font-medium text-[#737373] text-xs mt-[10px] mb-[10px]'>Profile</h6>
                         <div onClick={() => onSelectSection("Profile")} className={`flex gap-4 py-3 px-5 rounded-lg cursor-pointer hover:bg-slate-50 active:bg-slate-50 items-center ${selectedSection === "Profile" ? "bg-slate-50" : "bg-white"}`}>
                             <Avatar>
-                                <AvatarImage src={profile?.avatar_url || "https://github.com/shadcn.png"} />
-                                <AvatarFallback>CN</AvatarFallback>
+                                {profile?.profile_pic ? (
+                                    <AvatarImage 
+                                        src={profile.profile_pic} 
+                                        alt={`${profile.name || 'User'}'s avatar`}
+                                        onError={(e) => {
+                                            console.error("Failed to load avatar image:", profile.profile_pic)
+                                            // Hide the image if it fails to load, fallback will show
+                                            e.currentTarget.style.display = 'none'
+                                        }}
+                                    />
+                                ) : null}
+                                <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
+                                    {getAvatarFallback()}
+                                </AvatarFallback>
                             </Avatar>
                             <div>
                                 <h6 className='text-black text-sm font-medium select-none'>
