@@ -277,7 +277,7 @@ export default function YourProgress() {
 
       {/* Show approved submissions only for newbies */}
       {userRole !== 'buddy' && approvedSubmissions.length > 0 && (
-        <div className="space-y-3 overflow-scroll h-[222px]">
+        <div className="space-y-3 overflow-scroll">
           <p className="text-sm font-semibold">Сорилтууд</p>
           {approvedSubmissions.map((submission) => (
             <div key={submission.id} className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">

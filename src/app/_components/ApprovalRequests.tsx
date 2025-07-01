@@ -82,19 +82,25 @@ export default function ApprovalRequests() {
         return () => clearInterval(interval);
     }, []);
 
-    async function handleApprove(submissionId: string) {
+ async function handleApprove(submissionId: string) {
+    try {
+        // Simple approval - just update the submission status
         const { error } = await supabase
             .from("submissions")
             .update({ status: "approved" })
             .eq("id", submissionId);
 
         if (error) {
-            toast.error("Failed to approve submission: " + error.message);
-        } else {
-            toast.success("Challenge approved!");
-            fetchApprovalRequests();
+            throw error;
         }
+
+        toast.success("Challenge approved!");
+        fetchApprovalRequests();
+    } catch (error) {
+        console.error('Approval error:', error);
+        toast.error("Failed to approve submission: " + (error as Error).message);
     }
+}
 
     async function handleDecline(submissionId: string) {
         // Delete the submission (challenge goes back to active)

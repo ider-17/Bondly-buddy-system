@@ -20,18 +20,7 @@ export default function ProgressTracker() {
 
   const calculateProgressFromSubmissions = async (newbieId: string) => {
     try {
-      // Get total challenges created for this newbie
-      const { count: totalChallenges, error: totalError } = await supabase
-        .from("challenges")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", newbieId);
-
-      if (totalError) {
-        console.error("Error fetching total challenges:", totalError);
-        return 0;
-      }
-
-      // Get approved submissions for this newbie
+      // Get approved submissions count for this newbie
       const { count: approvedSubmissions, error: approvedError } = await supabase
         .from("submissions")
         .select("*", { count: "exact", head: true })
@@ -40,6 +29,17 @@ export default function ProgressTracker() {
 
       if (approvedError) {
         console.error("Error fetching approved submissions:", approvedError);
+        return 0;
+      }
+
+      // Get total challenges count for this newbie
+      const { count: totalChallenges, error: totalError } = await supabase
+        .from("challenges")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", newbieId);
+
+      if (totalError) {
+        console.error("Error fetching total challenges:", totalError);
         return 0;
       }
 
@@ -96,6 +96,35 @@ export default function ProgressTracker() {
         return;
       }
 
+      // Calculate progress using the same logic as YourProgress.tsx
+      const [
+        { count: approvedCount, error: approvedError },
+        { count: totalCount, error: totalError },
+      ] = await Promise.all([
+        supabase
+          .from("submissions")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "approved")
+          .eq("user_id", newbieUser.id),
+        supabase
+          .from("challenges")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", newbieUser.id),
+      ]);
+
+      let calculatedProgress = 0;
+
+      if (approvedError || totalError) {
+        console.error("Error fetching challenges data:", approvedError || totalError);
+      } else {
+        if (approvedCount !== null && totalCount !== null && totalCount > 0) {
+          const percentage = (approvedCount / totalCount) * 100;
+          calculatedProgress = parseFloat(percentage.toFixed(1));
+        } else {
+          calculatedProgress = 0;
+        }
+      }
+
       // Try to get existing progress record first
       const { data: progressRecord, error: progressError } = await supabase
         .from("user_progress")
@@ -103,14 +132,10 @@ export default function ProgressTracker() {
         .eq("user_id", newbieUser.id)
         .single();
 
-      let calculatedProgress = 0;
-
       if (progressError) {
-        // If no progress record exists, calculate from submissions
-        console.log("No progress record found, calculating from submissions");
-        calculatedProgress = await calculateProgressFromSubmissions(newbieUser.id);
+        // If no progress record exists, create one with calculated progress
+        console.log("No progress record found, creating one with calculated progress");
         
-        // Create a progress record
         const { error: insertError } = await supabase
           .from("user_progress")
           .insert({
@@ -119,10 +144,20 @@ export default function ProgressTracker() {
           });
 
         if (insertError) {
-        //   console.error("Error creating progress record:", insertError);
+          console.error("Error creating progress record:", insertError);
         }
       } else {
-        calculatedProgress = progressRecord?.progress_value || 0;
+        // Update the progress record if the calculated progress is different
+        if (progressRecord && Math.abs(progressRecord.progress_value - calculatedProgress) > 0.1) {
+          const { error: updateError } = await supabase
+            .from("user_progress")
+            .update({ progress_value: calculatedProgress })
+            .eq("user_id", newbieUser.id);
+
+          if (updateError) {
+            console.error("Error updating progress record:", updateError);
+          }
+        }
       }
 
       setProgressData({
@@ -184,9 +219,9 @@ export default function ProgressTracker() {
             <div className="h-6 bg-gray-200 rounded w-32"></div>
           </div>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
+            {[1].map((i) => (
               <div key={i} className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-48"></div>
+                {/* <div className="h-4 bg-gray-200 rounded w-48"></div> */}
                 <div className="h-2 bg-gray-200 rounded"></div>
                 <div className="h-3 bg-gray-200 rounded w-24"></div>
               </div>
@@ -233,7 +268,7 @@ export default function ProgressTracker() {
           <path d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <p className="text-sm font-medium text-neutral-600">
-Таны onboarding прогресс        </p>
+          Таны onboarding прогресс        </p>
       </div>
     </div>
   );
