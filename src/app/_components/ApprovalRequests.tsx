@@ -135,8 +135,10 @@ export default function ApprovalRequests() {
                                     <div className="rounded-full py-1 px-[10px] bg-white border text-xs font-semibold">
                                         {submission.challenges?.week}
                                     </div>
-                                    <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">
+                                    <div className={`rounded-full py-1 px-[10px] ${submission.challenges?.difficulty === "Easy" && "bg-green-100 text-green-800"} ${submission.challenges?.difficulty === "Medium" && "bg-amber-100 text-amber-800"} ${submission.challenges?.difficulty === "Hard" && "bg-pink-100 text-pink-800"} text-xs font-medium`}>
                                         {submission.challenges?.difficulty === "Easy" && "Хялбар"}
+                                        {submission.challenges?.difficulty === "Medium" && "Дундаж"}
+                                        {submission.challenges?.difficulty === "Hard" && "Хэцүү"}
                                     </div>
                                 </div>
 

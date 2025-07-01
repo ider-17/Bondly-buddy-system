@@ -141,34 +141,6 @@ export default function YourProgress() {
   }
 
   return (
-    // <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200">
-    //   <div className="py-5 px-6">
-    //     <div>
-    //       <div className="flex gap-2 items-center">
-    //         <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-    //           <TrendingUp size={18} color="green" />
-    //         </div>
-    //         <p className="text-lg font-semibold">{approvedChallengesLength}%</p>
-    //       </div>
-    //       <Progress value={approvedChallengesLength} className="h-2 mt-5" />
-    //       <p className="text-l font-medium py-5">Сорилтууд</p>
-    //     </div>
-
-    // <div className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
-    //   <h5 className="text-sm font-semibold">Сорилт 1</h5>
-
-    //   <div className="overflow-scroll h-[60px]">
-    //     <div>
-    //       <h6 className="text-sm font-medium mb-2">Өөрийгөө багтаа танилцуулаарай😊</h6>
-    //       <div className="flex gap-3 [&>*]:rounded-full [&>*]:py-1 [&>*]:px-[10px] [&>*]:h-fit">
-    //         <div className="border border-gray-200 text-xs">1-р долоо хоног</div>
-    //         <div className="text-green-800 bg-green-100 text-xs font-medium">Хялбар</div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-    //   </div>
-    // </div>
     <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200 py-5 px-6">
       <div className="flex gap-2 items-center">
         <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">

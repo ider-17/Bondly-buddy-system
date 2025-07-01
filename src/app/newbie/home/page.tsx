@@ -398,7 +398,7 @@ const renderHeader = () => {
         selectedSection={selectedSection}
         onSelectSection={(section) => setSelectedSection(section)}
       />
-      <div className="w-full pl-[312px] flex flex-col h-screen overflow-auto">
+      <div className="w-full pl-[312px] flex flex-col max-h-screen overflow-hidden">
         {renderHeader()}
       </div>
     </div>

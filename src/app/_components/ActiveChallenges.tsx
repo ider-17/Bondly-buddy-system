@@ -114,7 +114,7 @@ export default function ActiveChallenges() {
     }
 
     return (
-        <div className="pb-5 px-6">
+        <div className="pb-5 px-6 h-[400px] overflow-y-scroll">
             {activeChallenges.length === 0 && (
                 <p className="text-sm text-gray-500">
                     Идэвхтэй сорилт олдсонгүй.
@@ -131,8 +131,10 @@ export default function ActiveChallenges() {
                         <div className="rounded-full py-1 px-[10px] text-xs border border-gray-200 font-semibold">
                             {challenge.week}
                         </div>
-                        <div className="rounded-full py-1 px-[10px] bg-green-100 text-green-800 text-xs font-medium">
+                        <div className={`rounded-full py-1 px-[10px] ${challenge.difficulty === "Easy" && "bg-green-100 text-green-800"} ${challenge.difficulty === "Medium" && "bg-amber-100 text-amber-800"} ${challenge.difficulty === "Hard" && "bg-pink-100 text-pink-800"} text-xs font-medium`}>
                             {challenge.difficulty === "Easy" && "Хялбар"}
+                            {challenge.difficulty === "Medium" && "Дундаж"}
+                            {challenge.difficulty === "Hard" && "Хэцүү"}
                         </div>
                     </div>
 
