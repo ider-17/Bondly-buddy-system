@@ -5,6 +5,16 @@ import { CircleAlert, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+interface ApprovedSubmission {
+  id: string;
+  challenge_title?: string;
+  challenge_description?: string;
+  submitted_at?: string;
+  status: string;
+  difficulty?: "Easy" | "Medium" | "Hard";
+  week?: string;
+}
+
 export default function YourProgress() {
   const [approvedChallengesLength, setApprovedChallengesLength] =
     useState<number>(0);
@@ -12,6 +22,8 @@ export default function YourProgress() {
   const [completedChallenges, setCompletedChallenges] = useState<number>(0);
   const [readTips, setReadTips] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<string>('');
+  const [approvedSubmissions, setApprovedSubmissions] = useState<ApprovedSubmission[]>([]);
 
   const fetchProgressData = async () => {
     try {
@@ -28,6 +40,19 @@ export default function YourProgress() {
       }
 
       const userId = session.user.id;
+
+      // Fetch user role
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      if (userError) {
+        console.error("Error fetching user role:", userError);
+      } else if (userData) {
+        setUserRole(userData.role || '');
+      }
 
       const [
         { count: approvedCount, error: approvedError },
@@ -60,6 +85,51 @@ export default function YourProgress() {
         }
       }
 
+      // Fetch approved submissions details only for newbies
+      if (userData?.role !== 'buddy') {
+        const { data: submissionsData, error: submissionsError } = await supabase
+          .from("submissions")
+          .select(`
+            id,
+            challenge_id,
+            submitted_at,
+            status,
+            note
+          `)
+          .eq("status", "approved")
+          .eq("user_id", userId)
+          .order("submitted_at", { ascending: false });
+
+        if (submissionsError) {
+          console.error("Error fetching approved submissions:", submissionsError);
+        } else if (submissionsData) {
+          // Fetch challenge details for each submission
+          const challengeIds = submissionsData.map(sub => sub.challenge_id);
+          const { data: challengesData, error: challengesError } = await supabase
+            .from("challenges")
+            .select("id, title, note, difficulty, week")
+            .in("id", challengeIds);
+
+          if (challengesError) {
+            console.error("Error fetching challenges data:", challengesError);
+          }
+
+          const mappedSubmissions: ApprovedSubmission[] = submissionsData.map((submission: any) => {
+            const challenge = challengesData?.find(ch => ch.id === submission.challenge_id);
+            return {
+              id: submission.id,
+              challenge_title: challenge?.title || "Unknown Challenge",
+              challenge_description: challenge?.note || submission.note || "",
+              submitted_at: submission.submitted_at,
+              status: submission.status,
+              difficulty: challenge?.difficulty || "Easy",
+              week: challenge?.week || "1-р долоо хоног",
+            };
+          });
+          setApprovedSubmissions(mappedSubmissions);
+        }
+      }
+
       const { count: activeDaysCount, error: activeDaysError } = await supabase
         .from("user_activity")
         .select("*", { count: "exact", head: true })
@@ -86,6 +156,18 @@ export default function YourProgress() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format date helper function
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Unknown date";
+    
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}/${month}/${day}`;
   };
 
   useEffect(() => {
@@ -121,9 +203,26 @@ export default function YourProgress() {
       )
       .subscribe();
 
+    // Add subscription for submissions changes (only for newbies)
+    const submissionsSubscription = supabase
+      .channel("submissions_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "submissions",
+        },
+        (payload) => {
+          fetchProgressData();
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(readTipsSubscription);
       supabase.removeChannel(activitySubscription);
+      supabase.removeChannel(submissionsSubscription);
     };
   }, []);
 
@@ -141,34 +240,6 @@ export default function YourProgress() {
   }
 
   return (
-    // <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200">
-    //   <div className="py-5 px-6">
-    //     <div>
-    //       <div className="flex gap-2 items-center">
-    //         <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
-    //           <TrendingUp size={18} color="green" />
-    //         </div>
-    //         <p className="text-lg font-semibold">{approvedChallengesLength}%</p>
-    //       </div>
-    //       <Progress value={approvedChallengesLength} className="h-2 mt-5" />
-    //       <p className="text-l font-medium py-5">Сорилтууд</p>
-    //     </div>
-
-    // <div className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
-    //   <h5 className="text-sm font-semibold">Сорилт 1</h5>
-
-    //   <div className="overflow-scroll h-[60px]">
-    //     <div>
-    //       <h6 className="text-sm font-medium mb-2">Өөрийгөө багтаа танилцуулаарай😊</h6>
-    //       <div className="flex gap-3 [&>*]:rounded-full [&>*]:py-1 [&>*]:px-[10px] [&>*]:h-fit">
-    //         <div className="border border-gray-200 text-xs">1-р долоо хоног</div>
-    //         <div className="text-green-800 bg-green-100 text-xs font-medium">Хялбар</div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-    //   </div>
-    // </div>
     <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200 py-5 px-6">
       <div className="flex gap-2 items-center">
         <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
@@ -188,7 +259,7 @@ export default function YourProgress() {
         <p className="text-sm font-medium text-neutral-600">Таны onboarding прогресс</p>
       </div>
 
-      <p className="text-sm font-semibold">Сорилтууд</p>
+      {/* <p className="text-sm font-semibold">Сорилтууд</p>
 
       <div className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
         <h5 className="text-sm font-semibold">Сорилт 1</h5>
@@ -202,7 +273,36 @@ export default function YourProgress() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+
+      {/* Show approved submissions only for newbies */}
+      {userRole !== 'buddy' && approvedSubmissions.length > 0 && (
+        <div className="space-y-3 overflow-scroll h-[222px]">
+          <p className="text-sm font-semibold">Сорилтууд</p>
+          {approvedSubmissions.map((submission) => (
+            <div key={submission.id} className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
+              <div className="flex justify-between items-start">
+                <h5 className="text-sm font-semibold">{submission.challenge_title}</h5>
+              </div>
+              
+              <div className="flex gap-3 items-center">
+                <div className="border border-gray-200 text-xs rounded-full py-1 px-2">
+                  {submission.week || "1-р долоо хоног"}
+                </div>
+                <div className="text-green-800 bg-green-100 text-xs font-medium rounded-full py-1 px-2">
+                  {submission.difficulty === "Easy"
+                    ? "Хялбар"
+                    : submission.difficulty === "Medium"
+                    ? "Дунд"
+                    : submission.difficulty === "Hard"
+                    ? "Хэцүү"
+                    : "Хялбар"}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

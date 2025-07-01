@@ -35,6 +35,8 @@ import YourProgress from "@/app/_components/YourProgress";
 import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
 import BuddyProfile from "@/app/_components/BuddyProfile";
 import BuddyInterests from "@/app/_components/BuddyInterest";
+import { Skeleton } from "@/components/ui/skeleton";
+import ProgressTracker from "@/app/_components/BuddyProgress";
 
 interface Challenge {
   id: string;
@@ -46,6 +48,11 @@ interface Challenge {
   user_id: string;
   created_at: string;
   derivedStatus?: string;
+  users?: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 interface Submission {
@@ -63,6 +70,17 @@ type Notification = {
   created_at: string;
 };
 
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  position?: string;
+  avatar_url?: string;
+  rank?: string;
+  profile_pic?: string;
+}
+
 export default function BuddyHome() {
   const [selectedSection, setSelectedSection] = useState("Нүүр");
   const [activeTab, setActiveTab] = useState("Active");
@@ -77,42 +95,105 @@ export default function BuddyHome() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  
+  // Add user profile state
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
+  // Fetch user profile data
   useEffect(() => {
-    async function fetchUserAndNotifications() {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+    async function fetchUserProfile() {
+      try {
+        setLoadingProfile(true);
+        
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error("Error getting user:", error.message);
-        return;
-      }
+        if (authError || !user) {
+          console.error("Error getting user:", authError?.message);
+          return;
+        }
 
-      if (user) {
         setUserId(user.id);
 
-        setLoadingNotifications(true);
-        const { data, error: notifError } = await supabase
-          .from("notification")
-          .select("id, message, created_at")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(20);
+        // Fetch user profile from your users table
+        const { data: profileData, error: profileError } = await supabase
+          .from("users")
+          .select("id, name, email, role, rank, profile_pic")
+          .eq("id", user.id)
+          .single();
 
-        if (notifError) {
-          console.error("Error fetching notifications:", notifError.message);
+        if (profileError) {
+          console.error("Error fetching user profile:", profileError.message);
+          // Fallback to auth user data
+          setUserProfile({
+            id: user.id,
+            name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+            email: user.email || '',
+            role: 'newbie',
+            avatar_url: user.user_metadata?.avatar_url,
+          });
         } else {
-          setNotifications(data ?? []);
+          setUserProfile(profileData);
         }
-        setLoadingNotifications(false);
+      } catch (error) {
+        console.error("Error in fetchUserProfile:", error);
+      } finally {
+        setLoadingProfile(false);
       }
     }
 
-    fetchUserAndNotifications();
+    fetchUserProfile();
   }, []);
 
+  // Original notification fetching logic
+  useEffect(() => {
+    async function fetchNotifications() {
+      if (!userId) return;
+
+      setLoadingNotifications(true);
+      const { data, error } = await supabase
+        .from("notification")
+        .select("id, message, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("Error fetching notifications:", error.message);
+      } else {
+        setNotifications(data ?? []);
+      }
+      setLoadingNotifications(false);
+    }
+
+    if (userId) {
+      fetchNotifications();
+
+      const channel = supabase
+        .channel("notification-updates")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notification",
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload) => {
+            const newNotif = payload.new as Notification;
+            setNotifications((prev) => [newNotif, ...prev].slice(0, 20));
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -121,11 +202,12 @@ export default function BuddyHome() {
       setLoading(true);
 
       try {
+        // Fixed the join - using 'users' instead of 'user' to match your database schema
         const { data: challengesData, error: challengesError } = await supabase
           .from("challenges")
           .select(`
             *,
-            user:user_id (
+            users:user_id (
               id,
               name,
               email
@@ -158,52 +240,6 @@ export default function BuddyHome() {
     }
 
     fetchData();
-  }, [userId]);
-
-  useEffect(() => {
-    if (!userId) return;
-
-    async function fetchNotifications() {
-      setLoadingNotifications(true);
-      const { data, error } = await supabase
-        .from("notification")
-        .select("id, message, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(20);
-
-      if (error) {
-        console.error("Error fetching notifications:", error.message);
-        setLoadingNotifications(false);
-        return;
-      }
-
-      setNotifications(data ?? []);
-      setLoadingNotifications(false);
-    }
-
-    fetchNotifications();
-
-    const channel = supabase
-      .channel("notification-updates")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notification",
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload) => {
-          const newNotif = payload.new as Notification;
-          setNotifications((prev) => [newNotif, ...prev].slice(0, 20));
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, [userId]);
 
   useEffect(() => {
@@ -338,11 +374,69 @@ export default function BuddyHome() {
       toast.success("Challenge submitted for approval!");
       setNote("");
       setSelectedChallenge(null);
+      
+      // Refresh data after successful submission
+      const { data: updatedChallenges } = await supabase
+        .from("challenges")
+        .select(`
+          *,
+          users:user_id (
+            id,
+            name,
+            email
+          )
+        `)
+        .order("created_at", { ascending: false });
+      
+      const { data: updatedSubmissions } = await supabase
+        .from("submissions")
+        .select("*")
+        .order("submitted_at", { ascending: false });
+      
+      if (updatedChallenges) setChallenges(updatedChallenges);
+      if (updatedSubmissions) setSubmissions(updatedSubmissions);
+      
     } catch (error) {
       console.error("Error submitting challenge:", error);
       toast.error("Failed to submit challenge");
     }
   }
+
+  // Generate avatar fallback from name (matching HomePage.tsx pattern)
+  const getAvatarFallback = () => {
+    if (userProfile?.name) {
+      return userProfile.name.charAt(0).toUpperCase()
+    }
+    return "U"
+  }
+
+  // Format role display (matching HomePage.tsx pattern)
+  const getRoleDisplay = () => {
+    if (!userProfile?.rank) return "User"
+    
+    // Capitalize first letter and handle role formatting
+    const roleMap: { [key: string]: string } = {
+      'newbie': 'Newbie',
+      'buddy': 'Buddy'
+    }
+    
+    return roleMap[userProfile.rank] || userProfile.rank
+  }
+
+  // Get display name (matching HomePage.tsx pattern)
+  const getDisplayName = () => {
+    if (!userProfile?.name) return "User"
+    
+    return userProfile.name
+  }
+
+  // Helper function to format position/role display
+  const getDisplayPosition = (profile: UserProfile | null) => {
+    if (!profile) return 'User';
+    if (profile.role === 'buddy') return 'Buddy';
+    if (profile.role === 'newbie') return 'Intern';
+    return 'User';
+  };
 
   const renderHeader = () => {
     if (selectedSection === "Нүүр") {
@@ -350,18 +444,41 @@ export default function BuddyHome() {
         <div className="bg-slate-100">
           <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
             <div className="flex gap-3 items-center">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div>
-                <h6 className="text-base font-medium">Сайн уу👋 Тайванбат</h6>
-                <div className="flex">
-                  <p className="text-[#525252] font-medium text-sm">
-                    UX/UI Senior Designer
-                  </p>
-                </div>
-              </div>
+              {loadingProfile ? (
+                <>
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Avatar className="w-10 h-10">
+                    {userProfile?.profile_pic ? (
+                      <AvatarImage 
+                        src={userProfile.profile_pic} 
+                        alt={`${userProfile.name || 'User'}'s avatar`}
+                        onError={(e) => {
+                          console.error("Failed to load avatar image:", userProfile.profile_pic)
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    ) : null}
+                    <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
+                      {getAvatarFallback()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h6 className="text-base font-medium">
+                      Сайн уу👋 {getDisplayName()}
+                    </h6>
+                    <p className="text-neutral-500 font-medium text-sm">
+                      {getRoleDisplay()}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <div>
               <Popover>
@@ -421,29 +538,20 @@ export default function BuddyHome() {
             </div>
           </header>
 
-
           <div className="flex flex-col gap-8 px-20 py-10 w-full">
             <div className="w-full">
-
-              <YourProgress />
-
+              <ProgressTracker />
             </div>
 
             <InternYouGuiding />
 
             <div className="flex gap-5">
-
               <div className="w-1/2 h-fit rounded-lg border border-gray-200 bg-white">
-
                 <ApprovalRequests />
               </div>
               <EventsThisWeek />
             </div>
-
           </div>
-
-
-
         </div>
       );
 
