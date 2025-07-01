@@ -387,21 +387,11 @@ export default function NewbieHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 py-10 px-20 bg-slate-100 min-h-screen">
-            <div className="w-1/2 space-y-5">
+          <div className="flex flex-col gap-5 py-10 px-20 bg-slate-100 min-h-screen">
+            <div className="w-full flex gap-5">
               <RotatingBuddyCard />
 
-              <div className="rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
-                <div className="flex items-center">
-                  <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
-                </div>
-                <ActiveChallenges />
-              </div>
-
-            </div>
-            <div className="w-1/2 space-y-5">
-
-              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+              <div className='w-1/2 h-fit rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
                 <div>
                   <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
 
@@ -409,6 +399,16 @@ export default function NewbieHome() {
 
                   <YourProgress />
                 </div>
+              </div>
+            </div>
+
+            <div className="w-full flex gap-5">
+
+              <div className="w-1/2 rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
+                <div className="flex items-center">
+                  <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
+                </div>
+                <ActiveChallenges />
               </div>
 
               <EventsThisWeek />

@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function RotatingBuddyCard() {
     return (
-        <div className='bg-white py-5 px-6 rounded-lg border border-gray-200 space-y-5'>
+        <div className='w-1/2 h-fit bg-white py-5 px-6 rounded-lg border border-gray-200 space-y-5'>
             <h6 className='font-medium text-lg'>Таны 2 долоо хоногийн хамтрагч</h6>
 
             <div>
