@@ -117,8 +117,7 @@ export default function ActiveChallenges() {
         <>
             {activeChallenges.length === 0 && (
                 <p className="text-sm text-gray-500">
-                    No active challenges found. All challenges have been submitted or
-                    completed.
+                    Идэвхтэй сорилт олдсонгүй.
                 </p>
             )}
 

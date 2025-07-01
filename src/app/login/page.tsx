@@ -5,12 +5,22 @@ import { useRouter } from "next/navigation"
 import { HeartHandshake } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 
+// Loading Spinner Component
+const LoadingSpinner = () => {
+  return (
+    <div className="flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+}
+
 export default function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [rememberMe, setRememberMe] = useState(false)
     const [selectedRole, setSelectedRole] = useState<"newbie" | "buddy" | null>(null)
     const [errorMessage, setErrorMessage] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
     const router = useRouter()
 
@@ -43,48 +53,57 @@ export default function Login() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage("") // reset
+        setIsLoading(true) // Start loading
 
         if (!email || !password) {
             setErrorMessage("Имэйл болон нууц үг хоёулаа шаардлагатай.")
+            setIsLoading(false)
             return
         }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
 
-        if (error) {
-            setErrorMessage("Имэйл эсвэл нууц үг буруу байна.")
-            return
-        }
+            if (error) {
+                setErrorMessage("Имэйл эсвэл нууц үг буруу байна.")
+                setIsLoading(false)
+                return
+            }
 
-        // Remember me logic
-        if (rememberMe) {
-            localStorage.setItem("rememberedEmail", email)
-            localStorage.setItem("rememberedPassword", password)
-        } else {
-            localStorage.removeItem("rememberedEmail")
-            localStorage.removeItem("rememberedPassword")
-        }
+            // Remember me logic
+            if (rememberMe) {
+                localStorage.setItem("rememberedEmail", email)
+                localStorage.setItem("rememberedPassword", password)
+            } else {
+                localStorage.removeItem("rememberedEmail")
+                localStorage.removeItem("rememberedPassword")
+            }
 
-        const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('role, first_login')
-            .eq('id', data.user.id)
-            .single()
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role, first_login')
+                .eq('id', data.user.id)
+                .single()
 
-        if (userError || !userData) {
-            setErrorMessage("Хэрэглэгчийн мэдээлэл олдсонгүй.")
-            return
-        }
+            if (userError || !userData) {
+                setErrorMessage("Хэрэглэгчийн мэдээлэл олдсонгүй.")
+                setIsLoading(false)
+                return
+            }
 
-        if (userData.first_login) {
-            router.push("/onboarding")
-        } else if (userData.role === "newbie") {
-            router.push("/newbie/home")
-        } else if (userData.role === "buddy") {
-            router.push("/buddy/home")
+            if (userData.first_login) {
+                router.push("/onboarding")
+            } else if (userData.role === "newbie") {
+                router.push("/newbie/home")
+            } else if (userData.role === "buddy") {
+                router.push("/buddy/home")
+            }
+        } catch (error) {
+            setErrorMessage("Алдаа гарлаа. Дахин оролдоно уу.")
+            setIsLoading(false)
         }
     }
 
@@ -99,7 +118,7 @@ export default function Login() {
                 <div className="flex flex-col gap-2">
                     <h2 className="text-2xl font-semibold">BuddyConnect</h2>
                     <p className="text-sm font-medium text-neutral-600">
-                        You’re here to guide a journey. Let’s get started.
+                        You're here to guide a journey. Let's get started.
                     </p>
                 </div>
             </div>
@@ -128,6 +147,7 @@ export default function Login() {
                         className="w-full border border-neutral-300 rounded-lg py-3 px-2"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        disabled={isLoading}
                     />
                 </div>
 
@@ -139,6 +159,7 @@ export default function Login() {
                         className="w-full border border-neutral-300 rounded-lg py-3 px-2"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        disabled={isLoading}
                     />
                 </div>
 
@@ -148,6 +169,7 @@ export default function Login() {
                             type="checkbox"
                             checked={rememberMe}
                             onChange={e => setRememberMe(e.target.checked)}
+                            disabled={isLoading}
                         />
                         <p className="font-medium">Remember me</p>
                     </div>
@@ -163,6 +185,7 @@ export default function Login() {
                                 onChange={() =>
                                     setSelectedRole(prev => prev === "newbie" ? null : "newbie")
                                 }
+                                disabled={isLoading}
                             />
                             <p>Newbie</p>
                         </div>
@@ -174,6 +197,7 @@ export default function Login() {
                                 onChange={() =>
                                     setSelectedRole(prev => prev === "buddy" ? null : "buddy")
                                 }
+                                disabled={isLoading}
                             />
                             <p>Buddy</p>
                         </div>
@@ -182,9 +206,14 @@ export default function Login() {
 
                 <button
                     type="submit"
-                    className="py-2 px-4 rounded-lg bg-black text-center text-white w-full cursor-pointer select-none"
+                    disabled={isLoading}
+                    className={`py-2 px-4 rounded-lg text-center text-white w-full cursor-pointer select-none transition-colors ${
+                        isLoading 
+                            ? 'bg-gray-600 cursor-not-allowed' 
+                            : 'bg-black hover:bg-gray-800'
+                    }`}
                 >
-                    Sign in
+                    {isLoading ? <LoadingSpinner /> : 'Sign in'}
                 </button>
             </form>
         </div>
