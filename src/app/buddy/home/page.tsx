@@ -423,26 +423,20 @@ export default function BuddyHome() {
 
           <div className="flex flex-col gap-8 px-20 py-10 w-full">
             <div className="w-full">
-              <div className="rounded-xl border border-gray-200 py-5 px-6 bg-white">
-                <YourProgress />
-              </div>
+
+              <YourProgress />
+
             </div>
 
             <InternYouGuiding />
 
-            <div className="flex flex-col lg:flex-row gap-6 w-full justify-between items-stretch">
-              <div className="w-full lg:w-1/2">
-                <div className="h-[550px] overflow-y-auto rounded-xl border border-gray-200 py-5 px-6 bg-white">
-                  <ApprovalRequests />
-                </div>
-              </div>
+            <div className="flex gap-5">
 
+              <div className="w-1/2 h-fit rounded-lg border border-gray-200 bg-white">
 
-              <div className="w-full lg:w-1/2">
-                <div className="h-full rounded-xl border border-gray-200 py-5 px-6 bg-white">
-                  <EventsThisWeek />
-                </div>
+                <ApprovalRequests />
               </div>
+              <EventsThisWeek />
             </div>
 
           </div>

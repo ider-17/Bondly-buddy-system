@@ -112,64 +112,60 @@ export default function ApprovalRequests() {
     }
 
     return (
-        <div className="bg-white rounded-xl space-y-4">
-            <div className="flex gap-3">
-                <h6 className="text-xl font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
-            </div>
+        <div className="bg-white  rounded-xl ">
+            <h6 className="text-xl py-5 px-6 font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
 
             <hr />
 
-            {requests.length === 0 && (
-                <p className="text-sm text-gray-500">Одоогоор хүсэлт ирээгүй байна.</p>
-            )}
+            <div className="py-5 px-6">
+                {requests.length === 0 && (
+                    <p className="text-sm text-gray-500">Одоогоор хүсэлт ирээгүй байна.</p>
+                )}
 
-            {requests.map((submission) => (
-                <div
-                    key={submission.id}
-                    className="py-[10px] space-y-4 border-b border-neutral-200"
-                >
-                    <div className="flex gap-3 justify-between">
-                        <div className="w-full">
-                            <p className="font-semibold">{submission.challenges?.title}</p>
+                {requests.map((submission) => (
+                    <div
+                        key={submission.id}
+                        className="py-[10px] space-y-4 border-b border-neutral-200"
+                    >
+                        <div className="flex gap-3">
+                            <div className="w-full">
+                                <p className=" font-semibold">{submission.challenges?.title}</p>
 
-                            <div className="flex gap-3 mt-2">
-                                <div className="rounded-full py-1 px-[10px] bg-white border text-xs font-semibold">
-                                    {submission.challenges?.week}
+                                <div className="flex gap-3 mt-2">
+                                    <div className="rounded-full py-1 px-[10px] bg-white border text-xs font-semibold">
+                                        {submission.challenges?.week}
+                                    </div>
+                                    <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">
+                                        {submission.challenges?.difficulty === "Easy" && "Хялбар"}
+                                    </div>
                                 </div>
-                                <div className="rounded-full py-1 px-[10px] bg-green-200 text-green-700 text-xs font-semibold">
-                                    {submission.challenges?.difficulty === "Easy" && "Хялбар"}
-                                    {submission.challenges?.difficulty === "Medium" && "Дунд"}
-                                    {submission.challenges?.difficulty === "Hard" && "Хэцүү"}
-                                </div>
+
+                                {submission.note && (
+                                    <p className="text-sm p-1 text-gray-700 mt-1 whitespace-pre-line">
+                                        {submission.note}
+                                    </p>
+                                )}
                             </div>
-
-                            {submission.note && (
-                                <p className="text-sm p-1 text-gray-700 mt-1 whitespace-pre-line">
-                                    {submission.note}
-                                </p>
-                            )}
                         </div>
 
                         <div className="flex gap-3">
                             <button
                                 onClick={() => handleDecline(submission.id)}
-                                className="w-fit border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center select-none bg-transparent text-black hover:bg-orange-100 active:bg-orange-500 active:text-white"
+                                className="w-1/2 border border-neutral-300 py-2 px-3 rounded-lg flex gap-2 items-center justify-center select-none bg-transparent text-black hover:bg-orange-100 active:bg-orange-500 active:text-white"
                             >
-                                <p className="text-sm font-medium">Татгалзах</p>
-                                <CircleMinus className="w-4 h-4" />
+                                <p className="text-sm font-medium">Decline</p>
                             </button>
 
                             <button
                                 onClick={() => handleApprove(submission.id)}
-                                className="w-fit border border-green-500 py-2 px-3 rounded-lg flex gap-2 items-center justify-center hover:bg-green-200 active:bg-green-500 active:text-white select-none cursor-pointer text-black"
+                                className="w-1/2 border border-green-500 py-2 px-3 rounded-lg flex gap-2 items-center justify-center hover:bg-green-200 active:bg-green-500 active:text-white select-none cursor-pointer text-black"
                             >
-                                <p className="text-sm font-medium">Зөвшөөрөх</p>
-                                <CircleCheckBig className="w-4 h-4" />
+                                <p className="text-sm font-medium">Approve</p>
                             </button>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 
