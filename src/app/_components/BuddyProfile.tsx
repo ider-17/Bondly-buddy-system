@@ -30,7 +30,7 @@ export default function BuddyProfile() {
           joined_at: data.created_at?.split("T")[0] || "2025-06-12",
           name: data.name || "Unknown",
           role: data.role || "Newbie",
-          avatar_url: data.avatar_url || "https://github.com/shadcn.png",
+          profile_pic: data.profile.pic || "https://github.com/shadcn.png",
         });
       }
     }
@@ -44,7 +44,7 @@ export default function BuddyProfile() {
       <div className="flex justify-between items-center">
         <div className="flex gap-3">
           <Avatar className="w-16 h-16">
-            <AvatarImage src={profile?.avatar_url} />
+            <AvatarImage src={profile?.profile_pic} />
             <AvatarFallback>{profile?.name?.[0] || "U"}</AvatarFallback>
           </Avatar>
 

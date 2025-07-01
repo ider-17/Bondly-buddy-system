@@ -8,51 +8,177 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export interface UserProfile {
     email: string
-    phone_number?: string
+    phone_number?: bigint | number
     joined_at?: string
     name?: string
     role?: string
-    avatar_url?: string
+    profile_pic?: string
     rank?: string
+    interests?: string[]
+    career_goals?: string
 }
 
 export default function ProfileCard() {
     const [profile, setProfile] = useState<UserProfile | null>(null)
     const [loading, setLoading] = useState(true)
+    const [activeDays, setActiveDays] = useState<number>(0)
+    const [completedChallenges, setCompletedChallenges] = useState<number>(0)
+    const [readTips, setReadTips] = useState<number>(0)
 
-    useEffect(() => {
-        async function fetchUserProfile() {
+    const fetchUserProfile = async () => {
+        try {
             setLoading(true)
+            
             const {
-                data: { user },
-                error: userError,
-            } = await supabase.auth.getUser()
+                data: { session },
+                error: sessionError,
+            } = await supabase.auth.getSession()
 
-            if (userError || !user) {
+            if (sessionError || !session) {
+                console.error("User session not found")
                 setLoading(false)
                 return
             }
 
-            const { data, error } = await supabase
+            const userId = session.user.id
+
+            // Fetch user profile data
+            const { data: userData, error: userError } = await supabase
                 .from("users")
                 .select("*")
-                .eq("id", user.id)
+                .eq("id", userId)
                 .single()
 
-            if (!error && data) {
+            if (!userError && userData) {
                 setProfile({
-                    email: data.email,
-                    phone_number: data.phone_number,
-                    joined_at: data.created_at?.split("T")[0] || "2025-06-12",
-                    name: data.name || "Unknown",
-                    role: data.role || "Newbie",
-                    avatar_url: data.avatar_url || "https://github.com/shadcn.png"
+                    email: userData.email,
+                    phone_number: userData.phone_number,
+                    joined_at: userData.created_at || "2025-06-12",
+                    name: userData.name || "Unknown",
+                    role: userData.role || "newbie",
+                    profile_pic: userData.profile_pic || null,
+                    rank: userData.rank,
+                    interests: userData.interests,
+                    career_goals: userData.career_goals
                 })
             }
+
+            // Fetch progress data in parallel
+            const [
+                { count: activeDaysCount, error: activeDaysError },
+                { count: completedChallengesCount, error: challengesError },
+                { count: readTipsCount, error: readTipsError }
+            ] = await Promise.all([
+                supabase
+                    .from("user_activity")
+                    .select("*", { count: "exact", head: true })
+                    .eq("user_id", userId),
+                supabase
+                    .from("submissions")
+                    .select("*", { count: "exact", head: true })
+                    .eq("status", "approved")
+                    .eq("user_id", userId),
+                supabase
+                    .from("read_tips")
+                    .select("*", { count: "exact", head: true })
+                    .eq("user_id", userId)
+            ])
+
+            if (activeDaysError) {
+                console.error("Error fetching active days:", activeDaysError)
+            } else {
+                setActiveDays(activeDaysCount || 0)
+            }
+
+            if (challengesError) {
+                console.error("Error fetching completed challenges:", challengesError)
+            } else {
+                setCompletedChallenges(completedChallengesCount || 0)
+            }
+
+            if (readTipsError) {
+                console.error("Error fetching read tips:", readTipsError)
+            } else {
+                setReadTips(readTipsCount || 0)
+            }
+
+        } catch (error) {
+            console.error("Error in fetchUserProfile:", error)
+        } finally {
             setLoading(false)
         }
+    }
 
+    useEffect(() => {
         fetchUserProfile()
+
+        // Set up real-time subscriptions
+        const readTipsSubscription = supabase
+            .channel("profile_read_tips_changes")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "read_tips",
+                },
+                (payload) => {
+                    fetchUserProfile()
+                }
+            )
+            .subscribe()
+
+        const activitySubscription = supabase
+            .channel("profile_activity_changes")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "user_activity",
+                },
+                (payload) => {
+                    fetchUserProfile()
+                }
+            )
+            .subscribe()
+
+        const submissionsSubscription = supabase
+            .channel("profile_submissions_changes")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "submissions",
+                },
+                (payload) => {
+                    fetchUserProfile()
+                }
+            )
+            .subscribe()
+
+        const usersSubscription = supabase
+            .channel("profile_users_changes")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "users",
+                },
+                (payload) => {
+                    fetchUserProfile()
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(readTipsSubscription)
+            supabase.removeChannel(activitySubscription)
+            supabase.removeChannel(submissionsSubscription)
+            supabase.removeChannel(usersSubscription)
+        }
     }, [])
 
     console.log(profile, "profileas")
@@ -104,46 +230,43 @@ export default function ProfileCard() {
         )
     }
 
+    // Generate avatar fallback from name or email
+    const getAvatarFallback = () => {
+        if (profile?.name) {
+            return profile.name.charAt(0).toUpperCase()
+        }
+        if (profile?.email) {
+            return profile.email.charAt(0).toUpperCase()
+        }
+        return "U"
+    }
+
     return (
         <div className="w-full py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
             <div className="flex gap-3 items-center">
                 <Avatar className="w-16 h-16">
-                    <AvatarImage src={profile?.avatar_url} />
-                    <AvatarFallback>{profile?.name?.[0] || "U"}</AvatarFallback>
+                    {profile?.profile_pic ? (
+                        <AvatarImage 
+                            src={profile.profile_pic} 
+                            alt={`${profile.name || 'User'}'s avatar`}
+                            onError={(e) => {
+                                console.error("Failed to load avatar image:", profile.profile_pic)
+                                // Hide the image if it fails to load, fallback will show
+                                e.currentTarget.style.display = 'none'
+                            }}
+                        />
+                    ) : null}
+                    <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
+                        {getAvatarFallback()}
+                    </AvatarFallback>
                 </Avatar>
                 <div>
                     <h2 className="text-lg font-medium">{profile?.name || "Loading..."}</h2>
-                    <p className="text-neutral-600 text-sm font-medium">{profile?.role}</p>
+                    <p className="text-neutral-600 text-sm font-medium">{profile?.rank}</p>
                 </div>
             </div>
 
             <hr />
-
-            {/* <div className="flex gap-5">
-                <div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
-                    <Mail size={24} color="black" />
-                    <div>
-                        <p className="text-neutral-600 text-sm font-medium">Mail</p>
-                        <p className="text-sm font-medium">{profile?.email}</p>
-                    </div>
-                </div>
-
-                <div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
-                    <CalendarDays size={24} color="black" />
-                    <div>
-                        <p className="text-neutral-600 text-sm font-medium">Started</p>
-                        <p className="text-neutral-600 text-sm font-medium">{profile?.joined_at}</p>
-                    </div>
-                </div>
-
-                <div className="w-1/3 py-5 px-6 flex gap-2 items-center bg-white rounded-lg">
-                    <Phone size={24} color="black" />
-                    <div>
-                        <p className="text-neutral-600 text-sm font-medium">Phone number</p>
-                        <p className="text-neutral-600 text-sm font-medium">{profile?.phone_number}</p>
-                    </div>
-                </div>
-            </div> */}
 
             <h6 className="text-sm font-semibold">Таны Onboarding-ийн ахиц</h6>
 
@@ -154,7 +277,7 @@ export default function ProfileCard() {
                     </div>
 
                     <div>
-                        <h5 className="text-base font-bold">2</h5>
+                        <h5 className="text-base font-bold">{activeDays}</h5>
                         <p className="text-sm font-medium">Идэвхтэй
                             өдрүүд</p>
                     </div>
@@ -166,7 +289,7 @@ export default function ProfileCard() {
                     </div>
 
                     <div>
-                        <h5 className="text-base font-bold">1</h5>
+                        <h5 className="text-base font-bold">{completedChallenges}</h5>
                         <p className="text-sm font-medium">Биелүүлсэн
                             сорилтууд</p>
                     </div>
@@ -178,7 +301,7 @@ export default function ProfileCard() {
                     </div>
 
                     <div>
-                        <h5 className="text-base font-bold">2</h5>
+                        <h5 className="text-base font-bold">{readTips}</h5>
                         <p className="text-sm font-medium">Уншсан
                             зөвлөмжүүд</p>
                     </div>
