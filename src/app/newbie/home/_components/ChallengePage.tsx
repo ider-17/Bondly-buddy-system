@@ -45,16 +45,148 @@ interface ChallengesProps {
   onSubmit: (challengeId: string, note: string) => Promise<void>;
 }
 
-export default function Challenges({ 
-  challenges, 
-  submissions, 
-  loading, 
-  onSubmit 
+// Individual challenge component to handle its own dialog state
+function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit: (challengeId: string, note: string) => Promise<void> }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [note, setNote] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!note?.trim()) {
+      return;
+    }
+
+    try {
+      await onSubmit(challenge.id, note.trim());
+      setNote("");
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to submit challenge:", error);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (open) {
+      setNote(challenge.note ?? "");
+    } else {
+      setNote("");
+    }
+  };
+
+  return (
+    <div className="rounded-lg bg-white">
+      <div className="flex justify-between items-start">
+        <div className="flex-1 space-y-5">
+          <h3 className="font-medium text-base mb-5">
+            {challenge.title}
+          </h3>
+
+          <div className="flex gap-2">
+            {challenge.derivedStatus === "pending" && (
+              <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
+                Хүлээгдэж байгаа
+              </span>
+            )}
+            {challenge.derivedStatus === "completed" && (
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                Биелэгдсэн
+              </span>
+            )}
+            {challenge.derivedStatus === "active" && (
+              <span className="px-[10px] py-1 border border-gray-200 rounded-full text-xs font-medium">
+                {challenge.week || "1-р долоо хоног"}
+              </span>
+            )}
+            <span
+              className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${
+                challenge.difficulty === "Easy"
+                  ? "bg-green-100 text-green-800"
+                  : challenge.difficulty === "Medium"
+                  ? "bg-amber-100 text-amber-800"
+                  : challenge.difficulty === "Hard"
+                  ? "bg-pink-100 text-pink-800"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {challenge.difficulty === "Easy"
+                ? "Хялбар"
+                : challenge.difficulty === "Medium"
+                ? "Дундаж"
+                : challenge.difficulty === "Hard"
+                ? "Хэцүү"
+                : "Хялбар"}
+            </span>
+          </div>
+
+          {challenge.derivedStatus === "active" && (
+            <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
+              <DialogTrigger asChild>
+                <button className="flex gap-2 border border-neutral-300 py-2 px-3 rounded-lg items-center w-fit cursor-pointer select-none hover:bg-gray-200 active:bg-black active:text-white bg-transparent">
+                  Тэмдэглэл бичих
+                  <FilePlus2 size={20} />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[445px] bg-white">
+                <DialogHeader>
+                  <DialogTitle className="my-3 text-xl">
+                    Тэмдэглэл бичих
+                  </DialogTitle>
+                  <hr className="py-3"></hr>
+                  <DialogDescription className="text-[16px] text-black">
+                    Сорилтын тэмдэглэл
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit}>
+                  <textarea
+                    name="note"
+                    placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
+                    className="w-full bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    required
+                  />
+
+                  <hr className="py-5"></hr>
+
+                  <div className="flex gap-[10px] justify-between">
+                    <DialogClose asChild>
+                      <button
+                        type="button"
+                        className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-gray-200 active:bg-black active:text-white"
+                      >
+                        Cancel
+                      </button>
+                    </DialogClose>
+                    <button
+                      type="submit"
+                      className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-gray-300 active:text-black"
+                    >
+                      Submit for Approval
+                    </button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+          )}
+
+          <hr className="mb-5" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Challenges({
+  challenges,
+  submissions,
+  loading,
+  onSubmit,
 }: ChallengesProps) {
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
-  const [note, setNote] = useState("");
 
   const getChallengeStatus = (challengeId: string) => {
     const submission = submissions.find(
@@ -124,19 +256,6 @@ export default function Challenges({
     };
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedChallenge) return;
-
-    try {
-      await onSubmit(selectedChallenge.id, note);
-      setNote("");
-      setSelectedChallenge(null);
-    } catch (error) {
-      console.error("Failed to submit challenge:", error);
-    }
-  };
-
   const filteredChallenges = getFilteredChallenges();
   const statusCounts = getStatusCounts();
 
@@ -175,9 +294,7 @@ export default function Challenges({
               key={idx}
               onClick={() => setActiveTab(status.key)}
               className={`w-1/3 bg-white border rounded-xl p-5 flex flex-col gap-2 cursor-pointer hover:bg-slate-100 transition-colors ${
-                activeTab === status.key
-                  ? "border-gray-400"
-                  : "border-gray-200"
+                activeTab === status.key ? "border-gray-400" : "border-gray-200"
               }`}
             >
               <div className="w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center">
@@ -227,105 +344,11 @@ export default function Challenges({
           ) : (
             <div>
               {filteredChallenges.map((challenge) => (
-                <div
+                <ChallengeItem 
                   key={challenge.id}
-                  className="rounded-lg bg-white"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 space-y-5">
-                      <h3 className="font-medium text-base mb-5">
-                        {challenge.title}
-                      </h3>
-
-                      <div className="flex gap-2">
-                        {challenge.derivedStatus === "pending" && (
-                          <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
-                            Хүлээгдэж байгаа
-                          </span>
-                        )}
-                        {challenge.derivedStatus === "completed" && (
-                          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                            Биелэгдсэн
-                          </span>
-                        )}
-                        {challenge.derivedStatus == "active" && (
-                          <span className="px-[10px] py-1 border border-gray-200 rounded-full text-xs font-medium">
-                            {challenge.week || "1-р долоо хоног"}
-                          </span>
-                        )}
-                        <span className="h-fit px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                          {challenge.difficulty === "Easy"
-                            ? "Хялбар"
-                            : challenge.difficulty === "Medium"
-                            ? "Дунд"
-                            : challenge.difficulty === "Hard"
-                            ? "Хэцүү"
-                            : "Хялбар"}
-                        </span>
-                      </div>
-
-                      {challenge.derivedStatus === "active" && (
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <button
-                              className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
-                              onClick={() => {
-                                setSelectedChallenge(challenge);
-                                setNote(challenge.note ?? "");
-                              }}
-                            >
-                              Тэмдэглэл бичих
-                              <FilePlus2 size={20} />
-                            </button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[445px]">
-                            <DialogHeader>
-                              <DialogTitle className="my-3 text-xl">
-                                Тэмдэглэл бичих
-                              </DialogTitle>
-                              <hr className="py-3"></hr>
-                              <DialogDescription className="text-[16px] text-black">
-                                Сорилтын тэмдэглэл
-                              </DialogDescription>
-                            </DialogHeader>
-
-                            <form onSubmit={handleSubmit}>
-                              <textarea
-                                name="note"
-                                placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                                className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                                required
-                              />
-
-                              <hr className="py-5"></hr>
-
-                              <div className="flex gap-[10px] justify-between">
-                                <DialogClose asChild>
-                                  <button
-                                    type="button"
-                                    className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
-                                  >
-                                    Cancel
-                                  </button>
-                                </DialogClose>
-                                <button
-                                  type="submit"
-                                  className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
-                                >
-                                  Submit for Approval
-                                </button>
-                              </div>
-                            </form>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-
-                      <hr className="mb-5" />
-                    </div>
-                  </div>
-                </div>
+                  challenge={challenge} 
+                  onSubmit={onSubmit}
+                />
               ))}
             </div>
           )}

@@ -75,7 +75,7 @@ export default function RotatingBuddyCard() {
                             </div>
 
                             <div className="flex h-fit gap-5">
-                                <button className="border border-gray-200 rounded-lg py-[10px] h-fit px-6 bg-white">Дэлгэрэнгүй</button>
+                                <button className="border border-gray-200 rounded-lg py-[10px] h-fit px-6 bg-transparent cursor-pointer select-none hover:bg-gray-200 active:bg-black active:text-white">Дэлгэрэнгүй</button>
                                 <div className='w-1/2 rounded-lg py-[10px] h-fit px-10 flex gap-2 items-center justify-center bg-blue-500 cursor-pointer hover:bg-blue-600 active:bg-blue-700 select-none'>
                                     <Mail color='white' />
                                     <p className='text-white'>Холбогдох</p>
