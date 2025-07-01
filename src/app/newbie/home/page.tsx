@@ -74,6 +74,7 @@ export default function NewbieHome() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [note, setNote] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
+  const [headerLoading, setHeaderLoading] = useState(true);
 
   // Initialize user session and set up real-time subscriptions
   useEffect(() => {
