@@ -41,15 +41,22 @@ export default function BuddyProfile() {
     console.log(profile)
     return (
         <div className="w-full py-5 px-6 rounded-xl border border-gray-200 bg-white h-fit space-y-5">
-            <div className="flex gap-3">
-                <Avatar className="w-16 h-16">
-                    <AvatarImage src={profile?.avatar_url} />
-                    <AvatarFallback>{profile?.name?.[0] || "U"}</AvatarFallback>
-                </Avatar>
+            <div className="flex justify-between items-center">
+                <div className="flex gap-3">
+                    <Avatar className="w-16 h-16">
+                        <AvatarImage src={profile?.avatar_url} />
+                        <AvatarFallback>{profile?.name?.[0] || "U"}</AvatarFallback>
+                    </Avatar>
 
-                <div>
-                    <h2 className="text-lg font-medium">{profile?.name || "Loading..."}</h2>
-                    <p className="text-neutral-500 text-sm font-medium">{profile?.role === "buddy" && "Buddy"}</p>
+                    <div>
+                        <h2 className="text-lg font-medium">{profile?.name || "Loading..."}</h2>
+                        <p className="text-neutral-500 text-sm font-medium">{profile?.role === "buddy" && "Buddy"}{profile?.role === "newbie" && "Newbie"}</p>
+                    </div>
+                </div>
+
+                <div className={`flex gap-2 rounded-lg py-2 px-5 text-white bg-blue-500 ${profile?.role === "buddy" && "hidden"}`}>
+                    <Mail size={24} color="white" />
+                    <p>Надтай холбогдох</p>
                 </div>
             </div>
 
