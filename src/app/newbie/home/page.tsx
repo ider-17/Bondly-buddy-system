@@ -392,9 +392,9 @@ export default function NewbieHome() {
             <div className="w-full flex gap-5">
               <RotatingBuddyCard />
 
-              <div className='w-1/2 h-fit rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+              <div className='w-1/2 h-fit rounded-lg border border-gray-200 space-y-5 bg-white'>
                 <div>
-                  <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
+                  <h6 className='text-lg font-medium  py-5 px-6'>Таны onboarding прогресс</h6>
 
                   <hr />
 

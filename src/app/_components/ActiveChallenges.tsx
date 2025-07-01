@@ -11,7 +11,7 @@ import {
     DialogClose,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { FilePlus2, Mountain } from "lucide-react";
+import { FilePlus2 } from "lucide-react";
 import { submitChallenge } from "@/lib/actions/submitChallenge";
 import { toast } from "sonner";
 

@@ -141,8 +141,8 @@ export default function YourProgress() {
   }
 
   return (
-    <>
-      <div className="mt-5">
+    <div className="py-5 px-6">
+      <div>
         <div className="flex mb-3 gap-3 items-center">
           <div className="w-8 h-8 bg-green-100 rounded-lg flex justify-center items-center">
             <TrendingUp size={18} color="green" />
@@ -150,46 +150,22 @@ export default function YourProgress() {
           <p className="text-sm font-medium">{approvedChallengesLength}%</p>
         </div>
         <Progress value={approvedChallengesLength} className="h-2 mt-5" />
-        <p className="text-l font-medium mt-5">Сорилтууд</p>
+        <p className="text-l font-medium py-5">Сорилтууд</p>
       </div>
 
-      {/* <div className='w-full flex gap-5 justify-between'>
-                <div className='w-1/3 bg-white rounded-xl py-5 px-4 flex flex-col gap-2 shadow-sm border border-gray-100'>
-                    <div className='w-8 h-8 bg-blue-100 rounded-lg flex justify-center items-center'>
-                        <CalendarCheck size={18} color='#2563EB' />
-                    </div>
+      <div className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
+        <h5 className="text-sm font-semibold">Сорилт 1</h5>
 
-                    <div className='flex flex-col justify-center'>
-                        <p className="text-base font-bold text-gray-900">{activeDays}</p>
-                        <p className="text-sm font-medium text-gray-600">Идэвхтэй <br/>
-                            өдрүүд</p>
-                    </div>
-                </div>
-
-                <div className='w-1/3 bg-white rounded-xl py-5 px-4 flex flex-col gap-2 shadow-sm border border-gray-100'>
-                    <div className='w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center'>
-                        <Mountain size={18} color='#D97706' />
-                    </div>
-
-                    <div className='flex flex-col justify-center'>
-                        <p className="text-base font-bold text-gray-900">{completedChallenges}</p>
-                        <p className="text-sm font-medium text-gray-600">Биелүүлсэн <br/>
-                            сорилтууд</p>
-                    </div>
-                </div>
-
-                <div className='w-1/3 bg-white rounded-xl py-5 px-4 flex flex-col gap-2 shadow-sm border border-gray-100'>
-                    <div className='w-8 h-8 bg-violet-100 rounded-lg flex justify-center items-center'>
-                        <Lightbulb size={18} color='#7C3AED' />
-                    </div>
-
-                    <div className='flex flex-col justify-center'>
-                        <p className="text-base font-bold text-gray-900">{readTips}</p>
-                        <p className="text-sm font-medium text-gray-600">Уншсан <br/>
-                            зөвлөмжүүд</p>
-                    </div>
-                </div>
-            </div> */}
-    </>
+        <div className="overflow-scroll h-[60px]">
+          <div>
+            <h6 className="text-sm font-medium mb-2">Өөрийгөө багтаа танилцуулаарай😊</h6>
+            <div className="flex gap-3 [&>*]:rounded-full [&>*]:py-1 [&>*]:px-[10px] [&>*]:h-fit">
+              <div className="border border-gray-200 text-xs">1-р долоо хоног</div>
+              <div className="text-green-800 bg-green-100 text-xs font-medium">Хялбар</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
