@@ -38,6 +38,11 @@ import MoreInformation from "@/app/_components/MoreInformation";
 import MyInterests from "@/app/_components/MyInterests";
 import CareerGoals from "@/app/_components/CareerGoals";
 import BuddyProfile from "@/app/_components/BuddyProfile";
+import Home from "./_components/HomePage";
+import Challenges from "./_components/ChallengePage";
+import Advice from "./_components/AdvicePage";
+import Profile from "./_components/ProfilePage";
+import YourPrimaryBuddy from "./_components/YourBuddyPage";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -361,378 +366,31 @@ export default function NewbieHome() {
 
   const statusCounts = getStatusCounts();
 
-  const renderHeader = () => {
-    if (selectedSection === "Нүүр") {
+const renderHeader = () => {
+  switch (selectedSection) {
+    case "Нүүр":
+      return <Home />;
+    case "Сорилтууд":
       return (
-        <div>
-          <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
-            <div className="flex gap-3 items-center">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div>
-                <h6 className="text-base font-medium">Сайн уу👋 Тогтуун</h6>
-                <p className="text-neutral-500 font-medium text-sm">
-                  UX/UI Designer
-                </p>
-              </div>
-            </div>
-            <div>
-              <Popover>
-                <PopoverTrigger>
-                  <Bell className="cursor-pointer" size={18} />
-                </PopoverTrigger>
-                <PopoverContent>Notifications</PopoverContent>
-              </Popover>
-            </div>
-          </header>
-
-          <div className="flex flex-col gap-5 py-10 px-20 bg-slate-100 min-h-screen">
-            <div className="w-full flex gap-5">
-              <RotatingBuddyCard />
-
-              <div className='w-1/2 h-fit rounded-lg border border-gray-200 space-y-5 bg-white'>
-                <div>
-                  <h6 className='text-lg font-medium  py-5 px-6'>Таны onboarding прогресс</h6>
-
-                  <hr />
-
-                  <YourProgress />
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full flex gap-5">
-
-              <div className="w-1/2 rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
-                <div className="flex items-center">
-                  <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
-                </div>
-                <ActiveChallenges />
-              </div>
-
-              <EventsThisWeek />
-            </div>
-          </div>
-        </div>
+        <Challenges 
+          challenges={challenges}
+          submissions={submissions}
+          loading={loading}
+          onSubmit={async (challengeId: string, note: string) => {
+            await submitChallenge({ challengeId, note });
+          }}
+        />
       );
-    } else if (selectedSection === "Сорилтууд") {
-      return (
-        <div>
-          <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
-            <div>
-              <h1 className="text-xl font-semibold">Сорилтууд</h1>
-              <p className="text-sm font-medium text-neutral-600">
-                Идэвхтэй, хүлээгдэж байгаа болон биелэгдсэн сорилтуудаа хянах
-                боломжтой
-              </p>
-            </div>
-          </header>
-
-          <div className="py-10 px-20 bg-slate-100 space-y-5 min-h-screen">
-
-            <div className="w-full flex gap-5">
-              {[
-                {
-                  name: "Идэвхтэй",
-                  count: statusCounts.active,
-                  key: "Active",
-                },
-                {
-                  name: "Хүлээгдэж байгаа",
-                  count: statusCounts.pending,
-                  key: "Pending",
-                },
-                {
-                  name: "Биелэгдсэн",
-                  count: statusCounts.completed,
-                  key: "Completed",
-                },
-              ].map((status, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => setActiveTab(status.key)}
-                  className={`w-1/3 bg-white border rounded-xl p-5 flex flex-col gap-2 cursor-pointer hover:bg-slate-100 transition-colors ${activeTab === status.key
-                    ? "border-gray-400"
-                    : "border-gray-200"
-                    }`}
-                >
-                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center">
-                    <Mountain size={18} color="#D97706" />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <p className="text-lg font-bold">
-                      {status.count}
-                    </p>
-                    <p className="text-sm font-normal">{status.name}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Filter dropdown only */}
-            <div className="flex justify-self-end justify-between items-center">
-              <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-                <SelectTrigger className="py-5 rounded-lg text-sm bg-white border border-gray-200 select-none">
-                  <SelectValue placeholder="All weeks" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Бүх долоо хоног</SelectItem>
-                  <SelectItem value="1-р долоо хоног">1-р долоо хоног</SelectItem>
-                  <SelectItem value="2-р долоо хоног">2-р долоо хоног</SelectItem>
-                  <SelectItem value="3-р долоо хоног">3-р долоо хоног</SelectItem>
-                  <SelectItem value="4-р долоо хоног">4-р долоо хоног</SelectItem>
-                  <SelectItem value="5-р долоо хоног">5-р долоо хоног</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Challenge List with loading state */}
-            <div className="p-5 border border-gray-200 rounded-xl bg-white">
-              {loading ? (
-                <div className="text-center py-8">
-                  <p>Сорилтуудыг ачааллаж байна...</p>
-                </div>
-              ) : filteredChallenges.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    {activeTab === "Active"
-                      ? "Идэвхтэй"
-                      : activeTab === "Pending"
-                        ? "Хүлээгдэж байгаа"
-                        : "Биелэгдсэн"}{" "}
-                    сорилт олдсонгүй.
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  {filteredChallenges.map((challenge) => (
-                    <div
-                      key={challenge.id}
-                      className="rounded-lg py-5 bg-white"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1 space-y-5">
-                          <h3 className="font-medium text-base mb-5">
-                            {challenge.title}
-                          </h3>
-
-                          <div className="flex gap-2">
-                            {challenge.derivedStatus === "pending" && (
-                              <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
-                                Хүлээгдэж байгаа
-                              </span>
-                            )}
-                            {challenge.derivedStatus === "completed" && (
-                              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                                Биелэгдсэн
-                              </span>
-                            )}
-                            {challenge.derivedStatus == "active" && (
-                              <span className="px-[10px] py-1 border border-gray-200 rounded-full text-xs font-medium">
-                                {challenge.week || "1-р долоо хоног"}
-                              </span>
-                            )}
-                            <span className="h-fit px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                              {challenge.difficulty === "Easy"
-                                ? "Хялбар"
-                                : challenge.difficulty === "Medium"
-                                  ? "Дунд"
-                                  : challenge.difficulty === "Hard"
-                                    ? "Хэцүү"
-                                    : "Хялбар"}
-                            </span>
-
-                          </div>
-                          {/* {challenge.note && (
-                          <p className="text-gray-700 text-sm mb-3">
-                            {challenge.note}
-                          </p>
-                        )} */}
-                          {challenge.derivedStatus === "active" && (
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <button
-                                  className="flex gap-2 border border-neutral-300 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white"
-                                  onClick={() => {
-                                    setSelectedChallenge(challenge);
-                                    setNote(challenge.note ?? "");
-                                  }}
-                                >
-                                  Тэмдэглэл бичих
-                                  <FilePlus2 size={20} />
-                                </button>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-[445px]">
-                                <DialogHeader>
-                                  <DialogTitle className="my-3 text-xl">
-                                    Тэмдэглэл бичих
-                                  </DialogTitle>
-                                  <hr className="py-3"></hr>
-                                  <DialogDescription className="text-[16px] text-black">
-                                    Сорилтын тэмдэглэл
-                                  </DialogDescription>
-                                </DialogHeader>
-
-                                <form onSubmit={handleSubmit}>
-                                  <textarea
-                                    name="note"
-                                    placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                                    className="w-full border border-neutral-300 bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
-                                    value={note}
-                                    onChange={(e) => setNote(e.target.value)}
-                                    required
-                                  />
-
-                                  <hr className="py-3"></hr>
-
-                                  <div className="flex gap-[10px] justify-between">
-                                    <DialogClose asChild>
-                                      <button
-                                        type="button"
-                                        className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-sky-100 active:bg-black active:text-white"
-                                      >
-                                        Cancel
-                                      </button>
-                                    </DialogClose>
-                                    <button
-                                      type="submit"
-                                      className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-sky-100 active:text-black"
-                                    >
-                                      Submit for Approval
-                                    </button>
-                                  </div>
-                                </form>
-                              </DialogContent>
-                            </Dialog>
-                          )}
-
-                          <hr className="mt-10" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      );
-    } else if (selectedSection === "Зөвлөмжүүд") {
-      return (
-        <div>
-          <header className="h-fit header py-3 px-20 flex justify-between bg-white items-center border-b border-neutral-300">
-            <div>
-              <h1 className="text-base font-medium">Зөвлөмж</h1>
-              <p className="text-sm font-medium text-neutral-600">
-                Туршлага дээр суурилсан богино зөвлөмжүүд
-              </p>
-            </div>
-          </header>
-
-          <div className="py-3 px-20 bg-slate-100 min-h-screen">
-            <AdviceContent />
-          </div>
-        </div>
-      );
-    } else if (selectedSection === "Profile") {
-      return (
-        <div>
-          <header className="h-fit header p-5 px-20 flex bg-white items-center border-b border-gray-200">
-            <div>
-              <h6 className="text-base font-medium">Профайл</h6>
-              <p className="text-xs font-medium text-neutral-500">
-                Өөрийн хувийн мэдээллээ харах, хянах боломжтой
-              </p>
-            </div>
-          </header>
-
-          {/* <div className="p-5 mr-10 space-y-5">
-            <ProfileCard />
-
-            <div className="flex gap-5">
-              <div className="w-1/2 space-y-5">
-                <MyInterests />
-                <CareerGoals />
-              </div>
-
-              <div className="w-1/2">
-                <YourProgress />
-              </div>
-            </div>
-
-            <YourPrimaryBuddy />
-            <ProfileInfo />
-
-            <div className="flex gap-5">
-              <Introduction />
-              <Interests />
-            </div>
-          </div> */}
-
-          <div className="bg-slate-100 py-10 px-20 min-h-screen flex gap-5">
-            <div className="w-1/2 space-y-5">
-              <ProfileCard />
-              <MoreInformation />
-              <MyInterests />
-            </div>
-
-            <div className="w-1/2 space-y-5">
-              <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-                <div>
-                  <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
-
-                  <hr />
-
-                  <YourProgress />
-                </div>
-              </div>
-
-              <CareerGoals />
-            </div>
-          </div>
-        </div>
-      );
-    } else if (selectedSection === "Таны үндсэн хамтрагч") {
-      return (
-        <div>
-          <header className="h-fit header p-5 px-20 flex bg-white items-center border-b border-gray-200">
-            <div>
-              <h6 className="text-base font-medium">Таны үндсэн хамтрагч</h6>
-              <p className="text-xs font-medium text-neutral-500">
-                Таны onboarding үйл явцын туршид тогтмол дэмжин тусалж хамт байх таны зөвлөх ментор
-              </p>
-            </div>
-          </header>
-
-          <div className="bg-slate-100 py-10 px-20 min-h-screen space-y-5">
-            <BuddyProfile />
-            <MyInterests />
-
-            <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-5">
-              <h5 className="text-lg font-semibold">Танилцуулга</h5>
-              <p className="text-sm">Сайн уу👋. Намайг Тайванбат гэдэг. Би энэ компанид 4 дэх жилдээ ажиллаж байна. Чиний Primary Buddy-гийн хувьд onboarding-ийн бүх хугацаанд тогтмол дэмжлэг үзүүлэх хүн чинь байх болно. 4 жилийн хугацаанд олон төрлийн төсөл дээр ажиллаж, шинэ гишүүдийг амжилттай адапт хийхэд нь тусалж байсан туршлагатай. Би UX/UI дизайны чиглэлээр мэргэшсэн бөгөөд олон салбарын хамтарсан төслүүдийг удирдан ажиллаж байсан туршлагатай. Хамгийн анхны өдрөөс эхлээд бүх үе шатанд чамайг дэмжинэ🤗. Асуух, санал солилцох зүйл байвал хэзээд нээлттэй шүү🙌</p>
-
-              <hr />
-
-              <div className="flex gap-6 justify-center text-center">
-                <div>
-                  <p className="text-lg font-bold text-blue-700">0</p>
-                  <p className="text-sm font-medium">Ажлын туршлага (жилээр)</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-green-700">0</p>
-                  <p className="text-sm font-medium">Тусалсан шинэ ажилтнууд</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  };
+    case "Зөвлөмжүүд":
+      return <Advice />;
+    case "Profile":
+      return <Profile />;
+    case "Таны үндсэн хамтрагч":
+      return <YourPrimaryBuddy />;
+    default:
+      return <Home />;
+  }
+};
 
   return (
     <div className="w-full h-screen bg-white flex">
