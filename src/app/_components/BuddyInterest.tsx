@@ -63,7 +63,7 @@ export default function BuddyInterests() {
 
     return (
         <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-5">
-            <h6 className="text-lg font-semibold">Buddy нарын сонирхлууд</h6>
+            <h6 className="text-lg font-semibold">Buddy-гийн сонирхлууд</h6>
 
             <hr />
 
@@ -81,7 +81,7 @@ export default function BuddyInterests() {
                     ))}
                 </div>
             ) : (
-                <p className="text-sm text-gray-500">Buddy нарын сонирхол бүртгэгдээгүй байна.</p>
+                <p className="text-sm text-gray-500">Сонирхол бүртгэгдээгүй байна.</p>
             )}
         </div>
     );

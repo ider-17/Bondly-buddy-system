@@ -34,6 +34,7 @@ import {
 import YourProgress from "@/app/_components/YourProgress";
 import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
 import BuddyProfile from "@/app/_components/BuddyProfile";
+import BuddyInterests from "@/app/_components/BuddyInterest";
 
 interface Challenge {
   id: string;
@@ -675,7 +676,7 @@ export default function BuddyHome() {
 
           <div className="bg-slate-100 py-10 px-20 min-h-screen space-y-5">
             <BuddyProfile />
-            <MyInterests />
+            <BuddyInterests />
           </div>
         </div>
       );

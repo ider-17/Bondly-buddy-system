@@ -96,7 +96,7 @@ export default function SideBarMenu({ onSelectSection, selectedSection }: SideBa
     ]
 
     const newbieOnlyItems = [
-        { icon: <Handshake size={16} />, label: 'Таны үндсэн хамтрагч' },
+        { icon: <Handshake size={16} />, label: 'Primary Buddy' },
     ]
 
     const menuItems = profile?.role === 'newbie' 
