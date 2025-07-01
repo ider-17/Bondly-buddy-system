@@ -36,29 +36,22 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex gap-5 py-10 px-20 bg-slate-100 min-h-screen">
-        <div className="w-1/2 space-y-5">
-          <RotatingBuddyCard />
+      <div className="py-10 px-20 bg-slate-100 min-h-screen space-y-5">
 
-          <div className="rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white">
-            <div className="flex items-center">
-              <h6 className="text-lg font-medium">Идэвхтэй сорилтууд</h6>
-            </div>
+        <YourProgress />
+
+        <RotatingBuddyCard />
+
+        <div className="flex gap-5">
+
+          <div className="w-1/2 h-fit rounded-lg border border-gray-200 bg-white">
+            <h6 className="text-lg font-semibold py-5 px-6 mb-0">Идэвхтэй сорилтууд</h6>
+            <hr />
             <ActiveChallenges />
           </div>
-        </div>
-        
-        <div className="w-1/2 space-y-5">
-          <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-            <div>
-              <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
-              <hr />
-              <YourProgress />
-            </div>
-          </div>
-
           <EventsThisWeek />
         </div>
+
       </div>
     </div>
   );
