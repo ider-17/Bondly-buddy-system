@@ -68,22 +68,24 @@ export default function EventsThisWeek() {
     }
 
     return (
-        <div className='rounded-xl space-y-4 bg-white'>
-            <div className='flex gap-3 items-center'>
-                <h6 className='text-xl font-semibold'>Энэ долоо хоногийн эвентүүд</h6>
-            </div>
+        <div className='w-1/2 h-fit rounded-xl border border-neutral-200 bg-white'>
+            <h6 className='text-lg font-semibold py-5 px-6'>Энэ долоо хоногийн эвентүүд</h6>
 
-            {events.map((event, index) => (
-                <div key={index} className='w-full'>
-                    <hr />
-                    <div className='flex gap-4 py-[10px]'>
-                        <div>
-                            <h6 className='text-base font-medium'>{event.title}</h6>
-                            <p className='text-sm font-medium text-neutral-600'>{event.time}</p>
+            <hr />
+
+            <div className="space-y-5 pb-5 px-6">
+                {events.map((event, index) => (
+                    <div key={index} className='w-full'>
+                        {index !== 0 && <hr />}
+                        <div className='flex gap-4 pt-[10px]'>
+                            <div>
+                                <h6 className='text-sm font-medium'>{event.title}</h6>
+                                <p className='text-xs font-normal text-neutral-600'>{event.time}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }
