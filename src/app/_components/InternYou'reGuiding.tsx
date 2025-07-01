@@ -180,7 +180,7 @@ export default function InternYouGuiding() {
             </div>
 
             <div className="flex gap-5 w-fit">
-              <div className="border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 font-medium items-center justify-center cursor-pointer hover:bg-sky-100 active:bg-black active:text-white select-none">
+              <div className="border border-neutral-300 rounded-lg py-2 px-6 flex gap-2 font-medium items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-black active:text-white select-none">
                 <Dialog>
                   <DialogTrigger>Дэлгэрэнгүй</DialogTrigger>
                   <DialogContent>
@@ -188,7 +188,7 @@ export default function InternYouGuiding() {
                       <DialogTitle>
                         <div className="flex items-center gap-3 text-black" >
                           <Avatar className="w-15 h-15">
-                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarImage src="https://ooxomufkkqephrlbxshw.supabase.co/storage/v1/object/sign/profile-pics/Screenshot%202025-07-01%20at%2015.36.11.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zMzY0MGJhMi1jYjAzLTRlNGItYTJhYy05YmE5M2VhZWUyZGQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlLXBpY3MvU2NyZWVuc2hvdCAyMDI1LTA3LTAxIGF0IDE1LjM2LjExLnBuZyIsImlhdCI6MTc1MTM1NTQwMiwiZXhwIjoxNzgyODkxNDAyfQ.bG3QilDsEkRLDxPZ7JMoPrxO1mBUhR24PXhB8Vd6FKA" />
                             <AvatarFallback>CN</AvatarFallback>
                           </Avatar>
                           <div>
@@ -215,7 +215,7 @@ export default function InternYouGuiding() {
                           <div className="flex-1 border p-4 rounded-xl bg-white">
                             <Calendar />
                             <div className="mt-2">Started</div>
-                            <div>2025 • 06 • 12</div>
+                            <div>2025 • 06 • 16</div>
                           </div>
                         </div>
 
@@ -227,11 +227,9 @@ export default function InternYouGuiding() {
                           </div>
 
                           <div className="flex flex-wrap gap-4 mt-4">
-                            <div className="text-sm font-semibold py-1 px-[10px] bg-slate-100 rounded-full">🎬 Movies & Tv Shows</div>
                             <div className="text-sm font-semibold py-1 px-[10px] bg-slate-100 rounded-full">📚 Books & Reading</div>
                             <div className="text-sm font-semibold py-1 px-[10px] bg-slate-100 rounded-full">🎨 Art & Design</div>
                             <div className="text-sm font-semibold py-1 px-[10px] bg-slate-100 rounded-full">🏋️‍♂️ Fitness & Gym</div>
-                            <div className="text-sm font-semibold py-1 px-[10px] bg-slate-100 rounded-full">🤖 Ai & Robotics</div>
                           </div>
                         </div>
 

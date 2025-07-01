@@ -177,8 +177,8 @@ export default function Home() {
         <div className="flex gap-5">
 
           <div className="w-1/2 h-fit rounded-lg border border-gray-200 bg-white">
-            <h6 className="text-lg font-semibold py-5 px-6 mb-0">Идэвхтэй сорилтууд</h6>
-            <hr />
+            <h6 className="text-lg font-semibold py-5 px-6">Идэвхтэй сорилтууд</h6>
+            <hr className="mb-5"/>
             <ActiveChallenges />
           </div>
           <EventsThisWeek />

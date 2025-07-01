@@ -58,74 +58,91 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
     };
 
     return (
-        <div className="space-y-5">
-            <p className="text-sm font-medium mb-4 mt-5">{challenge.title}</p>
-            <div className="flex gap-3 mb-4">
-                <div className="rounded-full py-1 px-[10px] text-xs border border-gray-200 font-semibold">
-                    {challenge.week}
-                </div>
-                <div className={`rounded-full py-1 px-[10px] ${
-                    challenge.difficulty === "Easy" && "bg-green-100 text-green-800"
-                } ${
-                    challenge.difficulty === "Medium" && "bg-amber-100 text-amber-800"
-                } ${
-                    challenge.difficulty === "Hard" && "bg-pink-100 text-pink-800"
-                } text-xs font-medium`}>
-                    {challenge.difficulty === "Easy" && "Хялбар"}
-                    {challenge.difficulty === "Medium" && "Дундаж"}
-                    {challenge.difficulty === "Hard" && "Хэцүү"}
+        <div className="rounded-lg bg-white">
+            <div className="flex justify-between items-start">
+                <div className="flex-1 space-y-5">
+                    <h3 className="font-medium text-base mb-5">
+                        {challenge.title}
+                    </h3>
+
+                    <div className="flex gap-2">
+                        <span className="px-[10px] py-1 border border-gray-200 rounded-full text-xs font-medium">
+                            {challenge.week || "1-р долоо хоног"}
+                        </span>
+                        <span
+                            className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${
+                                challenge.difficulty === "Easy"
+                                    ? "bg-green-100 text-green-800"
+                                    : challenge.difficulty === "Medium"
+                                    ? "bg-amber-100 text-amber-800"
+                                    : challenge.difficulty === "Hard"
+                                    ? "bg-pink-100 text-pink-800"
+                                    : "bg-green-100 text-green-800"
+                            }`}
+                        >
+                            {challenge.difficulty === "Easy"
+                                ? "Хялбар"
+                                : challenge.difficulty === "Medium"
+                                ? "Дундаж"
+                                : challenge.difficulty === "Hard"
+                                ? "Хэцүү"
+                                : "Хялбар"}
+                        </span>
+                    </div>
+
+                    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
+                        <DialogTrigger asChild>
+                            <button className="flex gap-2 border border-neutral-300 py-2 px-3 rounded-lg items-center w-fit cursor-pointer select-none hover:bg-gray-200 active:bg-black active:text-white bg-transparent">
+                                Тэмдэглэл бичих
+                                <FilePlus2 size={20} />
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[445px] bg-white">
+                            <DialogHeader>
+                                <DialogTitle className="my-3 text-xl">
+                                    Тэмдэглэл бичих
+                                </DialogTitle>
+                                <hr className="py-3"></hr>
+                                <DialogDescription className="text-[16px] text-black">
+                                    Сорилтын тэмдэглэл
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <form onSubmit={handleSubmit}>
+                                <textarea
+                                    name="note"
+                                    placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
+                                    className="w-full bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                                    value={note}
+                                    onChange={(e) => setNote(e.target.value)}
+                                    required
+                                />
+
+                                <hr className="py-5"></hr>
+
+                                <div className="flex gap-[10px] justify-between">
+                                    <DialogClose asChild>
+                                        <button
+                                            type="button"
+                                            className="w-1/2 py-1 px-4 flex justify-center items-center border border-neutral-300 rounded-md cursor-pointer text-black hover:bg-gray-200 active:bg-black active:text-white"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </DialogClose>
+                                    <button
+                                        type="submit"
+                                        className="w-1/2 border py-2 px-4 bg-black text-white flex justify-center items-center rounded-md cursor-pointer hover:bg-gray-800 active:bg-gray-200 active:text-black"
+                                    >
+                                        Submit for Approval
+                                    </button>
+                                </div>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+
+                    <hr className="mb-5" />
                 </div>
             </div>
-
-            <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
-                <DialogTrigger asChild>
-                    <button className="flex gap-2 border border-gray-200 py-2 px-3 bg-white rounded-lg items-center w-fit cursor-pointer select-none hover:bg-sky-100 active:bg-black active:text-white">
-                        Тэмдэглэл бичих
-                        <FilePlus2 size={20} />
-                    </button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] p-6">
-                    <DialogHeader className="space-y-3 pb-4">
-                        <DialogTitle className="text-lg font-semibold text-left">
-                            Тэмдэглэл бичих
-                        </DialogTitle>
-                    </DialogHeader>
-
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2 text-gray-700">
-                                Сорилтын тэмдэглэл
-                            </label>
-                            <textarea
-                                name="note"
-                                placeholder="Ахиц дэвшээ, тулгарсан сорилууд болон сурсан зүйлсээ бичнэ үү..."
-                                className="w-full border border-gray-300 bg-white py-3 px-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                rows={4}
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="flex gap-3 pt-2">
-                            <DialogClose asChild>
-                                <button
-                                    type="button"
-                                    className="flex-1 py-2.5 px-4 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                            </DialogClose>
-                            <button
-                                type="submit"
-                                className="flex-1 py-2.5 px-4 bg-black text-white rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
-                            >
-                                Request Approval
-                            </button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
@@ -191,20 +208,24 @@ export default function ActiveChallenges() {
     return (
         <div className="pb-5 px-6 h-[400px] overflow-y-scroll">
             {activeChallenges.length === 0 && (
-                <p className="text-sm text-gray-500">
-                    Идэвхтэй сорилт олдсонгүй.
-                </p>
+                <div className="text-center py-8">
+                    <p className="text-gray-500">
+                        Идэвхтэй сорилт олдсонгүй.
+                    </p>
+                </div>
             )}
 
-            {activeChallenges.map((challenge, index) => (
-                <div key={challenge.id}>
-                    <ChallengeItem 
-                        challenge={challenge} 
-                        onSubmit={handleChallengeSubmit}
-                    />
-                    {index !== activeChallenges.length - 1 && <hr />}
+            {activeChallenges.length > 0 && (
+                <div>
+                    {activeChallenges.map((challenge) => (
+                        <ChallengeItem 
+                            key={challenge.id}
+                            challenge={challenge} 
+                            onSubmit={handleChallengeSubmit}
+                        />
+                    ))}
                 </div>
-            ))}
+            )}
         </div>
     );
 }
