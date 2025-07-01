@@ -229,7 +229,7 @@ export default function Challenges({
               {filteredChallenges.map((challenge) => (
                 <div
                   key={challenge.id}
-                  className="rounded-lg py-5 bg-white"
+                  className="rounded-lg bg-white"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1 space-y-5">
@@ -299,7 +299,7 @@ export default function Challenges({
                                 required
                               />
 
-                              <hr className="py-3"></hr>
+                              <hr className="py-5"></hr>
 
                               <div className="flex gap-[10px] justify-between">
                                 <DialogClose asChild>
@@ -322,7 +322,7 @@ export default function Challenges({
                         </Dialog>
                       )}
 
-                      <hr className="mt-10" />
+                      <hr className="mb-5" />
                     </div>
                   </div>
                 </div>
