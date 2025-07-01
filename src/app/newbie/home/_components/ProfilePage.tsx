@@ -3,6 +3,7 @@ import MoreInformation from "@/app/_components/MoreInformation";
 import MyInterests from "@/app/_components/MyInterests";
 import YourProgress from "@/app/_components/YourProgress";
 import CareerGoals from "@/app/_components/CareerGoals";
+import YourProgressProfile from "@/app/_components/YourProgressProfile";
 
 export default function Profile() {
   return (
@@ -28,7 +29,7 @@ export default function Profile() {
             <div>
               <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
               <hr />
-              <YourProgress />
+              <YourProgressProfile />
             </div>
           </div>
 
