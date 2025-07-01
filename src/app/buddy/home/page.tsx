@@ -76,7 +76,7 @@ export default function BuddyHome() {
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
   const [loading, setLoading] = useState(false);
-  
+
   // Challenge and submission state
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -111,7 +111,7 @@ export default function BuddyHome() {
 
     async function fetchData() {
       setLoading(true);
-      
+
       try {
         // Fetch challenges assigned to interns under this buddy's guidance
         const { data: challengesData, error: challengesError } = await supabase
@@ -312,9 +312,9 @@ export default function BuddyHome() {
       // Update challenge with note and set status to pending
       const { error } = await supabase
         .from("challenges")
-        .update({ 
+        .update({
           note: note,
-          status: "pending" 
+          status: "pending"
         })
         .eq("id", selectedChallenge.id);
 
