@@ -11,7 +11,7 @@ import {
     DialogClose,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { FilePlus2, Mountain } from "lucide-react";
+import { FilePlus2 } from "lucide-react";
 import { submitChallenge } from "@/lib/actions/submitChallenge";
 import { toast } from "sonner";
 
@@ -114,20 +114,20 @@ export default function ActiveChallenges() {
     }
 
     return (
-        <>
+        <div className="pb-5 px-6">
             {activeChallenges.length === 0 && (
                 <p className="text-sm text-gray-500">
                     Идэвхтэй сорилт олдсонгүй.
                 </p>
             )}
 
-            {activeChallenges.map((challenge) => (
+            {activeChallenges.map((challenge, index) => (
                 <div
                     key={challenge.id}
-                    className="py-[10px] space-y-4"
+                    className="space-y-5"
                 >
-                    <p className="text-sm font-medium">{challenge.title}</p>
-                    <div className="flex gap-3">
+                    <p className="text-sm font-medium mb-4 mt-5">{challenge.title}</p>
+                    <div className="flex gap-3 mb-4">
                         <div className="rounded-full py-1 px-[10px] text-xs border border-gray-200 font-semibold">
                             {challenge.week}
                         </div>
@@ -189,8 +189,10 @@ export default function ActiveChallenges() {
                             </form>
                         </DialogContent>
                     </Dialog>
+
+                    {index !== activeChallenges.length - 1 && <hr />}
                 </div>
             ))}
-        </>
+        </div>
     );
 }
