@@ -3,6 +3,7 @@ import { UserProfile } from "./ProfileCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CalendarDays, Mail, Phone } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function BuddyProfile() {
     const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -52,7 +53,7 @@ export default function BuddyProfile() {
                 </div>
             </div>
 
-            <hr />
+            <Separator />
 
             <div className="flex gap-5">
                 <div className="w-1/3 rounded-lg border border-gray-200 bg-white py-2 px-6 space-y-3">

@@ -43,7 +43,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-interface Challenge {
+export interface Challenge {
   id: string;
   title: string;
   week: string;
@@ -54,7 +54,7 @@ interface Challenge {
   created_at: string;
 }
 
-interface Submission {
+export interface Submission {
   id: string;
   challenge_id: string;
   user_id: string;
