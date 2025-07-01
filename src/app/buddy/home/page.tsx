@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, LayoutGrid, List, Mountain, SquarePen, FilePlus2 } from "lucide-react";
 import EventsThisWeek from "@/app/_components/EventsThisWeak";
-import ActiveChallenges from "@/app/_components/ActiveChallenges";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -23,15 +21,9 @@ import {
   DialogClose,
   DialogDescription,
 } from "@/components/ui/dialog";
-import ProfileCard from "@/app/_components/ProfileCard";
 import MyInterests from "@/app/_components/MyInterests";
-import ProfileInfo from "@/app/_components/ProfileInfo";
-import Introduction from "@/app/_components/Introduction";
 import InternYouGuiding from "@/app/_components/InternYou'reGuiding";
 import ApprovalRequests from "@/app/_components/ApprovalRequests";
-import InternProgress from "@/app/_components/InternProgress";
-import InternYouGuidingInfo from "@/app/_components/InternYouGuidingInfo";
-import CareerGoals from "@/app/_components/CareerGoals";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import {
@@ -43,7 +35,6 @@ import YourProgress from "@/app/_components/YourProgress";
 import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
 import BuddyProfile from "@/app/_components/BuddyProfile";
 
-// Define interfaces for type safety
 interface Challenge {
   id: string;
   title: string;
@@ -76,8 +67,7 @@ export default function BuddyHome() {
   const [activeTab, setActiveTab] = useState("Active");
   const [selectedWeek, setSelectedWeek] = useState("all");
   const [loading, setLoading] = useState(false);
-  
-  // Challenge and submission state
+
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -87,33 +77,49 @@ export default function BuddyHome() {
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Fetch current logged-in user ID
   useEffect(() => {
-    async function fetchUser() {
+    async function fetchUserAndNotifications() {
       const {
         data: { user },
         error,
       } = await supabase.auth.getUser();
+
       if (error) {
         console.error("Error getting user:", error.message);
         return;
       }
+
       if (user) {
         setUserId(user.id);
+
+        setLoadingNotifications(true);
+        const { data, error: notifError } = await supabase
+          .from("notification")
+          .select("id, message, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(20);
+
+        if (notifError) {
+          console.error("Error fetching notifications:", notifError.message);
+        } else {
+          setNotifications(data ?? []);
+        }
+        setLoadingNotifications(false);
       }
     }
-    fetchUser();
+
+    fetchUserAndNotifications();
   }, []);
 
-  // Fetch challenges and submissions for buddy
+
   useEffect(() => {
     if (!userId) return;
 
     async function fetchData() {
       setLoading(true);
-      
+
       try {
-        // Fetch challenges assigned to interns under this buddy's guidance
         const { data: challengesData, error: challengesError } = await supabase
           .from("challenges")
           .select(`
@@ -132,7 +138,6 @@ export default function BuddyHome() {
           setChallenges(challengesData || []);
         }
 
-        // Fetch submissions for challenges
         const { data: submissionsData, error: submissionsError } = await supabase
           .from("submissions")
           .select("*")
@@ -154,7 +159,6 @@ export default function BuddyHome() {
     fetchData();
   }, [userId]);
 
-  // Fetch notifications + subscribe realtime for notifications for this user
   useEffect(() => {
     if (!userId) return;
 
@@ -201,7 +205,6 @@ export default function BuddyHome() {
     };
   }, [userId]);
 
-  // Challenge status update toast listener
   useEffect(() => {
     const channel = supabase
       .channel("challenge-updates")
@@ -227,7 +230,6 @@ export default function BuddyHome() {
     };
   }, []);
 
-  // Helper function to get challenge status
   const getChallengeStatus = (challengeId: string) => {
     const submission = submissions.find(
       (sub) => sub.challenge_id === challengeId
@@ -238,7 +240,6 @@ export default function BuddyHome() {
     return submission.status === "approved" ? "completed" : "pending";
   };
 
-  // Get filtered challenges based on active tab and selected week
   const getFilteredChallenges = () => {
     const challengesWithStatus = challenges.map((challenge) => ({
       ...challenge,
@@ -266,7 +267,6 @@ export default function BuddyHome() {
         filteredByStatus = challengesWithStatus;
     }
 
-    // Filter by week if specific week is selected
     if (selectedWeek === "all") {
       return filteredByStatus;
     } else {
@@ -276,7 +276,6 @@ export default function BuddyHome() {
 
   const filteredChallenges = getFilteredChallenges();
 
-  // Get status counts for the status cards
   const getStatusCounts = () => {
     const challengesWithStatus = challenges.map((challenge) => ({
       ...challenge,
@@ -303,18 +302,16 @@ export default function BuddyHome() {
 
   const statusCounts = getStatusCounts();
 
-  // Handle challenge submission approval/rejection
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedChallenge || !userId) return;
 
     try {
-      // Update challenge with note and set status to pending
       const { error } = await supabase
         .from("challenges")
-        .update({ 
+        .update({
           note: note,
-          status: "pending" 
+          status: "pending"
         })
         .eq("id", selectedChallenge.id);
 
@@ -323,7 +320,6 @@ export default function BuddyHome() {
         return;
       }
 
-      // Create submission record
       const { error: submissionError } = await supabase
         .from("submissions")
         .insert({
@@ -424,22 +420,29 @@ export default function BuddyHome() {
             </div>
           </header>
 
-          <div className="flex gap-5 p-10 ml-10 mr-10 min-h-screen">
-            <div className="w-1/2 space-y-5">
-              <InternYouGuiding />
-              <ApprovalRequests />
+
+          <div className="flex flex-col gap-8 px-20 py-10 w-full">
+            <div className="w-full">
+
+              <YourProgress />
+
             </div>
-            <div className="w-1/2 space-y-5">
-              <div className='rounded-xl border border-gray-200 py-5 px-6 space-y-5 bg-white'>
-                <div className="space-y-3">
-                  <h6 className='text-xl font-medium'>Шинэ ажилтны прогресс</h6>
-                  <hr />
-                  <YourProgress />
-                </div>
+
+            <InternYouGuiding />
+
+            <div className="flex gap-5">
+
+              <div className="w-1/2 h-fit rounded-lg border border-gray-200 bg-white">
+
+                <ApprovalRequests />
               </div>
               <EventsThisWeek />
             </div>
+
           </div>
+
+
+
         </div>
       );
 
@@ -497,7 +500,6 @@ export default function BuddyHome() {
               ))}
             </div>
 
-            {/* Filter dropdown */}
             <div className="flex justify-self-end justify-between items-center">
               <Select value={selectedWeek} onValueChange={setSelectedWeek}>
                 <SelectTrigger className="py-5 rounded-lg text-sm bg-white border border-gray-200 select-none">
@@ -514,7 +516,6 @@ export default function BuddyHome() {
               </Select>
             </div>
 
-            {/* Challenge List with loading state */}
             <div className="p-5 border border-gray-200 rounded-xl bg-white">
               {loading ? (
                 <div className="text-center py-8">
