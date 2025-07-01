@@ -5,7 +5,7 @@ import { CircleAlert, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-export default function YourProgress() {
+export default function   YourProgress() {
   const [approvedChallengesLength, setApprovedChallengesLength] =
     useState<number>(0);
   const [activeDays, setActiveDays] = useState<number>(0);
