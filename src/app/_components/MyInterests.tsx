@@ -41,15 +41,15 @@ export default function MyInterests() {
     }, []);
 
     return (
-        <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-5">
-            <h6 className="text-lg font-semibold">Миний сонирхлууд</h6>
+        <div className="rounded-xl bg-white border border-gray-200 space-y-5">
+            <h6 className="text-lg font-semibold py-5 px-6 mb-0">Миний сонирхлууд</h6>
 
-            <hr />
+            <hr className="mb-0" />
 
             {loading ? (
                 <p className="text-sm text-gray-500">Уншиж байна...</p>
             ) : interests.length > 0 ? (
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex gap-3 flex-wrap py-5 px-6">
                     {interests.map((interest, index) => (
                         <div
                             key={index}

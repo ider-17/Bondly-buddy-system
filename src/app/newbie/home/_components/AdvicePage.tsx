@@ -6,7 +6,7 @@ export default function Advice() {
       <header className="h-fit header py-3 px-20 flex justify-between bg-white items-center border-b border-neutral-300">
         <div>
           <h1 className="text-base font-medium">Зөвлөмж</h1>
-          <p className="text-sm font-medium text-neutral-600">
+          <p className="text-xs font-medium text-neutral-500">
             Туршлага дээр суурилсан богино зөвлөмжүүд
           </p>
         </div>

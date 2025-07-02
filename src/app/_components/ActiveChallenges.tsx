@@ -24,16 +24,25 @@ interface Challenge {
     status: string | null;
     user_id: string;
     created_at: string;
+    derivedStatus?: string;
 }
 
-// Individual challenge component to handle its own dialog state
-function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit: (challengeId: string, note: string) => Promise<void> }) {
+// Individual challenge component
+function ChallengeItem({
+    challenge,
+    onSubmit,
+    showDivider,
+}: {
+    challenge: Challenge;
+    onSubmit: (challengeId: string, note: string) => Promise<void>;
+    showDivider: boolean;
+}) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [note, setNote] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!note?.trim()) {
             toast.error("Please enter a note");
             return;
@@ -70,23 +79,22 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
                             {challenge.week || "1-р долоо хоног"}
                         </span>
                         <span
-                            className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${
-                                challenge.difficulty === "Easy"
-                                    ? "bg-green-100 text-green-800"
-                                    : challenge.difficulty === "Medium"
+                            className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${challenge.difficulty === "Easy"
+                                ? "bg-green-100 text-green-800"
+                                : challenge.difficulty === "Medium"
                                     ? "bg-amber-100 text-amber-800"
                                     : challenge.difficulty === "Hard"
-                                    ? "bg-pink-100 text-pink-800"
-                                    : "bg-green-100 text-green-800"
-                            }`}
+                                        ? "bg-pink-100 text-pink-800"
+                                        : "bg-green-100 text-green-800"
+                                }`}
                         >
                             {challenge.difficulty === "Easy"
                                 ? "Хялбар"
                                 : challenge.difficulty === "Medium"
-                                ? "Дундаж"
-                                : challenge.difficulty === "Hard"
-                                ? "Хэцүү"
-                                : "Хялбар"}
+                                    ? "Дундаж"
+                                    : challenge.difficulty === "Hard"
+                                        ? "Хэцүү"
+                                        : "Хялбар"}
                         </span>
                     </div>
 
@@ -99,11 +107,11 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[445px] bg-white">
                             <DialogHeader>
-                                <DialogTitle className="my-3 text-xl">
+                                <DialogTitle className="text-xl px-5 py-8">
                                     Тэмдэглэл бичих
                                 </DialogTitle>
-                                <hr className="py-3"></hr>
-                                <DialogDescription className="text-[16px] text-black">
+                                <hr />
+                                <DialogDescription className="px-5 pt-5 text-[16px] text-black">
                                     Сорилтын тэмдэглэл
                                 </DialogDescription>
                             </DialogHeader>
@@ -112,15 +120,15 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
                                 <textarea
                                     name="note"
                                     placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                                    className="w-full bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                                    className="w-100 bg-white border border-gray-200 py-2 px-3 mx-5 rounded-md mb-4 min-h-[100px]"
                                     value={note}
                                     onChange={(e) => setNote(e.target.value)}
                                     required
                                 />
 
-                                <hr className="py-5"></hr>
+                                <hr />
 
-                                <div className="flex gap-[10px] justify-between">
+                                <div className="flex gap-[10px] justify-between p-5 py-9">
                                     <DialogClose asChild>
                                         <button
                                             type="button"
@@ -140,7 +148,7 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
                         </DialogContent>
                     </Dialog>
 
-                    <hr className="mb-5" />
+                    {showDivider && <hr className="mb-5" />}
                 </div>
             </div>
         </div>
@@ -150,10 +158,12 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
 export default function ActiveChallenges() {
     const [userId, setUserId] = useState<string | null>(null);
 
-    // Get user session
     useEffect(() => {
         const getSession = async () => {
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const {
+                data: { session },
+                error,
+            } = await supabase.auth.getSession();
             if (error || !session) {
                 toast.error("User session not found");
                 return;
@@ -163,15 +173,12 @@ export default function ActiveChallenges() {
         getSession();
     }, []);
 
-    // Use the real-time hook for challenges
-    const { challenges: allChallenges, loading, error } = useRealtimeUserChallenges(userId || '');
+    const { challenges: allChallenges, loading, error } = useRealtimeUserChallenges(userId || "");
 
-    // Filter for active challenges (no submission or submission not approved)
-    const activeChallenges = allChallenges.filter(challenge => 
-        challenge.derivedStatus === 'active'
+    const activeChallenges = allChallenges.filter(
+        (challenge) => challenge.derivedStatus === "active"
     );
 
-    // Handle submission
     const handleChallengeSubmit = async (challengeId: string, note: string) => {
         console.log("Submitting challenge:", { challengeId, note });
 
@@ -181,13 +188,13 @@ export default function ActiveChallenges() {
             toast.success("Approval request sent!");
         } catch (error) {
             console.error("Submission error:", error);
-            const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+            const errorMessage =
+                error instanceof Error ? error.message : "Unknown error occurred";
             toast.error("Failed to submit: " + errorMessage);
-            throw error; // Re-throw to prevent dialog from closing
+            throw error;
         }
     };
 
-    // Show loading state
     if (loading) {
         return (
             <div className="pb-5 px-6 h-[400px] flex items-center justify-center">
@@ -196,32 +203,30 @@ export default function ActiveChallenges() {
         );
     }
 
-    // Show error state
     if (error) {
         return (
-            <div className="pb-5 px-6 h-[400px] flex items-center justify-center">
+            <div className="pb-5 px-6 h-[380px] flex items-center justify-center">
                 <p className="text-sm text-red-500">Error loading challenges: {error}</p>
             </div>
         );
     }
 
     return (
-        <div className="pb-5 px-6 h-[400px] overflow-y-scroll">
+        <div className="pb-5 px-6 h-[380px] overflow-y-scroll">
             {activeChallenges.length === 0 && (
                 <div className="text-center py-8">
-                    <p className="text-gray-500">
-                        Идэвхтэй сорилт олдсонгүй.
-                    </p>
+                    <p className="text-gray-500">Идэвхтэй сорилт олдсонгүй.</p>
                 </div>
             )}
 
             {activeChallenges.length > 0 && (
                 <div>
-                    {activeChallenges.map((challenge) => (
-                        <ChallengeItem 
+                    {activeChallenges.map((challenge, index) => (
+                        <ChallengeItem
                             key={challenge.id}
-                            challenge={challenge} 
+                            challenge={challenge}
                             onSubmit={handleChallengeSubmit}
+                            showDivider={index !== activeChallenges.length - 1} // 👉 Last item дээр divider render хийхгүй
                         />
                     ))}
                 </div>

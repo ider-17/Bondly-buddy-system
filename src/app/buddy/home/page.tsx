@@ -3,7 +3,7 @@
 import SideBarMenu from "@/app/_components/SideBarHome";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, LayoutGrid, List, Mountain, SquarePen, FilePlus2 } from "lucide-react";
+import { Bell, Mountain } from "lucide-react";
 import EventsThisWeek from "@/app/_components/EventsThisWeak";
 import {
   Select,
@@ -12,16 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import MyInterests from "@/app/_components/MyInterests";
 import InternYouGuiding from "@/app/_components/InternYou'reGuiding";
 import ApprovalRequests from "@/app/_components/ApprovalRequests";
 import { toast } from "sonner";
@@ -31,7 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import YourProgress from "@/app/_components/YourProgress";
 import { BuddyAdvice } from "@/app/_components/BuddyAdvice";
 import BuddyProfile from "@/app/_components/BuddyProfile";
 import BuddyInterests from "@/app/_components/BuddyInterest";
@@ -95,7 +84,7 @@ export default function BuddyHome() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  
+
   // Add user profile state
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -105,7 +94,7 @@ export default function BuddyHome() {
     async function fetchUserProfile() {
       try {
         setLoadingProfile(true);
-        
+
         const {
           data: { user },
           error: authError,
@@ -374,7 +363,7 @@ export default function BuddyHome() {
       toast.success("Challenge submitted for approval!");
       setNote("");
       setSelectedChallenge(null);
-      
+
       // Refresh data after successful submission
       const { data: updatedChallenges } = await supabase
         .from("challenges")
@@ -387,15 +376,15 @@ export default function BuddyHome() {
           )
         `)
         .order("created_at", { ascending: false });
-      
+
       const { data: updatedSubmissions } = await supabase
         .from("submissions")
         .select("*")
         .order("submitted_at", { ascending: false });
-      
+
       if (updatedChallenges) setChallenges(updatedChallenges);
       if (updatedSubmissions) setSubmissions(updatedSubmissions);
-      
+
     } catch (error) {
       console.error("Error submitting challenge:", error);
       toast.error("Failed to submit challenge");
@@ -413,20 +402,20 @@ export default function BuddyHome() {
   // Format role display (matching HomePage.tsx pattern)
   const getRoleDisplay = () => {
     if (!userProfile?.rank) return "User"
-    
+
     // Capitalize first letter and handle role formatting
     const roleMap: { [key: string]: string } = {
       'newbie': 'Newbie',
       'buddy': 'Buddy'
     }
-    
+
     return roleMap[userProfile.rank] || userProfile.rank
   }
 
   // Get display name (matching HomePage.tsx pattern)
   const getDisplayName = () => {
     if (!userProfile?.name) return "User"
-    
+
     return userProfile.name
   }
 
@@ -456,8 +445,8 @@ export default function BuddyHome() {
                 <>
                   <Avatar className="w-10 h-10">
                     {userProfile?.profile_pic ? (
-                      <AvatarImage 
-                        src={userProfile.profile_pic} 
+                      <AvatarImage
+                        src={userProfile.profile_pic}
                         alt={`${userProfile.name || 'User'}'s avatar`}
                         onError={(e) => {
                           console.error("Failed to load avatar image:", userProfile.profile_pic)
