@@ -1,10 +1,68 @@
 "use client"
 
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CareerGoals() {
     const tabs = ["Карьерийн зорилго", "Туршлага"]
     const [activeTab, setActiveTab] = useState("Карьерийн зорилго");
+    const [loading, setLoading] = useState(false); // Add your loading state logic here
+
+    if (loading) {
+        return (
+            <div className="w-full">
+                {/* Tab buttons */}
+                <div className="flex-1 mb-5">
+                    <div className="bg-neutral-100 rounded-xl p-1 flex justify-between w-full">
+                        <Skeleton className="w-full h-8 rounded-lg mr-1" />
+                        <Skeleton className="w-full h-8 rounded-lg ml-1" />
+                    </div>
+                </div>
+
+                {/* Content area */}
+                <div className="border border-gray-200 py-5 px-6 rounded-xl bg-white space-y-3">
+                    {activeTab === "Карьерийн зорилго" ? (
+                        // Career goals skeleton (text blocks)
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-4/5" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-3/4" />
+                        </div>
+                    ) : (
+                        // Experience skeleton
+                        <div className="space-y-3">
+                            {/* Company header */}
+                            <div className="flex gap-3">
+                                <Skeleton className="w-8 h-8 rounded-full" />
+                                <div className="flex-1 space-y-1">
+                                    <Skeleton className="h-4 w-32" />
+                                    <Skeleton className="h-3 w-48" />
+                                </div>
+                            </div>
+
+                            {/* Bullet points */}
+                            <div className="space-y-3">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="flex gap-2">
+                                        <div className="pt-2">
+                                            <Skeleton className="w-1.5 h-1.5 rounded-full" />
+                                        </div>
+                                        <div className="flex-1 space-y-1">
+                                            <Skeleton className="h-4 w-full" />
+                                            {i === 3 && <Skeleton className="h-4 w-4/5" />}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full">

@@ -25,7 +25,7 @@ export default function BuddyInterests() {
                     const allInterests = data
                         .filter(buddy => buddy.interests && buddy.interests.length > 0)
                         .flatMap(buddy => buddy.interests);
-                    
+
                     // Remove duplicates
                     const uniqueInterests = [...new Set(allInterests)];
                     setBuddyInterests(uniqueInterests);
@@ -63,9 +63,7 @@ export default function BuddyInterests() {
 
     return (
         <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-5">
-            <h6 className="text-lg font-semibold">Buddy-гийн сонирхлууд</h6>
-
-            <hr />
+            <h6 className="text-lg font-semibold">Миний сонирхлууд</h6>
 
             {loading ? (
                 <p className="text-sm text-gray-500">Уншиж байна...</p>

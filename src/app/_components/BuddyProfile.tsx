@@ -81,12 +81,12 @@ export default function BuddyProfile() {
   // Format date helper function
   const formatDate = (dateString?: string) => {
     if (!dateString) return "2025 • 06 • 12";
-    
+
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    
+
     return `${year} • ${month} • ${day}`;
   };
 
@@ -150,13 +150,13 @@ export default function BuddyProfile() {
   return (
     <div className="space-y-5">
       {buddies.map((buddy) => (
-        <div key={buddy.id} className="w-full py-5 px-6 rounded-xl border border-gray-200 bg-white space-y-5">
-          <div className="flex justify-between items-center">
+        <div key={buddy.id} className="w-full rounded-xl border border-gray-200 bg-white space-y-5">
+          <div className="flex justify-between items-center py-5 px-6 mb-0">
             <div className="flex gap-3">
               <Avatar className="w-16 h-16">
                 {buddy.profile_pic ? (
-                  <AvatarImage 
-                    src={buddy.profile_pic} 
+                  <AvatarImage
+                    src={buddy.profile_pic}
                     alt={`${buddy.name}'s avatar`}
                     onError={(e) => {
                       console.error("Failed to load avatar image:", buddy.profile_pic);
@@ -181,9 +181,9 @@ export default function BuddyProfile() {
             </div>
           </div>
 
-          <Separator />
+          <Separator className="mb-0" />
 
-          <div className="flex gap-5">
+          <div className="flex gap-5 py-5 px-6">
             <div className="w-1/3 rounded-lg border border-gray-200 bg-white py-2 px-6 space-y-3">
               <Mail size={24} color="black" />
               <div>

@@ -1,7 +1,6 @@
 import ProfileCard from "@/app/_components/ProfileCard";
 import MoreInformation from "@/app/_components/MoreInformation";
 import MyInterests from "@/app/_components/MyInterests";
-import YourProgress from "@/app/_components/YourProgress";
 import CareerGoals from "@/app/_components/CareerGoals";
 import YourProgressProfile from "@/app/_components/YourProgressProfile";
 
@@ -17,23 +16,27 @@ export default function Profile() {
         </div>
       </header>
 
-      <div className="bg-slate-100 py-10 px-20 min-h-screen flex gap-5">
-        <div className="w-1/2 space-y-5">
+      <div className="bg-slate-100 py-10 px-20 min-h-screen space-y-5">
+        <div className="w-full flex gap-5 space-y-5 mb-0">
           <ProfileCard />
-          <MoreInformation />
-          <MyInterests />
-        </div>
 
-        <div className="w-1/2 space-y-5">
-          <div className='rounded-lg border border-gray-200 py-5 px-6 space-y-5 bg-white'>
+          <div className='w-1/2 rounded-lg border border-gray-200 space-y-5 h-fit bg-white'>
             <div>
-              <h6 className='text-lg font-medium mb-5'>Таны прогресс</h6>
+              <h6 className='text-lg font-medium py-5 px-6'>Таны прогресс</h6>
               <hr />
               <YourProgressProfile />
             </div>
           </div>
+        </div>
 
-          <CareerGoals />
+        <div className="w-full flex gap-5 space-y-5">
+          <div className="w-1/2 space-y-5">
+            <MoreInformation />
+            <MyInterests />
+          </div>
+          <div className="w-1/2">
+            <CareerGoals />
+          </div>
         </div>
       </div>
     </div>

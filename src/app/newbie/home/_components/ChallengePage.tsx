@@ -46,16 +46,21 @@ interface ChallengesProps {
 }
 
 // Individual challenge component to handle its own dialog state
-function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit: (challengeId: string, note: string) => Promise<void> }) {
+function ChallengeItem({
+  challenge,
+  onSubmit,
+  showDivider,
+}: {
+  challenge: Challenge;
+  onSubmit: (challengeId: string, note: string) => Promise<void>;
+  showDivider: boolean;
+}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [note, setNote] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!note?.trim()) {
-      return;
-    }
+    if (!note?.trim()) return;
 
     try {
       await onSubmit(challenge.id, note.trim());
@@ -68,20 +73,14 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
 
   const handleOpenChange = (open: boolean) => {
     setIsDialogOpen(open);
-    if (open) {
-      setNote(challenge.note ?? "");
-    } else {
-      setNote("");
-    }
+    setNote(open ? challenge.note ?? "" : "");
   };
 
   return (
     <div className="rounded-lg bg-white">
       <div className="flex justify-between items-start">
         <div className="flex-1 space-y-5">
-          <h3 className="font-medium text-base mb-5">
-            {challenge.title}
-          </h3>
+          <h3 className="font-medium text-base mb-5">{challenge.title}</h3>
 
           <div className="flex gap-2">
             {challenge.derivedStatus === "pending" && (
@@ -100,23 +99,18 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
               </span>
             )}
             <span
-              className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${
-                challenge.difficulty === "Easy"
-                  ? "bg-green-100 text-green-800"
-                  : challenge.difficulty === "Medium"
+              className={`h-fit px-3 py-1 rounded-full text-xs font-medium ${challenge.difficulty === "Easy"
+                ? "bg-green-100 text-green-800"
+                : challenge.difficulty === "Medium"
                   ? "bg-amber-100 text-amber-800"
-                  : challenge.difficulty === "Hard"
-                  ? "bg-pink-100 text-pink-800"
-                  : "bg-green-100 text-green-800"
-              }`}
+                  : "bg-pink-100 text-pink-800"
+                }`}
             >
               {challenge.difficulty === "Easy"
                 ? "Хялбар"
                 : challenge.difficulty === "Medium"
-                ? "Дундаж"
-                : challenge.difficulty === "Hard"
-                ? "Хэцүү"
-                : "Хялбар"}
+                  ? "Дундаж"
+                  : "Хэцүү"}
             </span>
           </div>
 
@@ -130,28 +124,25 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
               </DialogTrigger>
               <DialogContent className="sm:max-w-[445px] bg-white">
                 <DialogHeader>
-                  <DialogTitle className="my-3 text-xl">
+                  <DialogTitle className="text-xl px-5 py-8">
                     Тэмдэглэл бичих
                   </DialogTitle>
-                  <hr className="py-3"></hr>
-                  <DialogDescription className="text-[16px] text-black">
+                  <hr />
+                  <DialogDescription className="px-5 pt-5 text-[16px] text-black">
                     Сорилтын тэмдэглэл
                   </DialogDescription>
                 </DialogHeader>
-
                 <form onSubmit={handleSubmit}>
                   <textarea
                     name="note"
                     placeholder="Ахиц дэвшлээ, тулгарсан сорилтууд болон сурсан зүйлсээ бичнэ үү..."
-                    className="w-full bg-white py-2 px-3 rounded-md mb-4 min-h-[100px]"
+                    className="w-100 bg-white border border-gray-200 py-2 px-3 mx-5 rounded-md mb-4 min-h-[100px]"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     required
                   />
-
-                  <hr className="py-5"></hr>
-
-                  <div className="flex gap-[10px] justify-between">
+                  <hr />
+                  <div className="flex gap-[10px] justify-between p-5 py-9">
                     <DialogClose asChild>
                       <button
                         type="button"
@@ -172,7 +163,7 @@ function ChallengeItem({ challenge, onSubmit }: { challenge: Challenge; onSubmit
             </Dialog>
           )}
 
-          <hr className="mb-5" />
+          {showDivider && <hr className="mb-5" />}
         </div>
       </div>
     </div>
@@ -263,8 +254,8 @@ export default function Challenges({
     <div>
       <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
         <div>
-          <h1 className="text-xl font-semibold">Сорилтууд</h1>
-          <p className="text-sm font-medium text-neutral-600">
+          <h1 className="text-base font-medium">Сорилтууд</h1>
+          <p className="text-xs font-medium text-neutral-500">
             Идэвхтэй, хүлээгдэж байгаа болон биелэгдсэн сорилтуудаа хянах
             боломжтой
           </p>
@@ -293,9 +284,8 @@ export default function Challenges({
             <div
               key={idx}
               onClick={() => setActiveTab(status.key)}
-              className={`w-1/3 bg-white border rounded-xl p-5 flex flex-col gap-2 cursor-pointer hover:bg-slate-100 transition-colors ${
-                activeTab === status.key ? "border-gray-400" : "border-gray-200"
-              }`}
+              className={`w-1/3 bg-white border rounded-xl p-5 flex flex-col gap-2 cursor-pointer hover:bg-slate-100 transition-colors ${activeTab === status.key ? "border-gray-400" : "border-gray-200"
+                }`}
             >
               <div className="w-8 h-8 bg-amber-100 rounded-lg flex justify-center items-center">
                 <Mountain size={18} color="#D97706" />
@@ -336,20 +326,22 @@ export default function Challenges({
                 {activeTab === "Active"
                   ? "Идэвхтэй"
                   : activeTab === "Pending"
-                  ? "Хүлээгдэж байгаа"
-                  : "Биелэгдсэн"}{" "}
+                    ? "Хүлээгдэж байгаа"
+                    : "Биелэгдсэн"}{" "}
                 сорилт олдсонгүй.
               </p>
             </div>
           ) : (
             <div>
-              {filteredChallenges.map((challenge) => (
-                <ChallengeItem 
+              {filteredChallenges.map((challenge, index) => (
+                <ChallengeItem
                   key={challenge.id}
-                  challenge={challenge} 
+                  challenge={challenge}
                   onSubmit={onSubmit}
+                  showDivider={index !== filteredChallenges.length - 1} // 🟡 Сүүлийнх дээр divider байхгүй
                 />
               ))}
+
             </div>
           )}
         </div>

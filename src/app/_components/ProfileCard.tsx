@@ -28,7 +28,7 @@ export default function ProfileCard() {
     const fetchUserProfile = async () => {
         try {
             setLoading(true)
-            
+
             const {
                 data: { session },
                 error: sessionError,
@@ -185,7 +185,7 @@ export default function ProfileCard() {
 
     if (loading) {
         return (
-            <div className="w-full py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
+            <div className="w-1/2 py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
                 {/* Profile Header Skeleton */}
                 <div className="flex gap-3 items-center">
                     <Skeleton className="w-16 h-16 rounded-full" />
@@ -242,12 +242,12 @@ export default function ProfileCard() {
     }
 
     return (
-        <div className="w-full py-5 px-6 border border-gray-200 rounded-xl bg-white space-y-5">
-            <div className="flex gap-3 items-center">
+        <div className="w-1/2 border border-gray-200 rounded-xl bg-white space-y-5">
+            <div className="flex gap-3 items-center py-5 px-6 mb-0">
                 <Avatar className="w-16 h-16">
                     {profile?.profile_pic ? (
-                        <AvatarImage 
-                            src={profile.profile_pic} 
+                        <AvatarImage
+                            src={profile.profile_pic}
                             alt={`${profile.name || 'User'}'s avatar`}
                             onError={(e) => {
                                 console.error("Failed to load avatar image:", profile.profile_pic)
@@ -266,44 +266,46 @@ export default function ProfileCard() {
                 </div>
             </div>
 
-            <hr />
+            <hr className="mb-0" />
 
-            <h6 className="text-sm font-semibold">Таны Onboarding-ийн ахиц</h6>
+            <div className="px-6 py-5 mb-0">
+                <h6 className="text-sm font-semibold mb-5">Таны Onboarding-ийн ахиц</h6>
 
-            <div className="flex gap-3 mb-5">
-                <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
-                    <div className="w-8 h-8 bg-blue-100 flex justify-center items-center rounded-lg">
-                        <CalendarCheck size={18} color="#2563EB" />
+                <div className="flex gap-3">
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <div className="w-8 h-8 bg-blue-100 flex justify-center items-center rounded-lg">
+                            <CalendarCheck size={18} color="#2563EB" />
+                        </div>
+
+                        <div>
+                            <h5 className="text-base font-bold">{activeDays}</h5>
+                            <p className="text-sm font-medium">Идэвхтэй
+                                өдрүүд</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <h5 className="text-base font-bold">{activeDays}</h5>
-                        <p className="text-sm font-medium">Идэвхтэй
-                            өдрүүд</p>
-                    </div>
-                </div>
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <div className="w-8 h-8 bg-amber-100 flex justify-center items-center rounded-lg">
+                            <Mountain size={18} color="#D97706" />
+                        </div>
 
-                <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
-                    <div className="w-8 h-8 bg-amber-100 flex justify-center items-center rounded-lg">
-                        <Mountain size={18} color="#D97706" />
-                    </div>
-
-                    <div>
-                        <h5 className="text-base font-bold">{completedChallenges}</h5>
-                        <p className="text-sm font-medium">Биелүүлсэн
-                            сорилтууд</p>
-                    </div>
-                </div>
-
-                <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
-                    <div className="w-8 h-8 bg-violet-100 flex justify-center items-center rounded-lg">
-                        <Lightbulb size={18} color="#7C3AED" />
+                        <div>
+                            <h5 className="text-base font-bold">{completedChallenges}</h5>
+                            <p className="text-sm font-medium">Биелүүлсэн
+                                сорилтууд</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <h5 className="text-base font-bold">{readTips}</h5>
-                        <p className="text-sm font-medium">Уншсан
-                            зөвлөмжүүд</p>
+                    <div className="w-1/3 border border-gray-200 bg-white p-3 rounded-lg space-y-3">
+                        <div className="w-8 h-8 bg-violet-100 flex justify-center items-center rounded-lg">
+                            <Lightbulb size={18} color="#7C3AED" />
+                        </div>
+
+                        <div>
+                            <h5 className="text-base font-bold">{readTips}</h5>
+                            <p className="text-sm font-medium">Уншсан
+                                зөвлөмжүүд</p>
+                        </div>
                     </div>
                 </div>
             </div>

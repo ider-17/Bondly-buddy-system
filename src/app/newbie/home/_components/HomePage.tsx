@@ -121,7 +121,7 @@ export default function Home() {
   return (
     <div>
       <header className="h-fit header p-5 px-20 flex justify-between bg-white items-center border-b border-gray-200">
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center h-10">
           {loading ? (
             <>
               <Skeleton className="w-10 h-10 rounded-full" />
@@ -181,6 +181,7 @@ export default function Home() {
             <hr className="mb-5"/>
             <ActiveChallenges />
           </div>
+
           <EventsThisWeek />
         </div>
 

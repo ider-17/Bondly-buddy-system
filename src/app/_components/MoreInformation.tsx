@@ -17,7 +17,7 @@ export default function MoreInformation() {
     const fetchUserProfile = async () => {
         try {
             setLoading(true)
-            
+
             const {
                 data: { session },
                 error: sessionError,
@@ -80,12 +80,12 @@ export default function MoreInformation() {
     // Format date helper function
     const formatDate = (dateString?: string) => {
         if (!dateString) return "2025 • 06 • 12"
-        
+
         const date = new Date(dateString)
         const year = date.getFullYear()
         const month = String(date.getMonth() + 1).padStart(2, '0')
         const day = String(date.getDate()).padStart(2, '0')
-        
+
         return `${year} • ${month} • ${day}`
     }
 
@@ -113,12 +113,12 @@ export default function MoreInformation() {
     }
 
     return (
-        <div className="py-5 px-6 rounded-xl bg-white border border-gray-200 space-y-6">
-            <h6 className="text-lg font-semibold">Дэлгэрэнгүй мэдээлэл</h6>
+        <div className="rounded-xl bg-white border border-gray-200 space-y-6">
+            <h6 className="text-lg font-semibold py-5 px-6 mb-0">Дэлгэрэнгүй мэдээлэл</h6>
 
-            <hr />
+            <hr className="mb-0" />
 
-            <div className="space-y-3">
+            <div className="space-y-3 py-5 px-6">
                 <div className="py-2 px-6 border border-gray-200 rounded-lg">
                     <p className="text-neutral-600 font-medium">Mail</p>
                     <p className="font-medium">{profile?.email || "Loading..."}</p>

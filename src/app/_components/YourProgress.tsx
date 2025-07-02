@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { CircleAlert, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ApprovedSubmission {
   id: string;
@@ -239,18 +240,47 @@ export default function YourProgress() {
     };
   }, []);
 
-  if (loading) {
-    return (
-      <div className="mt-5 animate-pulse">
-        <div className="flex mb-3 gap-3 items-center">
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="h-4 bg-gray-200 rounded w-12"></div>
-        </div>
-        <div className="h-2 bg-gray-200 rounded mt-5"></div>
-        <div className="h-5 bg-gray-200 rounded w-20 mt-5"></div>
+if (loading) {
+  return (
+    <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200 py-5 px-6">
+      {/* Header with icon and percentage */}
+      <div className="flex gap-2 items-center">
+        <Skeleton className="w-8 h-8 rounded-lg" />
+        <Skeleton className="h-5 w-12" />
       </div>
-    );
-  }
+
+      {/* Progress bar */}
+      <Skeleton className="h-2 w-full" />
+
+      {/* Info section */}
+      <div className="flex gap-3 items-center">
+        <Skeleton className="w-6 h-6 rounded-full" />
+        <Skeleton className="h-4 w-40" />
+      </div>
+
+      {/* Challenges section */}
+      <div className="h-[120px] space-y-3">
+        <Skeleton className="h-4 w-20" />
+        
+        {/* Mock challenge cards */}
+        <div className="space-y-3">
+          {[1].map((i) => (
+            <div key={i} className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3">
+              {/* Challenge title */}
+              <Skeleton className="h-4 w-3/4" />
+              
+              {/* Tags */}
+              <div className="flex gap-3">
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="w-full space-y-3 bg-white rounded-xl border border-gray-200 py-5 px-6">
@@ -303,48 +333,49 @@ export default function YourProgress() {
       </div> */}
 
       {/* Show approved submissions only for newbies */}
-      {userRole !== "buddy" && approvedSubmissions.length > 0 && (
-        <div className="space-y-3 overflow-scroll">
-          <p className="text-sm font-semibold">Сорилтууд</p>
-          {approvedSubmissions.map((submission) => (
-            <div
-              key={submission.id}
-              className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3"
-            >
-              <div className="flex justify-between items-start">
-                <h5 className="text-sm font-semibold">
-                  {submission.challenge_title}
-                </h5>
-              </div>
+      <div className="h-[120px] overflow-scroll">
+        {userRole !== "buddy" && approvedSubmissions.length > 0 && (
+          <div className="space-y-3 overflow-scroll">
+            <p className="text-sm font-semibold">Сорилтууд</p>
+            {approvedSubmissions.map((submission) => (
+              <div
+                key={submission.id}
+                className="w-full border border-gray-200 p-3 rounded-lg bg-white space-y-3"
+              >
+                <div className="flex justify-between items-start">
+                  <h5 className="text-sm font-semibold">
+                    {submission.challenge_title}
+                  </h5>
+                </div>
 
-              <div className="flex gap-3 items-center">
-                <div className="border border-gray-200 text-xs rounded-full py-1 px-2">
-                  {submission.week || "1-р долоо хоног"}
-                </div>
-                <div
-                  className={`text-xs font-medium rounded-full py-1 px-2 ${
-                    submission.difficulty === "Easy"
-                      ? "text-green-800 bg-green-100"
+                <div className="flex gap-3 items-center">
+                  <div className="border border-gray-200 text-xs rounded-full py-1 px-2">
+                    {submission.week || "1-р долоо хоног"}
+                  </div>
+                  <div
+                    className={`text-xs font-medium rounded-full py-1 px-2 ${submission.difficulty === "Easy"
+                        ? "text-green-800 bg-green-100"
+                        : submission.difficulty === "Medium"
+                          ? "text-amber-800 bg-amber-100"
+                          : submission.difficulty === "Hard"
+                            ? "text-pink-800 bg-pink-100"
+                            : "text-green-800 bg-green-100"
+                      }`}
+                  >
+                    {submission.difficulty === "Easy"
+                      ? "Хялбар"
                       : submission.difficulty === "Medium"
-                      ? "text-amber-800 bg-amber-100"
-                      : submission.difficulty === "Hard"
-                      ? "text-pink-800 bg-pink-100"
-                      : "text-green-800 bg-green-100"
-                  }`}
-                >
-                  {submission.difficulty === "Easy"
-                    ? "Хялбар"
-                    : submission.difficulty === "Medium"
-                    ? "Дундаж"
-                    : submission.difficulty === "Hard"
-                    ? "Хэцүү"
-                    : "Хялбар"}
+                        ? "Дундаж"
+                        : submission.difficulty === "Hard"
+                          ? "Хэцүү"
+                          : "Хялбар"}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
