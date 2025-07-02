@@ -175,10 +175,16 @@ export default function BuddyProfile() {
               </div>
             </div>
 
-            <div className="flex gap-2 rounded-lg py-2 px-5 text-white bg-blue-500 cursor-pointer hover:bg-blue-600 transition-colors">
+            <a
+              href="https://mail.google.com/mail/?view=cm&to=tugsbilegenkh@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-2 rounded-lg py-2 px-5 text-white bg-blue-500 cursor-pointer hover:bg-blue-600 transition-colors"
+            >
               <Mail size={20} color="white" />
               <p className="text-sm">Холбогдох</p>
-            </div>
+            </a>
+
           </div>
 
           <Separator className="mb-0" />

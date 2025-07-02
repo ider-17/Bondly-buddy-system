@@ -527,7 +527,7 @@ export default function BuddyHome() {
             </div>
           </header>
 
-          <div className="flex flex-col gap-8 px-20 py-10 w-full">
+          <div className="flex flex-col gap-8 px-20 py-10 w-full min-h-screen">
             <div className="w-full">
               <ProgressTracker />
             </div>

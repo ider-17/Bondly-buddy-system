@@ -74,12 +74,14 @@ export default function RotatingBuddyCard() {
                                 </div>
                             </div>
 
-                            <div className="flex h-fit gap-5">
+                            <div className="flex h-fit gap-5 justify-end">
                                 <button className="border border-gray-200 rounded-lg py-[10px] h-fit px-6 bg-transparent cursor-pointer select-none hover:bg-gray-200 active:bg-black active:text-white">Дэлгэрэнгүй</button>
-                                <div className='w-1/2 rounded-lg py-[10px] h-fit px-10 flex gap-2 items-center justify-center bg-blue-500 cursor-pointer hover:bg-blue-600 active:bg-blue-700 select-none'>
-                                    <Mail color='white' />
-                                    <p className='text-white'>Холбогдох</p>
-                                </div>
+                                <a target="_blank" href="https://mail.google.com/mail/?view=cm&to=baasandash.davaakhuu@gmail.com" className="w-1/2">
+                                    <div className='w-full rounded-lg py-[10px] h-fit px-10 flex gap-2 items-center justify-center bg-blue-500 cursor-pointer hover:bg-blue-600 active:bg-blue-700 select-none'>
+                                        <div><Mail size={20} color='white' /></div>
+                                        <p className='text-white'>Холбогдох</p>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
