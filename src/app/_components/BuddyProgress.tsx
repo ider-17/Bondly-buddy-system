@@ -251,7 +251,7 @@ export default function ProgressTracker() {
         </div>
         <div>
           <p className="text-lg font-semibold text-gray-900">
-            {progressData.completionPercentage}%
+            {5}%
           </p>
           {/* <p className="text-sm text-gray-500">
             {progressData.newbieName ? `${progressData.newbieName}'s Progress` : 'Newbie Progress'}
@@ -260,7 +260,7 @@ export default function ProgressTracker() {
       </div>    
 
       {/* Progress Bar */}
-      <Progress value={progressData.completionPercentage} className="h-2" />
+      <Progress value={5} className="h-2" />
       
       {/* Additional Info */}
       <div className="flex gap-3 items-center">

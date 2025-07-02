@@ -159,22 +159,11 @@ export default function InternYouGuiding() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-15 h-15">
-                {newbie?.profile_pic ? (
-                  <AvatarImage
-                    src={newbie.profile_pic}
-                    alt={`${newbie.name || 'User'}'s avatar`}
-                    onError={(e) => {
-                      console.error("Failed to load avatar image:", newbie.profile_pic)
-                      e.currentTarget.style.display = 'none'
-                    }}
-                  />
-                ) : null}
-                <AvatarFallback className="bg-green-100 text-green-600 font-semibold">
-                  {getAvatarFallback()}
-                </AvatarFallback>
+                <AvatarImage src="https://ooxomufkkqephrlbxshw.supabase.co/storage/v1/object/sign/profile-pics/Screenshot%202025-07-01%20at%2015.36.11.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zMzY0MGJhMi1jYjAzLTRlNGItYTJhYy05YmE5M2VhZWUyZGQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlLXBpY3MvU2NyZWVuc2hvdCAyMDI1LTA3LTAxIGF0IDE1LjM2LjExLnBuZyIsImlhdCI6MTc1MTM1NTQwMiwiZXhwIjoxNzgyODkxNDAyfQ.bG3QilDsEkRLDxPZ7JMoPrxO1mBUhR24PXhB8Vd6FKA" />
+                <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                <h6 className="text-base font-medium">{getDisplayName()}</h6>
+                <h6 className="text-base font-medium">Идэр</h6>
                 <p className="text-[#525252] text-sm font-medium">{getRoleDisplay()}</p>
               </div>
             </div>
