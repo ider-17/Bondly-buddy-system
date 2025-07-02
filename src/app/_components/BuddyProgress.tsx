@@ -253,9 +253,9 @@ export default function ProgressTracker() {
           <p className="text-lg font-semibold text-gray-900">
             {progressData.completionPercentage}%
           </p>
-          <p className="text-sm text-gray-500">
+          {/* <p className="text-sm text-gray-500">
             {progressData.newbieName ? `${progressData.newbieName}'s Progress` : 'Newbie Progress'}
-          </p>
+          </p> */}
         </div>
       </div>    
 
@@ -268,7 +268,7 @@ export default function ProgressTracker() {
           <path d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <p className="text-sm font-medium text-neutral-600">
-          Таны onboarding прогресс        </p>
+          Таны Newbie-ийн onboarding прогресс</p>
       </div>
     </div>
   );
