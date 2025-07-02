@@ -82,25 +82,25 @@ export default function ApprovalRequests() {
         return () => clearInterval(interval);
     }, []);
 
- async function handleApprove(submissionId: string) {
-    try {
-        // Simple approval - just update the submission status
-        const { error } = await supabase
-            .from("submissions")
-            .update({ status: "approved" })
-            .eq("id", submissionId);
+    async function handleApprove(submissionId: string) {
+        try {
+            // Simple approval - just update the submission status
+            const { error } = await supabase
+                .from("submissions")
+                .update({ status: "approved" })
+                .eq("id", submissionId);
 
-        if (error) {
-            throw error;
+            if (error) {
+                throw error;
+            }
+
+            toast.success("Challenge approved!");
+            fetchApprovalRequests();
+        } catch (error) {
+            console.error('Approval error:', error);
+            toast.error("Failed to approve submission: " + (error as Error).message);
         }
-
-        toast.success("Challenge approved!");
-        fetchApprovalRequests();
-    } catch (error) {
-        console.error('Approval error:', error);
-        toast.error("Failed to approve submission: " + (error as Error).message);
     }
-}
 
     async function handleDecline(submissionId: string) {
         // Delete the submission (challenge goes back to active)
@@ -118,12 +118,12 @@ export default function ApprovalRequests() {
     }
 
     return (
-        <div className="bg-white  rounded-xl ">
+        <div className="bg-white rounded-xl h-[470px]">
             <h6 className="text-xl py-5 px-6 font-semibold">Зөвшөөрөх хүсэлтүүд</h6>
 
             <hr />
 
-            <div className="py-5 px-6">
+            <div className="py-5 px-6 h-100 overflow-scroll">
                 {requests.length === 0 && (
                     <p className="text-sm text-gray-500">Одоогоор хүсэлт ирээгүй байна.</p>
                 )}
@@ -131,7 +131,7 @@ export default function ApprovalRequests() {
                 {requests.map((submission) => (
                     <div
                         key={submission.id}
-                        className="py-[10px] space-y-4 border-b border-neutral-200"
+                        className="py-5 space-y-4 border-b border-neutral-200"
                     >
                         <div className="flex gap-3">
                             <div className="w-full">
