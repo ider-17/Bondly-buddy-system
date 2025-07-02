@@ -1,7 +1,7 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
-import { CircleAlert, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -333,7 +333,10 @@ export default function YourProgress() {
       </div> */}
 
       {/* Show approved submissions only for newbies */}
-      <div className="h-[120px]">
+      <div className="h-fit">
+        {userRole !== "buddy" && approvedSubmissions.length === 0 && (
+          <p className="text-sm text-gray-500 text-center">Биелүүлсэн сорилт байхгүй байна.</p>
+        )}
         {userRole !== "buddy" && approvedSubmissions.length > 0 && (
           <div className="space-y-3">
             <p className="text-sm font-semibold">Сорилтууд</p>

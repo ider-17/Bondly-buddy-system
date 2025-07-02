@@ -94,13 +94,13 @@ export default function InternYouGuiding() {
   // Format role display
   const getRoleDisplay = () => {
     if (!newbie?.rank) return "Newbie"
-    
+
     // Capitalize first letter and handle role formatting
     const roleMap: { [key: string]: string } = {
       'newbie': 'Newbie',
       'buddy': 'Buddy'
     }
-    
+
     return roleMap[newbie.rank] || newbie.rank
   }
 
@@ -151,7 +151,7 @@ export default function InternYouGuiding() {
   return (
     <div className="bg-white rounded-xl border border-slate-200 ">
       <h6 className="font-semibold py-5 px-6 space-y-5 text-xl">Таны Newbie</h6>
-      
+
       <hr></hr>
 
       <div className="py-5 px-6">
@@ -160,8 +160,8 @@ export default function InternYouGuiding() {
             <div className="flex items-center gap-3">
               <Avatar className="w-15 h-15">
                 {newbie?.profile_pic ? (
-                  <AvatarImage 
-                    src={newbie.profile_pic} 
+                  <AvatarImage
+                    src={newbie.profile_pic}
                     alt={`${newbie.name || 'User'}'s avatar`}
                     onError={(e) => {
                       console.error("Failed to load avatar image:", newbie.profile_pic)
@@ -186,7 +186,7 @@ export default function InternYouGuiding() {
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>
-                        <div className="flex items-center gap-3 text-black" >
+                        <div className="flex items-center gap-3 text-black pt-5 pr-5 pl-5" >
                           <Avatar className="w-15 h-15">
                             <AvatarImage src="https://ooxomufkkqephrlbxshw.supabase.co/storage/v1/object/sign/profile-pics/Screenshot%202025-07-01%20at%2015.36.11.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zMzY0MGJhMi1jYjAzLTRlNGItYTJhYy05YmE5M2VhZWUyZGQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlLXBpY3MvU2NyZWVuc2hvdCAyMDI1LTA3LTAxIGF0IDE1LjM2LjExLnBuZyIsImlhdCI6MTc1MTM1NTQwMiwiZXhwIjoxNzgyODkxNDAyfQ.bG3QilDsEkRLDxPZ7JMoPrxO1mBUhR24PXhB8Vd6FKA" />
                             <AvatarFallback>CN</AvatarFallback>
@@ -197,7 +197,7 @@ export default function InternYouGuiding() {
                           </div>
                         </div>
                       </DialogTitle>
-                      <DialogDescription>
+                      <DialogDescription className=" p-5">
 
                         <hr className="mt-4" />
 
